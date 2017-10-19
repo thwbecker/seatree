@@ -1,0 +1,114 @@
+combined f77/g77 version of hypoinverse 2000,  Jan. 2008
+
+NOTES ON VERSION 1.2
+
+This version (hypoinverse 1.2) compiles under both f77 and g77
+fortran compilers on Fred Klein's sun-solaris workstation. I'm told by
+other programmers that this version works under g77 on linux also, but
+I do not have a linux system to test this on.
+
+There are no functional differences between v. 1.2 and v. 1.1, and the
+documentation still applies:
+
+ftp://ehzftp.wr.usgs.gov/klein/hyp2000/docs/hyp2000-1.1.pdf
+
+1) I have three ftp directories of source code,
+
+v.1.2 source code, f77 makefile, & sun-solaris executable:
+  ftp://ehzftp.wr.usgs.gov/klein/hypf 
+
+v.1.2 source code, g77 makefile, & sun-solaris executable:
+  ftp://ehzftp.wr.usgs.gov/klein/hypg 
+
+v.1.11 source code, f77 makefile, & sun-solaris executable:
+  ftp://ehzftp.wr.usgs.gov/klein/hyp2000
+  
+The source code is EXACTLY THE SAME in both f and g directories. The
+makefile is the same except one uses f77 and the other g77. Just type
+"make hyp", and put the hyp executable where you want it. The g77
+executable is a bit smaller than the f77 executable.
+
+The two compilers issue different warnings, but the warnings can be
+ignored.  g77 complains about long arrays taking a long time to
+compile, but compile time is still only seconds to a minute or two. The
+code uses a logical function I wrote called LASK. g77 requires that
+LASK be declared logical, and f77 does not. f77 therefore warns that
+LASK is declared but not used (as a variable), but these warnings can
+be ignored because the name is satisfied at link time.
+
+2) Changes I had to make to compile under both compilers.  The f77
+compiler supports the q format specifier, and g77 does not. This
+changes mainly how hypoinverse handles shadow and unused phase records,
+which it passes through to output without reading. The q specifier
+reads the actual length of the input ascii line so it can be written
+out exactly as read. Now the code writes out the non-blank length of
+the record, which may be shorter than input.
+
+There were other minor changes of v 1.2 from 1.11 because g77 requires
+cetain variables be explicitly declared, but f77 was more forgiving.
+
+3) I am not a guru at all, but I had to do this on my system to compile
+with g77. I would suggest just trying to compile and run hyp on your
+computer, and the compiler may find all it needs. If it misses a
+library, then try this.
+
+I had to put two runtime libraries in a path where g77 could find them 
+on my particular system. Run this once (as super user) on your system 
+before compiling:
+
+cd /usr/lib
+ln -s /usr/local/lib/libg2c.so.0.0.0 libg2c.so.0
+ln -s /usr/local/lib/libgcc_s.so.1 libgcc_s.so.1
+
+Then as yourself, to make your own executable:
+
+  make hyp
+
+should do it. I compiled with the -Bstatic option, so the runtime fortran
+libraries should be bound into the executable.
+
+4) There are some test files. Both hyp2000f and hyp2000g directories have a subdirectory called testsimple, with one earthquake, one station file, one crust model, and no extra correction or delay files. Both locations are identical. This makes me suspicious that I ran the same program twice, but I now think the two compilers produce a program that gives identical results on the same computer.
+
+To test the program, cd to testsimple, run hyp, and type @test2000.hyp to run the sample command file test2000.hyp. 
+
+If you have a full NCSN set of files set up, you can make a fuller test by running test-fullNCSN.hyp. Additional test files are in hyp2000/test and hyp2000/test3, but these were run with version 1.11.
+
+This procedure tests hypoinverse to be sure it can do all the NCSN functions,
+but requires that you have all the station, etc. files. Also, these station
+files change and are updated from time to time, so your results may not
+exactly be reproducible compared to the output file supplied here.
+
+For what its worth, I got this output on my system:
+---------------------------------------------------
+
+puna 86? hyp
+ HYPOINVERSE 2000 STARTING
+12/2007 VERSION 1.2 (Can fix origin time; g77 compiler)               
+ COMMAND? @test-fullNCSN.hyp
+ INITIALIZING WITH COMMAND FILE:
+ /home/calnet/klein/hypfiles/cal2000seed.hyp                                     
+  6985 STATIONS READ IN BINARY
+  1408 STATION XMAG CORRECTIONS SET
+  1202 STATION FMAG CORRECTIONS SET
+    35 CRUST MODELS READ IN BINARY
+  1702 STATION CAL FACTORS SET
+ 
+  Now hit return to locate this file, or type in your own file:
+ 
+ PHASE FILENAME
+ [CR = test.arc]? 
+ 
+  FIND INPUT PHASE FILE TYPE & SET PHS(COP) & ARC(CAR) FORMATS
+  INPUT IS A HYPOINVERSE ARCHIVE-2000 FILE, WITH SHADOWS
+  SETTING FORMATS COP 5, CAR 3
+ 
+Wed Dec  5 15:19:16 PST 2007
+ 0
+  SEQ ---DATE--- TIME REMARK -LAT-  --LON-  DEPTH  RMS PMAG  NUM  ERH  ERZ  ID
+    1 2007-12- 5 22:35 SFP   37 38  122 29  10.46 0.05  2.1D  36  0.2  0.4  40206939
+    2 2007-12- 5 23:39 ROG   38 42  122 53   4.40 0.08  2.3D  33  0.2  1.2  40206942
+Wed Dec  5 15:19:25 PST 2007
+ 0
+  Now type stop to stop the program:
+ COMMAND? sto
+puna 87? 

@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# create a tar file 
+#
+ver=${1-0.1}
+date=`date '+%m%d%y'`
+
+tf=$HOME/tmp/larry-$ver.$date.tgz 
+
+rm -rf $HOME/tmp/larry
+mkdir $HOME/tmp/larry
+
+
+cp  *.f Makefile read.me README.TXT wei_sum.02.*.txt invert invert_driver clean_up \
+    plotblk R0075_1.ps nuvel.360.xy $HOME/tmp/larry/
+
+
+cd $HOME/tmp/
+
+tar --create --gzip --verbose --file $tf larry/
+
+rm -rf larry/
+
+cd -
+echo $0: output in $tf

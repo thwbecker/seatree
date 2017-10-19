@@ -1,0 +1,65 @@
+#!/bin/bash
+#
+# driver for invert with logic switches to see which part needs to be redone
+#
+#
+# $Id: invert_driver,v 1.2 2007/08/29 22:31:42 becker Exp becker $
+#
+#
+# options
+#
+data=${1-R0075_1}		# data file name, also used for output file
+                                # names. can only be R0075_1 and L0035_1
+ndamp=${2-0.0}			# norm damping, should be within 0...2
+rdamp=${3-0.2}			# roughness damping, should be within 0...2
+res=${4-5}			# resolution, can be 3, 5, 7, 9, or 11
+
+#
+echo $0: inverting data type: $data pixel resolution: $res
+echo $0: norm damping: $ndamp roughness: $rdamp
+#
+#
+# do some parameter changes
+#
+if [[ $res -ne 3 && $res -ne 5 && $res -ne 7 && $res -ne 9 && $res -ne 11 ]];then
+    echo $0: error: res needs to be 3, 5, 7, 9, or 11
+    echo $0: small resolutions will lead to long run times
+    exit
+fi
+
+if [ -s $data.oldpara.dat ];then
+    #
+    # check old parameters to see what's changed
+    #
+    read o_ndamp o_rdamp o_res < $data.oldpara.dat
+    # did the norm damping change?
+    ndc=`echo $o_ndamp $ndamp | gawk '{if($1!=$2)print(1);else print(0)}'`
+
+    # did roughness damping change?
+    rdc=`echo $o_rdamp $rdamp | gawk '{if($1!=$2)print(1);else print(0)}'`
+
+    
+
+    # did resolution change?
+    rc=`echo $o_res $res | gawk '{if($1!=$2)print(1);else print(0)}'`
+    
+
+else
+    #
+    # first call, redo
+    #
+    rc=1
+    rdc=1
+fi
+if [ $rc -eq 1 ];then  		# resolution changed, redo ATA
+    rm $data.ata 2> /dev/null
+fi
+if [[ $rdc -eq 1 || $ndc -eq 1 ]];then # either norm or roughness damping changed
+    rm $data.sol 2> /dev/null
+fi
+
+./invert $data $ndamp $rdamp $res				# run all routines and plot
+
+  
+echo  $ndamp $rdamp $res > $data.oldpara.dat
+

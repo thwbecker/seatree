@@ -1,0 +1,61 @@
+#!/bin/bash
+#
+# run inversion for different damping settings
+# (drive_invray takes care of loop)
+#
+mtype=${1-chkbd}		# chkbd, image
+#
+damp=${2-1}
+# square region 
+xtot=${3-100}
+# equal parameterization increment in both directions
+dx=${4-1.}
+# number of data
+ndata=${5-20000}
+#
+# clean up all files other than GIF?
+cleanup=${6-0}
+echo
+echo $0: mtype: $mtype damp: $damp xtot: $xtot dx: $dx ndata: $ndata
+echo
+#
+# input files
+name=rays.$mtype
+# output file name
+nameout=maps/rays.$mtype.`echo $damp | gawk '{printf("%010.2f",$1)}'`
+
+if [[ ! -s ../makedata/$name.rhs ||  ! -s ../makedata/$name.ind || ! -s ../makedata/$name.pnt || ! -s ../makedata/$name.xxx ]];then
+    echo $0: input files ../makedata/$name.* not found
+    exit
+fi
+echo $0: running inversion
+rm inv.log $name.xyz 2> /dev/null
+#
+# invert
+#
+./bin/invray<<EOF > inv.log
+"../makedata/$name"
+"../makedata/$name.rhs"
+$ndata
+$dx
+$dx
+$xtot
+$xtot
+"$nameout"
+$damp
+EOF
+
+if [ ! -s $nameout.xyz ];then
+    echo $0: error, $nameout.xyz not produced 
+    cat inv.log
+    exit
+fi
+# 
+# plot
+./plot_inv $nameout $damp ../pm2.cpt $dx $xtot
+if [ $cleanup -eq 1 ];then
+    rm $nameout.ps $nameout.xyz $nameout.log $nameout
+
+fi
+
+

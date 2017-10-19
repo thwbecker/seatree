@@ -1,0 +1,11 @@
+This directory has very simple test files for the hypoinverse 2000
+program.  test2000.hyp is the hypoinverse test command file.  Run
+hypoinverse, then type @test2000.hyp at the command prompt.
+
+These files are located on the computers:
+
+open to the whole world:
+ftp://clover.wr.usgs.gov/pub/ehz/klein/hyp2000/testsimple
+
+open only to USGS:
+ftp://swave.wr.usgs.gov/pub/outgoing/klein/hyp2000/testsimple

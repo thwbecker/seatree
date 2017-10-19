@@ -1,0 +1,86 @@
+ HYPOINVERSE 2000 (11/99 VERSION) RUN ON Mon Apr 24 16:31:42 2000      RUN LABEL= 
+
+
+ TEST PARAMETERS:
+   -ITERATION AND CONVERGENCE-     -WEIGHTING AND ERRORS-     -MISCELLANEOUS-
+       20=ITRLIM   0.900=DAMP    15.000=DISCUT   0.100=RMSCUT       4=MINSTA
+    0.040=DQUIT    0.001=DRQT     3.500=DISW1    2.000=RMSW1        2=NET
+    7.000=DXFIX    0.012=EIGTOL   7.000=DISW2    3.000=RMSW2 
+   30.000=DZMAX    0.020=RBACK        4=ITRDIS       4=ITRRES   5.000=ZTR
+    0.500=DZAIR    0.600=BACFAC   1.000=SWT      0.100=RDERR    1.780=POS
+                                                 1.000=ERCOF
+
+      ------DURATION MAG CONSTANTS------       -DELAYS & MISC-    -STATIONS-
+   -0.810=FMA1     0.000=FMA2   -1.0300=DMA0         T=LMULT        F=ATTEN
+    2.220=FMB1     0.000=FMB2    2.1000=DMA1         T=CODAWT       5=SITE-LET
+    0.000=FMZ1     0.000=FMZ2    0.0000=DMA2         T=LJUNK        2=NET-LET
+    0.001=FMD1     0.000=FMD2    0.0000=DMZ                         3=COMP-LET
+    0.000=FMF1     0.000=FMF2    1.0000=DMGN  
+    1.000=FMGN  9999.000=FMBRK   0.0027=DMLIN 
+   0.0050=DCOF1   40.000=DBRK1        1=LOGA0 
+   0.0006=DCOF2  350.000=DBRK2 
+   0.0140=ZCOF    10.000=ZBRK  
+
+    DUR MAG COMPONENT CORRECTIONS:  VLZ=-.06  VLE=-.30  VLN=-.30
+    AMP MAG COMPONENT CORRECTIONS:  VHZ=0.33  VLZ=0.20
+
+    --- MAGNITUDE LABELS & COMPONENTS ---
+    FMAG1: LABEL=D      COMPS= VHZ VHE VHN VLZ
+    FMAG2: LABEL=Z      COMPS= VLZ
+    XMAG1: LABEL=X      COMPS= VHZ VLZ VLE VLN VDZ VDN VDE
+    XMAG2: LABEL=L      COMPS= WLN WLE HHN HHE BHN BHE
+    FMAG1 MAGSEL=1  FMAG2 MAGSEL=3
+
+ INPUT FILES:
+ COMMANDS:    /home/calnet/klein/hypfiles/cal2000.hyp                     
+                                                                          
+ BINARY STATION SNAPSHOT FILE: /home/calnet/klein/hypfiles/allsta2.bin                     
+ DELAYS:                                                                   
+ ATTENUATIONS: /home/calnet/klein/hypfiles/all2000.atn                     
+ CAL FACTORS:  /home/calnet/klein/hypfiles/all2000.cal                     
+ FMAG CORRECT: /home/calnet/klein/hypfiles/all2000.fmc                     
+ XMAG CORRECT: /home/calnet/klein/hypfiles/all2000.xmc                     
+
+ PHASES:       testin.arc                                                  
+        PHASE FORMAT CODE= 3, TERMINATOR FORMAT CODE=1
+ BINARY CRUST SNAPSHOT FILE: /home/calnet/klein/hypfiles/multmod2.bin                    
+
+ OUTPUT FILES: (T IF APPENDED TO)
+ (F) PRINTOUT:    test.prt                                                    
+ (F) ARCHIVE:     test.arc                                                    ARCHIVE FORMAT CODE= 1
+ 
+ ####################################################################################
+   1 DEC 1999,  0:08  SEQUENCE NO.    1, ID NO.  21069577
+                                                        ADJUSTMENTS (KM)
+  I ORIGIN   LAT N     LON W     Z   NWR  RMS    DT    DLAT   DLON    DZ    RR NF MOD
+  1  5.56  35 56.14  120 31.19  5.00   8 0.94  0.817  2.645 -0.440  0.000 2.681 3 PMM
+ FREE DEPTH
+  2  6.38  35 57.57  120 30.90  5.00   8 0.05  0.170  0.539  0.233 -1.916 2.004 4 PMM
+  3  6.55  35 57.86  120 31.05  3.08   8 0.07  0.003 -0.156  0.177 -0.585 0.631 4 PMM
+ BEGIN DISTANCE WEIGHTING
+ BEGIN RESIDUAL WEIGHTING
+  4  6.55  35 57.77  120 31.17  2.50   8 0.03 -0.007 -0.038  0.092 -0.189 0.214 4 PMM
+  5  6.54  35 57.75  120 31.23  2.31   8 0.03  0.003 -0.037 -0.003  0.082 0.090 4 PMM
+  6  6.55  35 57.73  120 31.23  2.39   8 0.03 -0.001  0.015 -0.042  0.084 0.095 4 PMM
+ ERROR ELLIPSE: <SERR AZ DIP>-<   3.28  86 69>-<   0.58 213 12>-<   0.21 308 15>
+ ------------------------------------------------------------------------------------
+ YEAR MO DA  --ORIGIN--  --LAT N-  --LON W--  DEPTH   RMS   ERH   ERZ  XMAG  FMAG  PMAG
+ 1999-12-01  0008  6.55  35 57.73  120 31.23   2.39  0.03  1.14  3.08  0.56  0.96  0.96D
+                                                                                          SOURCE
+ NSTA NPHS  DMIN MODEL GAP ITR NFM NWR NWS NVR REMRKS-AVH  N.XMG-XMMAD-T   N.FMG-FMMAD-T  L F X
+    7    9   2.1  PMM  137   6   6   8   2   8 MID          2.00  0.14 X    1.00  0.00 D  N N N
+
+ XMAG2-N.XMG2-XMMAD-T-S  FMAG2-N.FMG2-FMMAD-T-S  PREF.MAG-N.PMAG-PRMAD-T
+                                                     0.96   1.00  0.00 D
+ REGION= Middle Mountain            MODELS USED:  PMM=1.00
+
+ STA NET COM CR DIST AZM  AN P/S WT   SEC (TOBS -TCAL -DLY  =RES)  WT   SR  INFO  CAL DUR-W-FMAG-T -AMP-U-PER-W-XMAG-T
+ PMM  NC VHZ VP  2.1 108 124 EPU 2   7.71  1.16  0.89 0.29 -0.02  0.46  NM 0.612 1.40              7.000M .19   0.42 X     
+ PST  NC VHZ VP  3.5 171 102 IPD     7.56  1.01  1.16-0.15  0.00  2.29  N  0.829                                           
+ PVC  NC VHZ VP  4.7 197  77 IPD 1   7.81  1.26  1.39-0.09 -0.04  1.14  N  0.341 1.40   6   0.96 D                         
+                             ES  2   8.98  2.43  2.47-0.16  0.12  0.46S N  0.272
+ PPC  NC VHZ VP  6.9 259  72 IPU     8.13  1.58  1.81-0.24  0.01  2.29  NM 0.860 1.40                 16M .07   0.69 X     
+                             ES  2   9.19  2.64  3.22-0.43 -0.15  0.46S NM 0.199
+ PHP  NC VHZ VP  8.0 285  72 EPU 2   8.39  1.84  2.03-0.21  0.02  0.46  N  0.080                                           
+ PSM  NC VHZ VP 13.7 331  71 EPU 2   9.98  3.43  3.09 0.37 -0.03  0.46  N  0.804                                           
+    1 UNWEIGHTED STATIONS NOT PRINTED.

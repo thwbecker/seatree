@@ -1,0 +1,169 @@
+#!/bin/bash
+#
+# generate data
+# 
+# input mtype 
+mtype=${1-"chkbd"}
+#
+# square region extent
+xtot=${2-100.}
+#
+# equal parameterization increment in both directions:
+#
+dx=${3-1.}
+dy=$dx
+#
+# total number of data to be generated:
+ndata=${4-20000}
+#
+# noisy sigma
+sigma=${5-0}
+# 
+# station distribution mode
+station_mode=${6-1}			# 1: uniform 2: center 3: sides
+#
+# events per station
+ipick=${7-40}				# events per station
+#
+cleanup=${8-0}
+
+
+### xtot and dx should be consistent with values assigned in makemodel
+# number of pixels in parameterization grid ((xtot/dx)^2):
+nfree=`echo $xtot $dx | gawk '{print(($1/$2)**2)}'`
+# root of name of output files with ray geometry info:
+name=rays.$mtype
+#
+# minimum acceptable epicentral distance:
+#deltamin=50.
+deltamin=10.
+#
+# increment along ray path:
+rpinc=0.05
+#
+# seed for random
+seed=-1
+# input model:
+model=../makemodel/$mtype.px
+if [ ! -s $model ];then
+    echo $0: $model not found
+    exit
+fi
+
+
+#
+#
+ytot=$xtot			# y range, make square
+binary=1			# matrix format
+#
+echo $0: shooting rays with dx: $dx xtot: $xtot ndata: $ndata
+rm $name.xxx $name.ind $name.pnt  sr.log 2>/dev/null
+
+twostep=1
+
+if [ $twostep -eq 0 ];then	# generate stations and sources and
+				# shoot rays in one step
+
+./bin/shootray<<EOF > sr.log
+$dx
+$dy
+$xtot
+$ytot
+$name
+$ndata
+$binary
+$deltamin
+$rpinc
+$station_mode
+$ipick
+EOF
+else # first create sources and receivers, then shoot the rays through
+     # it
+
+    # 
+    # this will produce a sources.txt and receiver.txt file
+    # 
+./bin/make_sr <<EOF > msr.log
+$xtot
+$ytot
+$ndata
+$deltamin
+$station_mode
+$ipick
+EOF
+# 
+cat msr.log
+
+./bin/shootray_sr <<EOF > ssr.log
+$dx
+$dy
+$xtot
+$ytot
+$name
+$binary
+$rpinc
+EOF
+
+cat ssr.log
+
+fi
+if [[ ! -s $name.xxx || ! -s $name.ind || ! -s $name.pnt ]];then
+    echo $0: error in shootray stage
+    cat sr.log
+    exit
+fi
+echo $0: output in $name.xxx $name.ind $name.pnt 
+#
+# plot sources and receivers 
+#
+./plot_rays $mtype $xtot $station_mode
+
+if [ $cleanup -eq 1 ];then
+    rm receivers.txt sources.txt paths.txt  2> /dev/null
+fi
+
+
+
+
+rm $name.rhs dm.log 2> /dev/null
+if [ `echo $sigma | gawk '{if($1==0)print(1);else print(0)}'`  -eq 1 ];then
+#
+    echo $0: noiseless data
+
+# no noise
+./bin/noisydatamaker<<EOF > dm.log
+$name.xxx
+$name.ind
+$name.pnt
+$model
+$name.rhs
+$nfree
+$ndata
+0
+-1
+EOF
+else
+    echo $0: noisy data with sigma $sigma
+
+./bin/noisydatamaker<<EOF > dm.log
+$name.xxx
+$name.ind
+$name.pnt
+$model
+$name.rhs
+$nfree
+$ndata
+$sigma
+$seed
+EOF
+
+
+fi
+
+cat dm.log
+if [ ! -s $name.rhs ];then
+    echo $0: error in data makign stage
+    cat dm.log
+    exit
+fi
+echo $0: output in $name.rhs

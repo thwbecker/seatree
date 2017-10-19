@@ -1,0 +1,37 @@
+#!/bin/bash
+#
+# for a larry type surface wave data file
+# extract station locations, receiver locations, or paths, GMT style
+# output is in lon lat format, assuring lon is [0;360]
+#
+# usage:
+#
+# $0 ifile mode reduce
+#
+# where ifile is a larry data file
+# mode 1,2,3 will select stations, sources, or paths
+# reduce [default: 1] will plot only every reduce entry
+#
+ifile=${1-../../../python/data/larry/R0035.1.txt} # input data file
+if [ ! -s $ifile ];then
+    echo $0: error, input data file $ifile not found > /dev/stderr
+    exit
+fi
+mode=${2-1}			# 1: extract station location 2: extract sources 3: extract paths
+reduce=${3-1}			# plot every reduce entry 
+
+case $mode in
+    1)				# stations, remove duplicates
+	gawk -v reduce=$reduce '{if((NR>2)&&(NR%reduce==0))print($4,$3)}' $ifile | sort -n | uniq | gawk '{x=$1;if(x<0)x+=360;print(x,$2)}'
+	;;
+    2)				# events
+	gawk -v reduce=$reduce '{if((NR>2)&&(NR%reduce==0))print($2,$1)}' $ifile | sort -n | uniq | gawk '{x=$1;if(x<0)x+=360;print(x,$2)}'
+	;;
+    3)
+	gawk -v reduce=$reduce '{if((NR>2)&&(NR%reduce==0)){x=$2;if(x<0)x+=360;print(x,$1);x=$4;if(x<0)x+=360;print(x,$3);print(">");}}' $ifile 
+	;;
+    *)
+	echo $0: error, mode $mode undefined, use 0, 1, or 2 > /dev/stderr
+	exit
+	;;
+esac

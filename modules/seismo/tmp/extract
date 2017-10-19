@@ -1,0 +1,100 @@
+#!/bin/bash
+#
+# extract solution for plotting and convert to GMT plotting file, 
+# grd files, or spherical harmonic expansion
+
+#
+#
+pxsize=${1-5}			# pixel size
+model=${2-comb.100.1}		# model name [without .dat or .dat.gz]
+palette=${3-myseis.cpt}		# colormap
+avg=${4-y}			# remove average (y)
+mode=${5-1}			# 1: make layer_* files for direct GMT plotting using -G extract from palette
+                                # 2: extract grids
+                                # 4: make layer_* files for GMT plotting with -Z label
+nlay=${6-15}			# number of layers
+hits=${7-0}			# 0: use .dat 1: use .hits
+iswit=${8-0}			# 0: use even area pixels 1: adjust to crustal models
+
+lmax=31				# for spherical harmonics
+
+if [ $hits -eq 1 ];then
+    suf=hits
+else
+    suf=dat
+fi
+gzip=0
+if [ ! -s $model.$suf ];then
+    if [ -s $model.$suf.gz ];then
+	gzip=1
+    else
+	echo $0: model file $model.$suf not found
+	exit
+    fi
+fi
+if [[ $mode -eq 2 ]];then
+    imode=2
+elif [ $mode -eq 1 ];then
+    imode=$mode
+elif [ $mode -eq 4 ];then
+    imode=5
+else
+    echo $0: error mode $mode undefined
+    exit
+fi
+
+echo $0: extracting solution from $model.$suf, px: $pxsize nl: $nlay pal: $palette avg: $avg imode: $imode iswit: $iswit
+if [ $gzip -eq 1 ];then
+    gunzip -c $model.$suf.gz > tmp.$$.dat
+else
+    cp $model.$suf tmp.$$.dat
+fi
+echo $pxsize $nlay
+
+$ARCH/mapview_3d <<EOF | tee tomoplot.log
+$pxsize
+$iswit
+$nlay
+tmp.$$.dat
+$palette
+$avg
+6371 3471
+$imode
+$iswit
+EOF
+rm tmp.$$.dat
+if [ ! -s vprofile.txt ];then
+    echo $0: problem with mapview_3d
+    cat tomoplot.log
+    exit
+fi
+grep -v ">" vprofile.txt | gawk '{if(NR%2==0)print((x+$1)/2);x=$1;}' > layerz.dat
+cp layerz.dat layerz.$nlay.dat
+
+
+if [[ $mode -eq 2 ]];then
+    nl=`lc layerz.dat`
+
+    
+    # grid bottom up
+    i=$nl
+    j=1
+    rm vdepths.dat 2> /dev/null
+    while [ $i -ge 1 ];do
+	z=`oneline $i layerz.dat`
+	echo $z >> vdepths.dat
+	f=`echo $i | gawk '{printf("layer_%02i",$1)}'`
+	if [ ! -s $f ];then
+	    echo $0: error, $f not found
+	    cat tomoplot.log
+	    exit
+	fi
+	surface -fg -Rg -I$pxsize $f -Gdv.$j.grd  -Lld -Lud 
+	echo $0: $f $z dv.$j.grd RMS `grd2wrms dv.$j.grd`  
+
+	rm $f
+	((j=j+1))
+	((i=i-1))
+    done
+fi
+

@@ -1,0 +1,107 @@
+      SUBROUTINE HYPREF
+C--SELECTS THE PREFERRED MAGNITUDE AMONG THOSE CALCULATED
+      INCLUDE 'common.inc'
+
+C--ZERO NUMBERS IN CASE NO MAG IS SELECTED
+      PMAG=0.
+C      MPMAG=0
+      NPMAG=0
+      LABPR=' '
+      PMMAD=0.
+
+C--GO THROUGH PREFERENCE ORDER UNTIL ONE IS FOUND
+      DO I=1,NMAGS
+
+        IF (MPREF(I).EQ.1) THEN
+C--CHECK FMAG
+C          IF (FMAG.GT.0. .AND. MFMAG.GE.100*MNPREF(I) .AND.
+          IF (FMAG.GT.0. .AND. NFMAG.GE.MNPREF(I) .AND.
+     2    FMAG.GE.AMPREF(I) .AND. FMAG.LE.AXPREF(I)) THEN
+            PMAG=FMAG
+C            MPMAG=MFMAG
+            NPMAG=NFMAG
+            LABPR=LABF1
+            PMMAD=FMMAD
+            RETURN
+          END IF
+
+        ELSE IF (MPREF(I).EQ.2) THEN
+C--CHECK XMAG
+C          IF (XMAG.GT.0. .AND. MXMAG.GE.100*MNPREF(I) .AND.
+          IF (XMAG.GT.0. .AND. NXMAG.GE.MNPREF(I) .AND.
+     2    XMAG.GE.AMPREF(I) .AND. XMAG.LE.AXPREF(I)) THEN
+            PMAG=XMAG
+C            MPMAG=MXMAG
+            NPMAG=NXMAG
+            LABPR=LABX1
+            PMMAD=XMMAD
+            RETURN
+          END IF
+
+        ELSE IF (MPREF(I).EQ.3) THEN
+C--CHECK EXTERNAL BMAG
+C          IF (BMAG.GT.0. .AND. MBMAG.GE.100*MNPREF(I) .AND.
+          IF (BMAG.GT.0. .AND. NBMAG.GE.MNPREF(I) .AND.
+     2    BMAG.GE.AMPREF(I) .AND. BMAG.LE.AXPREF(I)) THEN
+            PMAG=BMAG
+C            MPMAG=MBMAG
+            NPMAG=NBMAG
+            LABPR=BMTYP
+            PMMAD=0.
+            RETURN
+          END IF
+
+        ELSE IF (MPREF(I).EQ.4) THEN
+C--CHECK XMAG2
+C          IF (XMAG2.GT.0. .AND. MXMAG2.GE.100*MNPREF(I) .AND.
+          IF (XMAG2.GT.0. .AND. NXMAG2.GE.MNPREF(I) .AND.
+     2    XMAG2.GE.AMPREF(I) .AND. XMAG2.LE.AXPREF(I)) THEN
+            PMAG=XMAG2
+C            MPMAG=MXMAG2
+            NPMAG=NXMAG2
+            LABPR=LABX2
+            PMMAD=XMMAD2
+            RETURN
+          END IF
+
+        ELSE IF (MPREF(I).EQ.5) THEN
+C--CHECK FMAG
+C          IF (FMAG2.GT.0. .AND. MFMAG2.GE.100*MNPREF(I) .AND.
+          IF (FMAG2.GT.0. .AND. NFMAG2.GE.MNPREF(I) .AND.
+     2    FMAG2.GE.AMPREF(I) .AND. FMAG2.LE.AXPREF(I)) THEN
+            PMAG=FMAG2
+C            MPMAG=MFMAG2
+            NPMAG=NFMAG2
+            LABPR=LABF2
+            PMMAD=FMMAD2
+            RETURN
+          END IF
+
+        ELSE IF (MPREF(I).EQ.6) THEN
+C--CHECK PRIMARY P AMP MAG
+          IF (PAMAG.GT.0. .AND. NINT(PMUSED).GE.MNPREF(I) .AND.
+     2    PAMAG.GE.AMPREF(I) .AND. PAMAG.LE.AXPREF(I)) THEN
+            PMAG=PAMAG
+C            MPMAG=100.*PMUSED
+            NPMAG=PMUSED
+            LABPR=LABP1
+            PMMAD=PAMAD
+            RETURN
+          END IF
+
+        ELSE IF (MPREF(I).EQ.7) THEN
+C--CHECK SECONDARY P AMP MAG
+          IF (PAMAG2.GT.0. .AND. NINT(PMUSD2).GE.MNPREF(I) .AND.
+     2    PAMAG2.GE.AMPREF(I) .AND. PAMAG2.LE.AXPREF(I)) THEN
+            PMAG=PAMAG2
+C            MPMAG=100.*PMUSD2
+            NPMAG=PMUSD2
+            LABPR=LABP2
+            PMMAD=PAMAD2
+            RETURN
+          END IF
+
+        END IF
+      END DO
+      RETURN
+      END

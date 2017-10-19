@@ -1,0 +1,73 @@
+#!/bin/bash
+#
+# plot PDF scatter 
+# $1 $2
+model=${1-loc/vinti.19950421.080259.grid0.loc}
+for t in hdr scat;do		# check if files exist
+    if [ ! -s $model.$t ];then
+	echo $0: model header file $model.$t not found
+	exit
+    fi
+done
+# extract model parameters
+head -1 $model.hdr > tmp.$$
+read xNum yNum zNum xOrig yOrig zOrig dx dy dz gridType < tmp.$$ 
+echo $0: determined xNum $xNum yNum $yNum zNum $zNum \
+    zOrig $xOrig yOrig $yOrig zOrig $zOrig dx $dx dy $dy dz $dz gridType $gridType
+
+#
+# map view 
+#
+# regions
+xreg=$xOrig/`echo $xOrig $xNum $dx | gawk '{print($1+($2-1)*$3)}'`
+yreg=$yOrig/`echo $yOrig $yNum $dy | gawk '{print($1+($2-1)*$3)}'`
+zreg=$zOrig/`echo $zOrig $zNum $dz | gawk '{print($1+($2-1)*$3)}'`
+
+
+
+#
+# adjust scale to the type of input model
+#
+case $gridType in
+    PROB_DENSITY)			# scatter
+	;;
+    *)
+	echo $0: unknown type $gridType
+	exit
+	;;
+esac
+
+# read one integer
+nSamples=`od -N2 -t d4 $model.scat | head -1 | gawk '{print($2)}'`
+
+echo $0: determined $nSamples PDF samples
+# skip first four floats, i.e. first row, and sort by PDF
+gmtconvert -bis4 $model.scat | gawk '{if(NR>1)print($0)}' | sort -n +3 > tmp.dat
+minmax tmp.dat
+
+scl=0.05
+
+# determine max
+makecpt -T55/66/.1  -Chaxby > tmp.cpt
+
+ofile=$model.ps
+
+gawk '{print($1,$2,$4)}' tmp.dat | \
+    psxy -X2 -Y2 -Ba20f5:"x [km]":/a20f5:"y [km]":WesN -P -Jx$scl -R$xreg/$yreg -Sc0.05 -Ctmp.cpt -K > $ofile
+# plot the max
+tail -1 tmp.dat | gawk '{print($1,$2)}' | psxy -Jx$scl -R$xreg/$yreg -Sa0.1 -Gred -W0.5  -O -K >> $ofile
+gawk '{print($3,$2,$4)}' tmp.dat | \
+    psxy -X5.25 -Ba10f5:"z [km]":/a20f5:"y [km]":wEsN -O -Jx$scl -R$zreg/$yreg -Sc0.05 -Ctmp.cpt -K >> $ofile
+tail -1 tmp.dat | gawk '{print($3,$2)}' | psxy -Jx$scl -R$zreg/$yreg -Sa0.1 -Gred -W0.5  -O -K >> $ofile
+gawk '{print($1,$3,$4)}' tmp.dat | \
+    psxy -X-5.25 -Y-1.25 -Ba20f5:"x [km]":/a10f5:"z [km]":WeSn -O -K -Jx$scl/-$scl -R$xreg/$zreg -Sc0.05 -Ctmp.cpt >> $ofile
+tail -1 tmp.dat | gawk '{print($1,$3)}' | psxy -Jx$scl/-$scl -R$xreg/$zreg -Sa0.1 -Gred -W0.5  -O -K >> $ofile
+psscale -D5.5/0.1/1/.2 -B5/:"PDF": -E -Ctmp.cpt -O >> $ofile
+
+
+
+
+echo $0: plotted to $ofile
+
+
+rm tmp.dat tmp.cpt

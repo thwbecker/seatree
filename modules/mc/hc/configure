@@ -1,0 +1,31 @@
+#!/bin/bash
+echo 
+echo To automatically configure hc from within SEATREE, run 
+echo the configure script from the main SEATREE directory, e.g.
+echo 
+owd=`pwd`
+cd ../../../
+pwd
+cd $owd
+echo 
+echo this script will generate a Makefile.include file with important settings for hc
+echo which are described in detail in hc\'s README file in this directory. 
+echo 
+echo In particular, you will have to set an architecture flag, and specify
+echo the paths to GMT and Netcdf packages. If you are using GMT version <4.1.2, you 
+echo will also have to set  -DUSE_GMT3
+echo 
+echo Here\'s an example content of such a Makefile.include
+echo 
+echo "ARCH=x86_64"
+echo "GMTHOME=/usr/geosys/x86_64/GMT4.2.1/"
+echo "NETCDFHOME=/usr/geosys/x86_64/netcdf-3.6.0-p1/"
+
+echo "GGRD_INC_FLAGS = -I\$(GMTHOME)/include -I\$(NETCDFHOME)/include "
+echo "GGRD_LIBS_LINKLINE = -lggrd -lgmt -lpsl -lnetcdf"
+echo
+echo For detailed instructions on how to compile hc without SEATREE, see the README
+echo file.
+echo
+date
+echo

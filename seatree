@@ -1,0 +1,3 @@
+#!/bin/sh
+
+$HOME/progs/src/seatree/python/seatree/gui/SEATREE.py

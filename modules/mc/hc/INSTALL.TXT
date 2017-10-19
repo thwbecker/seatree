@@ -1,0 +1,25 @@
+
+To automatically configure hc from within SEATREE, run
+the configure script from the main SEATREE directory, e.g.
+
+/home/walter/becker/progs/src/seatree
+
+this script will generate a Makefile.include file with important settings for hc
+which are described in detail in hc's README file in this directory.
+
+In particular, you will have to set an architecture flag, and specify
+will also have to set -DUSE_GMT3 if GMT 3 is to be used
+
+Here's an example content of such a Makefile.include for GMT4
+
+ARCH=x86_64
+GMTHOME=/usr/geosys/x86_64/GMT4.2.1/
+NETCDFHOME=/usr/geosys/x86_64/netcdf-3.6.0-p1/
+GGRD_INC_FLAGS = -I$(GMTHOME)/include -I$(NETCDFHOME)/include 
+GGRD_LIBS_LINKLINE = -lggrd -lgmt -lpsl -lnetcdf
+
+For detailed instructions on how to compile hc without SEATREE, see the README
+file.
+
+Tue Jan 15 10:31:49 PST 2008
+.

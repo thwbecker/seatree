@@ -1,0 +1,2990 @@
+ size of pixels?
+ how many layers?
+ what data?
+ minimum acceptable epicentral distance (degrees)?
+ polarization? (0 for SV, 1 for SH)
+ file with data?
+ file with sources?
+ file with stations?
+ file with starting model?
+          19         416
+ total number of blocks:         416
+        6240  voxels total
+         421 failure of find_path
+         519 failure of find_path
+         731 failure of find_path
+        1000  couples processed
+        1628 failure of find_path
+        1871 failure of find_path
+        2000  couples processed
+        2047 failure of find_path
+        2611 failure of find_path
+        3000  couples processed
+        3161 failure of find_path
+        3163 failure of find_path
+        3164 failure of find_path
+        3166 failure of find_path
+        3262 failure of find_path
+        3264 failure of find_path
+        3444 failure of find_path
+        3465 failure of find_path
+        4000  couples processed
+        5000  couples processed
+        5030 failure of find_path
+        5354 failure of find_path
+        6000  couples processed
+        6192 failure of find_path
+        7000  couples processed
+        7548 failure of find_path
+        8000  couples processed
+        8177 failure of find_path
+        9000  couples processed
+        9376 failure of find_path
+       10000  couples processed
+       10343 failure of find_path
+       10618 failure of find_path
+       11000  couples processed
+       12000  couples processed
+       12133 failure of find_path
+       13000  couples processed
+       14000  couples processed
+       15000  couples processed
+       15168 failure of find_path
+       16000  couples processed
+       16226 failure of find_path
+       16227 failure of find_path
+       17000  couples processed
+       17557 failure of find_path
+       17558 failure of find_path
+       18000  couples processed
+       18502 failure of find_path
+       19000  couples processed
+       19131 failure of find_path
+       19132 failure of find_path
+       20000  couples processed
+       20382 failure of find_path
+       21000  couples processed
+       21426 failure of find_path
+       21710 failure of find_path
+       21779 failure of find_path
+       22000  couples processed
+       23000  couples processed
+       23155 failure of find_path
+       23927 failure of find_path
+       23930 failure of find_path
+       24000  couples processed
+       25000  couples processed
+       25108 failure of find_path
+       25214 failure of find_path
+       25335 failure of find_path
+       25336 failure of find_path
+       26000  couples processed
+       27000  couples processed
+       27627 failure of find_path
+       27970 failure of find_path
+       28000  couples processed
+       29000  couples processed
+       30000  couples processed
+       30396 failure of find_path
+       30397 failure of find_path
+       31000  couples processed
+       31578 failure of find_path
+       32000  couples processed
+       32214 failure of find_path
+       32302 failure of find_path
+       32303 failure of find_path
+       33000  couples processed
+       33965 failure of find_path
+       34000  couples processed
+       34603 failure of find_path
+       35000  couples processed
+       35769 failure of find_path
+       35807 failure of find_path
+       36000  couples processed
+       36393 failure of find_path
+       36818 failure of find_path
+       37000  couples processed
+       37482 failure of find_path
+       37737 failure of find_path
+       37855 failure of find_path
+       37868 failure of find_path
+       37940 failure of find_path
+       38000  couples processed
+       38624 failure of find_path
+       39000  couples processed
+       39308 failure of find_path
+       39310 failure of find_path
+       39312 failure of find_path
+       39569 failure of find_path
+       40000  couples processed
+       40149 failure of find_path
+       40284 failure of find_path
+       40691 failure of find_path
+       40692 failure of find_path
+       41000  couples processed
+       41665 failure of find_path
+       42000  couples processed
+       42506 failure of find_path
+       42507 failure of find_path
+       42582 failure of find_path
+       42800 failure of find_path
+       42801 failure of find_path
+       42802 failure of find_path
+       42897 failure of find_path
+       42964 failure of find_path
+       43000  couples processed
+       43519 failure of find_path
+       44000  couples processed
+       44754 failure of find_path
+       45000  couples processed
+       46000  couples processed
+       46211 failure of find_path
+       47000  couples processed
+       47352 failure of find_path
+       47758 failure of find_path
+       48000  couples processed
+       48352 failure of find_path
+       49000  couples processed
+       49101 failure of find_path
+       49309 failure of find_path
+       49730 failure of find_path
+       49825 failure of find_path
+       50000  couples processed
+       50024 failure of find_path
+       50417 failure of find_path
+       50463 failure of find_path
+       50618 failure of find_path
+       50661 failure of find_path
+       50890 failure of find_path
+       50891 failure of find_path
+       51000  couples processed
+       52000  couples processed
+       52299 failure of find_path
+       52692 failure of find_path
+       52954 failure of find_path
+       53000  couples processed
+       53404 failure of find_path
+       53471 failure of find_path
+       53473 failure of find_path
+       53789 failure of find_path
+       53790 failure of find_path
+       53930 failure of find_path
+       53933 failure of find_path
+       53934 failure of find_path
+       54000  couples processed
+       54043 failure of find_path
+       54511 failure of find_path
+       54613 failure of find_path
+       55000  couples processed
+       55431 failure of find_path
+       55618 failure of find_path
+       56000  couples processed
+       56273 failure of find_path
+       56274 failure of find_path
+       56275 failure of find_path
+       57000  couples processed
+       57183 failure of find_path
+       57573 failure of find_path
+       58000  couples processed
+       58007 failure of find_path
+       58898 failure of find_path
+       59000  couples processed
+       59138 failure of find_path
+       59413 failure of find_path
+       59415 failure of find_path
+       59416 failure of find_path
+       59417 failure of find_path
+       59418 failure of find_path
+       59419 failure of find_path
+       59420 failure of find_path
+       59826 failure of find_path
+       60000  couples processed
+       60044 failure of find_path
+       61000  couples processed
+       61633 failure of find_path
+       61811 failure of find_path
+       61843 failure of find_path
+       62000  couples processed
+       62035 failure of find_path
+       62106 failure of find_path
+       62197 failure of find_path
+       62268 failure of find_path
+       62961 failure of find_path
+       62964 failure of find_path
+       62965 failure of find_path
+       62966 failure of find_path
+       63000  couples processed
+       63049 failure of find_path
+       63050 failure of find_path
+       63325 failure of find_path
+       64000  couples processed
+       64013 failure of find_path
+       64014 failure of find_path
+       64015 failure of find_path
+       64041 failure of find_path
+       64671 failure of find_path
+       64786 failure of find_path
+       65000  couples processed
+       65406 failure of find_path
+       65976 failure of find_path
+       66000  couples processed
+       66646 failure of find_path
+       67000  couples processed
+       68000  couples processed
+       68746 failure of find_path
+       69000  couples processed
+       69176 failure of find_path
+       69177 failure of find_path
+       69178 failure of find_path
+       69179 failure of find_path
+       69180 failure of find_path
+       69181 failure of find_path
+       69296 failure of find_path
+       70000  couples processed
+       70181 failure of find_path
+       70580 failure of find_path
+       70933 failure of find_path
+       71000  couples processed
+       71425 failure of find_path
+       71997 failure of find_path
+       71998 failure of find_path
+       72000  couples processed
+       72335 failure of find_path
+       72525 failure of find_path
+       72558 failure of find_path
+       73000  couples processed
+       73058 failure of find_path
+       73193 failure of find_path
+       73194 failure of find_path
+       73195 failure of find_path
+       73400 failure of find_path
+       73401 failure of find_path
+       73643 failure of find_path
+       73718 failure of find_path
+       73971 failure of find_path
+       74000  couples processed
+       74202 failure of find_path
+       75000  couples processed
+       76000  couples processed
+       76632 failure of find_path
+       77000  couples processed
+       77559 failure of find_path
+       77560 failure of find_path
+       78000  couples processed
+       78211 failure of find_path
+       78564 failure of find_path
+       79000  couples processed
+       79078 failure of find_path
+       79079 failure of find_path
+       79254 failure of find_path
+       79861 failure of find_path
+       80000  couples processed
+       80722 failure of find_path
+       81000  couples processed
+       82000  couples processed
+       82291 failure of find_path
+       82559 failure of find_path
+       82584 failure of find_path
+       82871 failure of find_path
+       82995 failure of find_path
+       83000  couples processed
+       83046 failure of find_path
+       83049 failure of find_path
+       83388 failure of find_path
+       83796 failure of find_path
+       83910 failure of find_path
+       84000  couples processed
+       84932 failure of find_path
+       85000  couples processed
+       85215 failure of find_path
+       85216 failure of find_path
+       85842 failure of find_path
+       85911 failure of find_path
+       85982 failure of find_path
+       85985 failure of find_path
+       86000  couples processed
+       86431 failure of find_path
+       86435 failure of find_path
+       86436 failure of find_path
+       86437 failure of find_path
+       86840 failure of find_path
+       86995 failure of find_path
+       87000  couples processed
+       87019 failure of find_path
+       87075 failure of find_path
+       87076 failure of find_path
+       87299 failure of find_path
+       87300 failure of find_path
+       87544 failure of find_path
+       87991 failure of find_path
+       88000  couples processed
+       88886 failure of find_path
+       89000  couples processed
+       89167 failure of find_path
+       89996 failure of find_path
+       90000  couples processed
+       90744 failure of find_path
+       90931 failure of find_path
+       91000  couples processed
+       91061 failure of find_path
+       91640 failure of find_path
+       91703 failure of find_path
+       91772 failure of find_path
+       92000  couples processed
+       92630 failure of find_path
+       92874 failure of find_path
+       93000  couples processed
+       93003 failure of find_path
+       94000  couples processed
+       94041 failure of find_path
+       94047 failure of find_path
+       94544 failure of find_path
+       94593 failure of find_path
+       94787 failure of find_path
+       94857 failure of find_path
+       94858 failure of find_path
+       95000  couples processed
+       95003 failure of find_path
+       95005 failure of find_path
+       95702 failure of find_path
+       95920 failure of find_path
+       96000  couples processed
+       96901 failure of find_path
+       97000  couples processed
+       97418 failure of find_path
+       97716 failure of find_path
+       97868 failure of find_path
+       98000  couples processed
+       98130 failure of find_path
+       98790 failure of find_path
+       98791 failure of find_path
+       98792 failure of find_path
+       98793 failure of find_path
+       98794 failure of find_path
+       98978 failure of find_path
+       99000  couples processed
+       99827 failure of find_path
+       99880 failure of find_path
+      100000  couples processed
+      100348 failure of find_path
+      101000  couples processed
+      101277 failure of find_path
+      102000  couples processed
+      102918 failure of find_path
+      102919 failure of find_path
+      103000  couples processed
+      103961 failure of find_path
+      104000  couples processed
+      104329 failure of find_path
+      104330 failure of find_path
+      104331 failure of find_path
+      104332 failure of find_path
+      104715 failure of find_path
+      105000  couples processed
+      105308 failure of find_path
+      105309 failure of find_path
+      105312 failure of find_path
+      105442 failure of find_path
+      105634 failure of find_path
+      105765 failure of find_path
+      106000  couples processed
+      106112 failure of find_path
+      106113 failure of find_path
+      106117 failure of find_path
+      106432 failure of find_path
+      106546 failure of find_path
+      106865 failure of find_path
+      106869 failure of find_path
+      107000  couples processed
+      107185 failure of find_path
+      107192 failure of find_path
+      108000  couples processed
+      108480 failure of find_path
+      109000  couples processed
+      110000  couples processed
+      110110 failure of find_path
+      110466 failure of find_path
+      111000  couples processed
+      111291 failure of find_path
+      111293 failure of find_path
+      112000  couples processed
+      112415 failure of find_path
+      112577 failure of find_path
+      112678 failure of find_path
+      113000  couples processed
+      113477 failure of find_path
+      113478 failure of find_path
+      113536 failure of find_path
+      113886 failure of find_path
+      114000  couples processed
+      114290 failure of find_path
+      115000  couples processed
+      115085 failure of find_path
+      115498 failure of find_path
+      115499 failure of find_path
+      115500 failure of find_path
+      115501 failure of find_path
+      116000  couples processed
+      116274 failure of find_path
+      116342 failure of find_path
+      117000  couples processed
+      117154 failure of find_path
+      117195 failure of find_path
+      118000  couples processed
+      118500 failure of find_path
+      118502 failure of find_path
+      118504 failure of find_path
+      118505 failure of find_path
+      118506 failure of find_path
+      118507 failure of find_path
+      119000  couples processed
+      119232 failure of find_path
+      119390 failure of find_path
+      119391 failure of find_path
+      120000  couples processed
+      120074 failure of find_path
+      120091 failure of find_path
+      120115 failure of find_path
+      120333 failure of find_path
+      120349 failure of find_path
+      120533 failure of find_path
+      121000  couples processed
+      121131 failure of find_path
+      121132 failure of find_path
+      121133 failure of find_path
+      121136 failure of find_path
+      121187 failure of find_path
+      121188 failure of find_path
+      121343 failure of find_path
+      122000  couples processed
+      122433 failure of find_path
+      122622 failure of find_path
+      123000  couples processed
+      123044 failure of find_path
+      123201 failure of find_path
+      123202 failure of find_path
+      123929 failure of find_path
+      123930 failure of find_path
+      123931 failure of find_path
+      124000  couples processed
+      124188 failure of find_path
+      124495 failure of find_path
+      124995 failure of find_path
+      125000  couples processed
+      125474 failure of find_path
+      125825 failure of find_path
+      125889 failure of find_path
+      125890 failure of find_path
+      126000  couples processed
+      126699 failure of find_path
+      127000  couples processed
+      128000  couples processed
+      128485 failure of find_path
+      128486 failure of find_path
+      128647 failure of find_path
+      128735 failure of find_path
+      128736 failure of find_path
+      128887 failure of find_path
+      129000  couples processed
+      129070 failure of find_path
+      129517 failure of find_path
+      129784 failure of find_path
+      130000  couples processed
+      130383 failure of find_path
+      131000  couples processed
+      131481 failure of find_path
+      131487 failure of find_path
+      131488 failure of find_path
+      131489 failure of find_path
+      131490 failure of find_path
+      131491 failure of find_path
+      131492 failure of find_path
+      132000  couples processed
+      132849 failure of find_path
+      133000  couples processed
+      134000  couples processed
+      134079 failure of find_path
+      134463 failure of find_path
+      134464 failure of find_path
+      135000  couples processed
+      135207 failure of find_path
+      135208 failure of find_path
+      135209 failure of find_path
+      135211 failure of find_path
+      135212 failure of find_path
+      135213 failure of find_path
+      135215 failure of find_path
+      135447 failure of find_path
+      135673 failure of find_path
+      136000  couples processed
+      136089 failure of find_path
+      136123 failure of find_path
+      136863 failure of find_path
+      136865 failure of find_path
+      136866 failure of find_path
+      136966 failure of find_path
+      137000  couples processed
+      138000  couples processed
+      138418 failure of find_path
+      138419 failure of find_path
+      138710 failure of find_path
+      139000  couples processed
+      139303 failure of find_path
+      139305 failure of find_path
+      139307 failure of find_path
+      139485 failure of find_path
+      139663 failure of find_path
+      139665 failure of find_path
+      139666 failure of find_path
+      139667 failure of find_path
+      140000  couples processed
+      140000 failure of find_path
+      140287 failure of find_path
+      140339 failure of find_path
+      140340 failure of find_path
+      140921 failure of find_path
+      140964 failure of find_path
+      141000  couples processed
+      141217 failure of find_path
+      141504 failure of find_path
+      142000  couples processed
+      142535 failure of find_path
+      142589 failure of find_path
+      142590 failure of find_path
+      142591 failure of find_path
+      142592 failure of find_path
+      142635 failure of find_path
+      142777 failure of find_path
+      142881 failure of find_path
+      143000  couples processed
+      143012 failure of find_path
+      143408 failure of find_path
+      143409 failure of find_path
+      143656 failure of find_path
+      143897 failure of find_path
+      143986 failure of find_path
+      143987 failure of find_path
+      144000  couples processed
+      144014 failure of find_path
+      144015 failure of find_path
+      144351 failure of find_path
+      144353 failure of find_path
+      144894 failure of find_path
+      144978 failure of find_path
+      144979 failure of find_path
+      145000  couples processed
+      145486 failure of find_path
+      145487 failure of find_path
+      145488 failure of find_path
+      145581 failure of find_path
+      146000  couples processed
+      146111 failure of find_path
+      146112 failure of find_path
+      146311 failure of find_path
+      146312 failure of find_path
+      146313 failure of find_path
+      146314 failure of find_path
+      146315 failure of find_path
+      146316 failure of find_path
+      146317 failure of find_path
+      146318 failure of find_path
+      146508 failure of find_path
+      146510 failure of find_path
+      147000  couples processed
+      147400 failure of find_path
+      147566 failure of find_path
+      147645 failure of find_path
+      147956 failure of find_path
+      148000  couples processed
+      148594 failure of find_path
+      149000  couples processed
+      149084 failure of find_path
+      149104 failure of find_path
+      149132 failure of find_path
+      149462 failure of find_path
+      149872 failure of find_path
+      150000  couples processed
+      150592 failure of find_path
+      150731 failure of find_path
+      151000  couples processed
+      151174 failure of find_path
+      151175 failure of find_path
+      152000  couples processed
+      152039 failure of find_path
+      152650 failure of find_path
+      153000  couples processed
+      153567 failure of find_path
+      153998 failure of find_path
+      153999 failure of find_path
+      154000  couples processed
+      154053 failure of find_path
+      154282 failure of find_path
+      154621 failure of find_path
+      154909 failure of find_path
+      154940 failure of find_path
+      154942 failure of find_path
+      155000  couples processed
+      155413 failure of find_path
+      155644 failure of find_path
+      155696 failure of find_path
+      155819 failure of find_path
+      156000  couples processed
+      156204 failure of find_path
+      156300 failure of find_path
+      156495 failure of find_path
+      156499 failure of find_path
+      156831 failure of find_path
+      157000  couples processed
+      158000  couples processed
+      158259 failure of find_path
+      158349 failure of find_path
+      159000  couples processed
+      160000  couples processed
+      160375 failure of find_path
+      160377 failure of find_path
+      160378 failure of find_path
+      160449 failure of find_path
+      160450 failure of find_path
+      160451 failure of find_path
+      160452 failure of find_path
+      160453 failure of find_path
+      161000  couples processed
+      161301 failure of find_path
+      161304 failure of find_path
+      161442 failure of find_path
+      161938 failure of find_path
+      161939 failure of find_path
+      161940 failure of find_path
+      161942 failure of find_path
+      161980 failure of find_path
+      161992 failure of find_path
+      162000  couples processed
+      162137 failure of find_path
+      162138 failure of find_path
+      162560 failure of find_path
+      162562 failure of find_path
+      162563 failure of find_path
+      162564 failure of find_path
+      162565 failure of find_path
+      163000  couples processed
+      163082 failure of find_path
+      163510 failure of find_path
+      163637 failure of find_path
+      163638 failure of find_path
+      163941 failure of find_path
+      164000  couples processed
+      164016 failure of find_path
+      165000  couples processed
+      165534 failure of find_path
+      165537 failure of find_path
+      165538 failure of find_path
+      165539 failure of find_path
+      165540 failure of find_path
+      165542 failure of find_path
+      165878 failure of find_path
+      166000  couples processed
+      166089 failure of find_path
+      166148 failure of find_path
+      166747 failure of find_path
+      166748 failure of find_path
+      166749 failure of find_path
+      166750 failure of find_path
+      166751 failure of find_path
+      167000  couples processed
+      167103 failure of find_path
+      167104 failure of find_path
+      167253 failure of find_path
+      167254 failure of find_path
+      167916 failure of find_path
+      168000  couples processed
+      169000  couples processed
+      170000  couples processed
+      170209 failure of find_path
+      170213 failure of find_path
+      170350 failure of find_path
+      170451 failure of find_path
+      170887 failure of find_path
+      171000  couples processed
+      171067 failure of find_path
+      171068 failure of find_path
+      171108 failure of find_path
+      172000  couples processed
+      172199 failure of find_path
+      172233 failure of find_path
+      172407 failure of find_path
+      172413 failure of find_path
+      173000  couples processed
+      173055 failure of find_path
+      174000  couples processed
+      174884 failure of find_path
+      174886 failure of find_path
+      174887 failure of find_path
+      175000  couples processed
+      175487 failure of find_path
+      175616 failure of find_path
+      175649 failure of find_path
+      176000  couples processed
+      176739 failure of find_path
+      176740 failure of find_path
+      176741 failure of find_path
+      177000  couples processed
+      177641 failure of find_path
+      177687 failure of find_path
+      177916 failure of find_path
+      178000  couples processed
+      178225 failure of find_path
+      178593 failure of find_path
+      178794 failure of find_path
+      178857 failure of find_path
+      178909 failure of find_path
+      178924 failure of find_path
+      179000  couples processed
+      179284 failure of find_path
+      180000  couples processed
+      180423 failure of find_path
+      180464 failure of find_path
+      180922 failure of find_path
+      180923 failure of find_path
+      181000  couples processed
+      182000  couples processed
+      182192 failure of find_path
+      182466 failure of find_path
+      182766 failure of find_path
+      183000  couples processed
+      183002 failure of find_path
+      183034 failure of find_path
+      183035 failure of find_path
+      183036 failure of find_path
+      183101 failure of find_path
+      183103 failure of find_path
+      183863 failure of find_path
+      183868 failure of find_path
+      183870 failure of find_path
+      184000  couples processed
+      184179 failure of find_path
+      184241 failure of find_path
+      184242 failure of find_path
+      184359 failure of find_path
+      184795 failure of find_path
+      184959 failure of find_path
+      184960 failure of find_path
+      184961 failure of find_path
+      185000  couples processed
+      185260 failure of find_path
+      185262 failure of find_path
+      185410 failure of find_path
+      185411 failure of find_path
+      185413 failure of find_path
+      185484 failure of find_path
+      185902 failure of find_path
+      186000  couples processed
+      186191 failure of find_path
+      186192 failure of find_path
+      186465 failure of find_path
+      186466 failure of find_path
+      186877 failure of find_path
+      186878 failure of find_path
+      187000  couples processed
+      187749 failure of find_path
+      187902 failure of find_path
+      187903 failure of find_path
+      188000  couples processed
+      188057 failure of find_path
+      188321 failure of find_path
+      188716 failure of find_path
+      189000  couples processed
+      189013 failure of find_path
+      189016 failure of find_path
+      190000  couples processed
+      190059 failure of find_path
+      190205 failure of find_path
+      190206 failure of find_path
+      190207 failure of find_path
+      190270 failure of find_path
+      190310 failure of find_path
+      191000  couples processed
+      191042 failure of find_path
+      191185 failure of find_path
+      191384 failure of find_path
+      192000  couples processed
+      193000  couples processed
+      193466 failure of find_path
+      194000  couples processed
+      194281 failure of find_path
+      194291 failure of find_path
+      194292 failure of find_path
+      195000  couples processed
+      195030 failure of find_path
+      195904 failure of find_path
+      195905 failure of find_path
+      195907 failure of find_path
+      196000  couples processed
+      196405 failure of find_path
+      196406 failure of find_path
+      196604 failure of find_path
+      196609 failure of find_path
+      196736 failure of find_path
+      197000  couples processed
+      197721 failure of find_path
+      198000  couples processed
+      198194 failure of find_path
+      198227 failure of find_path
+      198466 failure of find_path
+      199000  couples processed
+      199797 failure of find_path
+      200000  couples processed
+      200687 failure of find_path
+      200734 failure of find_path
+      200934 failure of find_path
+      200979 failure of find_path
+      201000  couples processed
+      202000  couples processed
+      202062 failure of find_path
+      202063 failure of find_path
+      202299 failure of find_path
+      202300 failure of find_path
+      202399 failure of find_path
+      202697 failure of find_path
+      202702 failure of find_path
+      203000  couples processed
+      203013 failure of find_path
+      203123 failure of find_path
+      204000  couples processed
+      204321 failure of find_path
+      204415 failure of find_path
+      204417 failure of find_path
+      204607 failure of find_path
+      204865 failure of find_path
+      205000  couples processed
+      205027 failure of find_path
+      205028 failure of find_path
+      205107 failure of find_path
+      205120 failure of find_path
+      205437 failure of find_path
+      205559 failure of find_path
+      206000  couples processed
+      206461 failure of find_path
+      206462 failure of find_path
+      206463 failure of find_path
+      206734 failure of find_path
+      207000  couples processed
+      207657 failure of find_path
+      207824 failure of find_path
+      207825 failure of find_path
+      208000  couples processed
+      208058 failure of find_path
+      208763 failure of find_path
+      209000  couples processed
+      209425 failure of find_path
+      209758 failure of find_path
+      210000  couples processed
+      210428 failure of find_path
+      210429 failure of find_path
+      210477 failure of find_path
+      210738 failure of find_path
+      210866 failure of find_path
+      211000  couples processed
+      212000  couples processed
+      212993 failure of find_path
+      213000  couples processed
+      213153 failure of find_path
+      213155 failure of find_path
+      213516 failure of find_path
+      213517 failure of find_path
+      213518 failure of find_path
+      213519 failure of find_path
+      213520 failure of find_path
+      213875 failure of find_path
+      213932 failure of find_path
+      213996 failure of find_path
+      214000  couples processed
+      214049 failure of find_path
+      214337 failure of find_path
+      214409 failure of find_path
+      214544 failure of find_path
+      214545 failure of find_path
+      214639 failure of find_path
+      214748 failure of find_path
+      214895 failure of find_path
+      215000  couples processed
+      215042 failure of find_path
+      215174 failure of find_path
+      215492 failure of find_path
+      215599 failure of find_path
+      215770 failure of find_path
+      216000  couples processed
+      216263 failure of find_path
+      216535 failure of find_path
+      216614 failure of find_path
+      217000  couples processed
+      217143 failure of find_path
+      217642 failure of find_path
+      217879 failure of find_path
+      217881 failure of find_path
+      217883 failure of find_path
+      217884 failure of find_path
+      217885 failure of find_path
+      217886 failure of find_path
+      217887 failure of find_path
+      217888 failure of find_path
+      217889 failure of find_path
+      218000  couples processed
+      218209 failure of find_path
+      218211 failure of find_path
+      218512 failure of find_path
+      218797 failure of find_path
+      218798 failure of find_path
+      219000  couples processed
+      219034 failure of find_path
+      219214 failure of find_path
+      219398 failure of find_path
+      219784 failure of find_path
+      219785 failure of find_path
+      220000  couples processed
+      220099 failure of find_path
+      220621 failure of find_path
+      220872 failure of find_path
+      220874 failure of find_path
+      221000  couples processed
+      222000  couples processed
+      222144 failure of find_path
+      222211 failure of find_path
+      222212 failure of find_path
+      222213 failure of find_path
+      222214 failure of find_path
+      222215 failure of find_path
+      222546 failure of find_path
+      222548 failure of find_path
+      222549 failure of find_path
+      222637 failure of find_path
+      223000  couples processed
+      223575 failure of find_path
+      223894 failure of find_path
+      223896 failure of find_path
+      224000  couples processed
+      224156 failure of find_path
+      224273 failure of find_path
+      224274 failure of find_path
+      224327 failure of find_path
+      225000  couples processed
+      225582 failure of find_path
+      225583 failure of find_path
+      226000  couples processed
+      226440 failure of find_path
+      226441 failure of find_path
+      226462 failure of find_path
+      226582 failure of find_path
+      226583 failure of find_path
+      226584 failure of find_path
+      226585 failure of find_path
+      226995 failure of find_path
+      227000  couples processed
+      227241 failure of find_path
+      227860 failure of find_path
+      228000  couples processed
+      229000  couples processed
+      229917 failure of find_path
+      230000  couples processed
+      230352 failure of find_path
+      230375 failure of find_path
+      230438 failure of find_path
+      231000  couples processed
+      232000  couples processed
+      232114 failure of find_path
+      232209 failure of find_path
+      232210 failure of find_path
+      232459 failure of find_path
+      232663 failure of find_path
+      232664 failure of find_path
+      232665 failure of find_path
+      232666 failure of find_path
+      232689 failure of find_path
+      232953 failure of find_path
+      232996 failure of find_path
+      233000  couples processed
+      233045 failure of find_path
+      233267 failure of find_path
+      233268 failure of find_path
+      233276 failure of find_path
+      233358 failure of find_path
+      233361 failure of find_path
+      233362 failure of find_path
+      233484 failure of find_path
+      233780 failure of find_path
+      234000  couples processed
+      234485 failure of find_path
+      234534 failure of find_path
+      234535 failure of find_path
+      235000  couples processed
+      235190 failure of find_path
+      235289 failure of find_path
+      235432 failure of find_path
+      235434 failure of find_path
+      235935 failure of find_path
+      235936 failure of find_path
+      236000  couples processed
+      236676 failure of find_path
+      236699 failure of find_path
+      236700 failure of find_path
+      237000  couples processed
+      237094 failure of find_path
+      237516 failure of find_path
+      237546 failure of find_path
+      237807 failure of find_path
+      238000  couples processed
+      238245 failure of find_path
+      238248 failure of find_path
+      238249 failure of find_path
+      238250 failure of find_path
+      239000  couples processed
+      239108 failure of find_path
+      239127 failure of find_path
+      239128 failure of find_path
+      239514 failure of find_path
+      239515 failure of find_path
+      239516 failure of find_path
+      239793 failure of find_path
+      239959 failure of find_path
+      240000  couples processed
+      240232 failure of find_path
+      240233 failure of find_path
+      240266 failure of find_path
+      240267 failure of find_path
+      240268 failure of find_path
+      240830 failure of find_path
+      241000  couples processed
+      241521 failure of find_path
+      241523 failure of find_path
+      242000  couples processed
+      242163 failure of find_path
+      242164 failure of find_path
+      242582 failure of find_path
+      243000  couples processed
+      244000  couples processed
+      244182 failure of find_path
+      244183 failure of find_path
+      245000  couples processed
+      245206 failure of find_path
+      245221 failure of find_path
+      245349 failure of find_path
+      246000  couples processed
+      246375 failure of find_path
+      246531 failure of find_path
+      246792 failure of find_path
+      247000  couples processed
+      247868 failure of find_path
+      248000  couples processed
+      248325 failure of find_path
+      248590 failure of find_path
+      248739 failure of find_path
+      248838 failure of find_path
+      249000  couples processed
+      249360 failure of find_path
+      249518 failure of find_path
+      249526 failure of find_path
+      249527 failure of find_path
+      249781 failure of find_path
+      249862 failure of find_path
+      250000  couples processed
+      250163 failure of find_path
+      250206 failure of find_path
+      250207 failure of find_path
+      250315 failure of find_path
+      250623 failure of find_path
+      250841 failure of find_path
+      251000  couples processed
+      251133 failure of find_path
+      251272 failure of find_path
+      251895 failure of find_path
+      252000  couples processed
+      252371 failure of find_path
+      252866 failure of find_path
+      253000  couples processed
+      253098 failure of find_path
+      253213 failure of find_path
+      253216 failure of find_path
+      253217 failure of find_path
+      253218 failure of find_path
+      253220 failure of find_path
+      253221 failure of find_path
+      253222 failure of find_path
+      253358 failure of find_path
+      253359 failure of find_path
+      253410 failure of find_path
+      253411 failure of find_path
+      253459 failure of find_path
+      253771 failure of find_path
+      253964 failure of find_path
+      253965 failure of find_path
+      253966 failure of find_path
+      253967 failure of find_path
+      254000  couples processed
+      254289 failure of find_path
+      254835 failure of find_path
+      254891 failure of find_path
+      254892 failure of find_path
+      255000  couples processed
+      255155 failure of find_path
+      255412 failure of find_path
+      255413 failure of find_path
+      255414 failure of find_path
+      255469 failure of find_path
+      255470 failure of find_path
+      255710 failure of find_path
+      256000  couples processed
+      256188 failure of find_path
+      256542 failure of find_path
+      257000  couples processed
+      257472 failure of find_path
+      257484 failure of find_path
+      257584 failure of find_path
+      257654 failure of find_path
+      257705 failure of find_path
+      257830 failure of find_path
+      257885 failure of find_path
+      257913 failure of find_path
+      258000  couples processed
+      258115 failure of find_path
+      258121 failure of find_path
+      258134 failure of find_path
+      258383 failure of find_path
+      258388 failure of find_path
+      259000  couples processed
+      259298 failure of find_path
+      259527 failure of find_path
+      259528 failure of find_path
+      259740 failure of find_path
+      259868 failure of find_path
+      260000  couples processed
+      260628 failure of find_path
+      260828 failure of find_path
+      260956 failure of find_path
+      260957 failure of find_path
+      260958 failure of find_path
+      260959 failure of find_path
+      261000  couples processed
+      261213 failure of find_path
+      261844 failure of find_path
+      262000  couples processed
+      263000  couples processed
+      263163 failure of find_path
+      263524 failure of find_path
+      263551 failure of find_path
+      264000  couples processed
+      264196 failure of find_path
+      264197 failure of find_path
+      264284 failure of find_path
+      264497 failure of find_path
+      264503 failure of find_path
+      264504 failure of find_path
+      264586 failure of find_path
+      264666 failure of find_path
+      264819 failure of find_path
+      264822 failure of find_path
+      265000  couples processed
+      265201 failure of find_path
+      265329 failure of find_path
+      265783 failure of find_path
+      265997 failure of find_path
+      266000  couples processed
+      266295 failure of find_path
+      266692 failure of find_path
+      266749 failure of find_path
+      266778 failure of find_path
+      267000  couples processed
+      267265 failure of find_path
+      267575 failure of find_path
+      267749 failure of find_path
+      268000  couples processed
+      268293 failure of find_path
+      269000  couples processed
+      269329 failure of find_path
+      270000  couples processed
+      270246 failure of find_path
+      271000  couples processed
+      271135 failure of find_path
+      271245 failure of find_path
+      271698 failure of find_path
+      272000  couples processed
+      273000  couples processed
+      273039 failure of find_path
+      273530 failure of find_path
+      273533 failure of find_path
+      273702 failure of find_path
+      273704 failure of find_path
+      274000  couples processed
+      274493 failure of find_path
+      274494 failure of find_path
+      274585 failure of find_path
+      274904 failure of find_path
+      275000  couples processed
+      275164 failure of find_path
+      275272 failure of find_path
+      275569 failure of find_path
+      276000  couples processed
+      276253 failure of find_path
+      276345 failure of find_path
+      276685 failure of find_path
+      276866 failure of find_path
+      277000  couples processed
+      277155 failure of find_path
+      277450 failure of find_path
+      278000  couples processed
+      278038 failure of find_path
+      278040 failure of find_path
+      278041 failure of find_path
+      278042 failure of find_path
+      278043 failure of find_path
+      278535 failure of find_path
+      278643 failure of find_path
+      278929 failure of find_path
+      278933 failure of find_path
+      278935 failure of find_path
+      279000  couples processed
+      279787 failure of find_path
+      279865 failure of find_path
+      279866 failure of find_path
+      280000  couples processed
+      280071 failure of find_path
+      280567 failure of find_path
+      280568 failure of find_path
+      280979 failure of find_path
+      281000  couples processed
+      282000  couples processed
+      282026 failure of find_path
+      282027 failure of find_path
+      282341 failure of find_path
+      283000  couples processed
+      283223 failure of find_path
+      283225 failure of find_path
+      283226 failure of find_path
+      283317 failure of find_path
+      283318 failure of find_path
+      283650 failure of find_path
+      284000  couples processed
+      284371 failure of find_path
+      284372 failure of find_path
+      284585 failure of find_path
+      284608 failure of find_path
+      285000  couples processed
+      285001 failure of find_path
+      285002 failure of find_path
+      285237 failure of find_path
+      285799 failure of find_path
+      285868 failure of find_path
+      286000  couples processed
+      286185 failure of find_path
+      286337 failure of find_path
+      286339 failure of find_path
+      286340 failure of find_path
+      286341 failure of find_path
+      286342 failure of find_path
+      286837 failure of find_path
+      287000  couples processed
+      287061 failure of find_path
+      287205 failure of find_path
+      287551 failure of find_path
+      287862 failure of find_path
+      287957 failure of find_path
+      287958 failure of find_path
+      288000  couples processed
+      288065 failure of find_path
+      288172 failure of find_path
+      288202 failure of find_path
+      288484 failure of find_path
+      288485 failure of find_path
+      288779 failure of find_path
+      289000  couples processed
+      289466 failure of find_path
+      289467 failure of find_path
+      289516 failure of find_path
+      289548 failure of find_path
+      289572 failure of find_path
+      290000  couples processed
+      290343 failure of find_path
+      290418 failure of find_path
+      290817 failure of find_path
+      291000  couples processed
+      291373 failure of find_path
+      291469 failure of find_path
+      291729 failure of find_path
+      292000  couples processed
+      292011 failure of find_path
+      292012 failure of find_path
+      293000  couples processed
+      293357 failure of find_path
+      294000  couples processed
+      294105 failure of find_path
+      294106 failure of find_path
+      294108 failure of find_path
+      294414 failure of find_path
+      294795 failure of find_path
+      295000  couples processed
+      295402 failure of find_path
+      295403 failure of find_path
+      296000  couples processed
+      296281 failure of find_path
+      296282 failure of find_path
+      296535 failure of find_path
+      296554 failure of find_path
+      296665 failure of find_path
+      296940 failure of find_path
+      297000  couples processed
+      297389 failure of find_path
+      297391 failure of find_path
+      297585 failure of find_path
+      297587 failure of find_path
+      298000  couples processed
+      298026 failure of find_path
+      298399 failure of find_path
+      298826 failure of find_path
+      298992 failure of find_path
+      299000  couples processed
+      299250 failure of find_path
+      299825 failure of find_path
+      299878 failure of find_path
+      300000  couples processed
+      300140 failure of find_path
+      300156 failure of find_path
+      300928 failure of find_path
+      300929 failure of find_path
+      300998 failure of find_path
+      301000  couples processed
+      301081 failure of find_path
+      301271 failure of find_path
+      301273 failure of find_path
+      301274 failure of find_path
+      301810 failure of find_path
+      302000  couples processed
+      302231 failure of find_path
+      302535 failure of find_path
+      302748 failure of find_path
+      302750 failure of find_path
+      302897 failure of find_path
+      302974 failure of find_path
+      303000  couples processed
+      303498 failure of find_path
+      303850 failure of find_path
+      303935 failure of find_path
+      304000  couples processed
+      304019 failure of find_path
+      304021 failure of find_path
+      304085 failure of find_path
+      304097 failure of find_path
+      304647 failure of find_path
+      304648 failure of find_path
+      304676 failure of find_path
+      304842 failure of find_path
+      304886 failure of find_path
+      304905 failure of find_path
+      304907 failure of find_path
+      304908 failure of find_path
+      304995 failure of find_path
+      304997 failure of find_path
+      305000  couples processed
+      305477 failure of find_path
+      305753 failure of find_path
+      306000  couples processed
+      306226 failure of find_path
+      306755 failure of find_path
+      307000  couples processed
+      307023 failure of find_path
+      307769 failure of find_path
+      307770 failure of find_path
+      308000  couples processed
+      308155 failure of find_path
+      308504 failure of find_path
+      308512 failure of find_path
+      308866 failure of find_path
+      308868 failure of find_path
+      308931 failure of find_path
+      309000  couples processed
+      309755 failure of find_path
+      309980 failure of find_path
+      310000  couples processed
+      310303 failure of find_path
+      310304 failure of find_path
+      310305 failure of find_path
+      311000  couples processed
+      311280 failure of find_path
+      311393 failure of find_path
+      311739 failure of find_path
+      311741 failure of find_path
+      311742 failure of find_path
+      312000  couples processed
+      312019 failure of find_path
+      312178 failure of find_path
+      312552 failure of find_path
+      313000  couples processed
+      313063 failure of find_path
+      313074 failure of find_path
+      313697 failure of find_path
+      313698 failure of find_path
+      314000  couples processed
+      315000  couples processed
+      315233 failure of find_path
+      315926 failure of find_path
+      316000  couples processed
+      316400 failure of find_path
+      316748 failure of find_path
+      316750 failure of find_path
+      316752 failure of find_path
+      317000  couples processed
+      317544 failure of find_path
+      318000  couples processed
+      318209 failure of find_path
+      318210 failure of find_path
+      318468 failure of find_path
+      318852 failure of find_path
+      318853 failure of find_path
+      319000  couples processed
+      319386 failure of find_path
+      319700 failure of find_path
+      319823 failure of find_path
+      320000  couples processed
+      320005 failure of find_path
+      320022 failure of find_path
+      320221 failure of find_path
+      320350 failure of find_path
+      320668 failure of find_path
+      320669 failure of find_path
+      320670 failure of find_path
+      321000  couples processed
+      321090 failure of find_path
+      321291 failure of find_path
+      321737 failure of find_path
+      322000  couples processed
+      322342 failure of find_path
+      323000  couples processed
+      323151 failure of find_path
+      323360 failure of find_path
+      323674 failure of find_path
+      324000  couples processed
+      324678 failure of find_path
+      324680 failure of find_path
+      324835 failure of find_path
+      325000  couples processed
+      325229 failure of find_path
+      325912 failure of find_path
+      326000  couples processed
+      326230 failure of find_path
+      326232 failure of find_path
+      326679 failure of find_path
+      326902 failure of find_path
+      327000  couples processed
+      327010 failure of find_path
+      327450 failure of find_path
+      327555 failure of find_path
+      327894 failure of find_path
+      328000  couples processed
+      329000  couples processed
+      329206 failure of find_path
+      329927 failure of find_path
+      329928 failure of find_path
+      330000  couples processed
+      330054 failure of find_path
+      330458 failure of find_path
+      330884 failure of find_path
+      331000  couples processed
+      331042 failure of find_path
+      331263 failure of find_path
+      331666 failure of find_path
+      331667 failure of find_path
+      331761 failure of find_path
+      331990 failure of find_path
+      332000  couples processed
+      332162 failure of find_path
+      332282 failure of find_path
+      332646 failure of find_path
+      333000  couples processed
+      333802 failure of find_path
+      333824 failure of find_path
+      333903 failure of find_path
+      334000  couples processed
+      335000  couples processed
+      335700 failure of find_path
+      335765 failure of find_path
+      335909 failure of find_path
+      336000  couples processed
+      336331 failure of find_path
+      336477 failure of find_path
+      336478 failure of find_path
+      336672 failure of find_path
+      336673 failure of find_path
+      336675 failure of find_path
+      336676 failure of find_path
+      337000  couples processed
+      337347 failure of find_path
+      337348 failure of find_path
+      337349 failure of find_path
+      337533 failure of find_path
+      338000  couples processed
+      338443 failure of find_path
+      339000  couples processed
+      339432 failure of find_path
+      339635 failure of find_path
+      340000  couples processed
+      340132 failure of find_path
+      340172 failure of find_path
+      340705 failure of find_path
+      341000  couples processed
+      341547 failure of find_path
+      341962 failure of find_path
+      342000  couples processed
+      342513 failure of find_path
+      343000  couples processed
+      343075 failure of find_path
+      343076 failure of find_path
+      343377 failure of find_path
+      343380 failure of find_path
+      343381 failure of find_path
+      344000  couples processed
+      344023 failure of find_path
+      344144 failure of find_path
+      344651 failure of find_path
+      344818 failure of find_path
+      345000  couples processed
+      345728 failure of find_path
+      345729 failure of find_path
+      345820 failure of find_path
+      345913 failure of find_path
+      346000  couples processed
+      346040 failure of find_path
+      346860 failure of find_path
+      346861 failure of find_path
+      346862 failure of find_path
+      346863 failure of find_path
+      347000  couples processed
+      347147 failure of find_path
+      348000  couples processed
+      349000  couples processed
+      349733 failure of find_path
+      350000  couples processed
+      350198 failure of find_path
+      350437 failure of find_path
+      350439 failure of find_path
+      350440 failure of find_path
+      350443 failure of find_path
+      350548 failure of find_path
+      350597 failure of find_path
+      351000  couples processed
+      351533 failure of find_path
+      352000  couples processed
+      352514 failure of find_path
+      352515 failure of find_path
+      352516 failure of find_path
+      352558 failure of find_path
+      352559 failure of find_path
+      352856 failure of find_path
+      353000  couples processed
+      353000 failure of find_path
+      353611 failure of find_path
+      354000  couples processed
+      354076 failure of find_path
+      354644 failure of find_path
+      354896 failure of find_path
+      354928 failure of find_path
+      355000  couples processed
+      355634 failure of find_path
+      355855 failure of find_path
+      356000  couples processed
+      357000  couples processed
+      357155 failure of find_path
+      357814 failure of find_path
+      358000  couples processed
+      358599 failure of find_path
+      358638 failure of find_path
+      358916 failure of find_path
+      358917 failure of find_path
+      358918 failure of find_path
+      358919 failure of find_path
+      358920 failure of find_path
+      358994 failure of find_path
+      358995 failure of find_path
+      358996 failure of find_path
+      359000  couples processed
+      359213 failure of find_path
+      360000  couples processed
+      360073 failure of find_path
+      360179 failure of find_path
+      360180 failure of find_path
+      360561 failure of find_path
+      360564 failure of find_path
+      360786 failure of find_path
+      361000  couples processed
+      361025 failure of find_path
+      361312 failure of find_path
+      361766 failure of find_path
+      361767 failure of find_path
+      362000  couples processed
+      362082 failure of find_path
+      362705 failure of find_path
+      363000  couples processed
+      363131 failure of find_path
+      363341 failure of find_path
+      363343 failure of find_path
+      363344 failure of find_path
+      364000  couples processed
+      364584 failure of find_path
+      364585 failure of find_path
+      364888 failure of find_path
+      364889 failure of find_path
+      365000  couples processed
+      365277 failure of find_path
+      365807 failure of find_path
+      366000  couples processed
+      366294 failure of find_path
+      366295 failure of find_path
+      366356 failure of find_path
+      367000  couples processed
+      367633 failure of find_path
+      367823 failure of find_path
+      368000  couples processed
+      368743 failure of find_path
+      369000  couples processed
+      369616 failure of find_path
+      369617 failure of find_path
+      369619 failure of find_path
+      369812 failure of find_path
+      369813 failure of find_path
+      369815 failure of find_path
+      369910 failure of find_path
+      369911 failure of find_path
+      369912 failure of find_path
+      369913 failure of find_path
+      370000  couples processed
+      370113 failure of find_path
+      370194 failure of find_path
+      370665 failure of find_path
+      370668 failure of find_path
+      370669 failure of find_path
+      370670 failure of find_path
+      370671 failure of find_path
+      370673 failure of find_path
+      370674 failure of find_path
+      370675 failure of find_path
+      370676 failure of find_path
+      371000  couples processed
+      371022 failure of find_path
+      371023 failure of find_path
+      371270 failure of find_path
+      372000  couples processed
+      372610 failure of find_path
+      373000  couples processed
+      373053 failure of find_path
+      373625 failure of find_path
+      373626 failure of find_path
+      373983 failure of find_path
+      374000  couples processed
+      374594 failure of find_path
+      374672 failure of find_path
+      374714 failure of find_path
+      375000  couples processed
+      375651 failure of find_path
+      376000  couples processed
+      376124 failure of find_path
+      376126 failure of find_path
+      376632 failure of find_path
+      376670 failure of find_path
+      377000  couples processed
+      377035 failure of find_path
+      377083 failure of find_path
+      377345 failure of find_path
+      378000  couples processed
+      378122 failure of find_path
+      378179 failure of find_path
+      378223 failure of find_path
+      378224 failure of find_path
+      378225 failure of find_path
+      378226 failure of find_path
+      378358 failure of find_path
+      379000  couples processed
+      379173 failure of find_path
+      379175 failure of find_path
+      379176 failure of find_path
+      379444 failure of find_path
+      380000  couples processed
+      380135 failure of find_path
+      381000  couples processed
+      381177 failure of find_path
+      382000  couples processed
+      382163 failure of find_path
+      382210 failure of find_path
+      382405 failure of find_path
+      382496 failure of find_path
+      382801 failure of find_path
+      383000  couples processed
+      383313 failure of find_path
+      383361 failure of find_path
+      383380 failure of find_path
+      383767 failure of find_path
+      384000  couples processed
+      384076 failure of find_path
+      384120 failure of find_path
+      384502 failure of find_path
+      384868 failure of find_path
+      385000  couples processed
+      385682 failure of find_path
+      385788 failure of find_path
+      386000  couples processed
+      386312 failure of find_path
+      386313 failure of find_path
+      386314 failure of find_path
+      386315 failure of find_path
+      386508 failure of find_path
+      386874 failure of find_path
+      387000  couples processed
+      387612 failure of find_path
+      387953 failure of find_path
+      387956 failure of find_path
+      388000  couples processed
+      388304 failure of find_path
+      388323 failure of find_path
+      388960 failure of find_path
+      388961 failure of find_path
+      389000  couples processed
+      389177 failure of find_path
+      389308 failure of find_path
+      389706 failure of find_path
+      390000  couples processed
+      391000  couples processed
+      391371 failure of find_path
+      391396 failure of find_path
+      392000  couples processed
+      392036 failure of find_path
+      392471 failure of find_path
+      392501 failure of find_path
+      392812 failure of find_path
+      393000  couples processed
+      393001 failure of find_path
+      393062 failure of find_path
+      393063 failure of find_path
+      393140 failure of find_path
+      393523 failure of find_path
+      393524 failure of find_path
+      393981 failure of find_path
+      394000  couples processed
+      394308 failure of find_path
+      394309 failure of find_path
+      394528 failure of find_path
+      394902 failure of find_path
+      394918 failure of find_path
+      394920 failure of find_path
+      395000  couples processed
+      395047 failure of find_path
+      395438 failure of find_path
+      395518 failure of find_path
+      395586 failure of find_path
+      395672 failure of find_path
+      395673 failure of find_path
+      395674 failure of find_path
+      395685 failure of find_path
+      396000  couples processed
+      396739 failure of find_path
+      396740 failure of find_path
+      397000  couples processed
+      397005 failure of find_path
+      397145 failure of find_path
+      397292 failure of find_path
+      397301 failure of find_path
+      398000  couples processed
+      398909 failure of find_path
+      398910 failure of find_path
+      399000  couples processed
+      399259 failure of find_path
+      399400 failure of find_path
+      399561 failure of find_path
+      399562 failure of find_path
+      399563 failure of find_path
+      399815 failure of find_path
+      399890 failure of find_path
+      399995 failure of find_path
+      399997 failure of find_path
+      399998 failure of find_path
+      400000  couples processed
+      400256 failure of find_path
+      400431 failure of find_path
+      401000  couples processed
+      401682 failure of find_path
+      402000  couples processed
+      402197 failure of find_path
+      402368 failure of find_path
+      403000  couples processed
+      403145 failure of find_path
+      403160 failure of find_path
+      403544 failure of find_path
+      403545 failure of find_path
+      404000  couples processed
+      404182 failure of find_path
+      404388 failure of find_path
+      404834 failure of find_path
+      405000  couples processed
+      405221 failure of find_path
+      405222 failure of find_path
+      405364 failure of find_path
+      405539 failure of find_path
+      406000  couples processed
+      406651 failure of find_path
+      406711 failure of find_path
+      406861 failure of find_path
+      406862 failure of find_path
+      407000  couples processed
+      408000  couples processed
+      408494 failure of find_path
+      408596 failure of find_path
+      408597 failure of find_path
+      408598 failure of find_path
+      409000  couples processed
+      409039 failure of find_path
+      409086 failure of find_path
+      409267 failure of find_path
+      410000  couples processed
+      410504 failure of find_path
+      410946 failure of find_path
+      411000  couples processed
+      411866 failure of find_path
+      412000  couples processed
+      412287 failure of find_path
+      412288 failure of find_path
+      412547 failure of find_path
+      412821 failure of find_path
+      412918 failure of find_path
+      413000  couples processed
+      413168 failure of find_path
+      413241 failure of find_path
+      413838 failure of find_path
+      413839 failure of find_path
+      413867 failure of find_path
+      414000  couples processed
+      414110 failure of find_path
+      415000  couples processed
+      415653 failure of find_path
+      415747 failure of find_path
+      415967 failure of find_path
+      415970 failure of find_path
+      415971 failure of find_path
+      416000  couples processed
+      416141 failure of find_path
+      416399 failure of find_path
+      416400 failure of find_path
+      416701 failure of find_path
+      417000  couples processed
+      417519 failure of find_path
+      417520 failure of find_path
+      417521 failure of find_path
+      418000  couples processed
+      418156 failure of find_path
+      418157 failure of find_path
+      418158 failure of find_path
+      418763 failure of find_path
+      419000  couples processed
+      419214 failure of find_path
+      419806 failure of find_path
+      420000  couples processed
+      420077 failure of find_path
+      420378 failure of find_path
+      420749 failure of find_path
+      420850 failure of find_path
+      420897 failure of find_path
+      421000  couples processed
+      421258 failure of find_path
+      421259 failure of find_path
+      421260 failure of find_path
+      421370 failure of find_path
+      421638 failure of find_path
+      421914 failure of find_path
+      422000  couples processed
+      422708 failure of find_path
+      423000  couples processed
+      423005 failure of find_path
+      423083 failure of find_path
+      423122 failure of find_path
+      423239 failure of find_path
+      423284 failure of find_path
+      424000  couples processed
+      424452 failure of find_path
+      424474 failure of find_path
+      424475 failure of find_path
+      424662 failure of find_path
+      425000  couples processed
+      425177 failure of find_path
+      425295 failure of find_path
+      425558 failure of find_path
+      425718 failure of find_path
+      425761 failure of find_path
+      425823 failure of find_path
+      425868 failure of find_path
+      426000  couples processed
+      426286 failure of find_path
+      426362 failure of find_path
+      426364 failure of find_path
+      426405 failure of find_path
+      426434 failure of find_path
+      426701 failure of find_path
+      427000  couples processed
+      427093 failure of find_path
+      428000  couples processed
+      428147 failure of find_path
+      428724 failure of find_path
+      428874 failure of find_path
+      429000  couples processed
+      429030 failure of find_path
+      429219 failure of find_path
+      429220 failure of find_path
+      429308 failure of find_path
+      429743 failure of find_path
+      429745 failure of find_path
+      429747 failure of find_path
+      430000  couples processed
+      430154 failure of find_path
+      430156 failure of find_path
+      430157 failure of find_path
+      430417 failure of find_path
+      431000  couples processed
+      431756 failure of find_path
+      431789 failure of find_path
+      432000  couples processed
+      432060 failure of find_path
+      432261 failure of find_path
+      432570 failure of find_path
+      432571 failure of find_path
+      432589 failure of find_path
+      432725 failure of find_path
+      432726 failure of find_path
+      432727 failure of find_path
+      432728 failure of find_path
+      433000  couples processed
+      433399 failure of find_path
+      433450 failure of find_path
+      433452 failure of find_path
+      433453 failure of find_path
+      434000  couples processed
+      434326 failure of find_path
+      434427 failure of find_path
+      434908 failure of find_path
+      435000  couples processed
+      435270 failure of find_path
+      435271 failure of find_path
+      435284 failure of find_path
+      435682 failure of find_path
+      436000  couples processed
+      436241 failure of find_path
+      436335 failure of find_path
+      436336 failure of find_path
+      436817 failure of find_path
+      437000  couples processed
+      437153 failure of find_path
+      437471 failure of find_path
+      437549 failure of find_path
+      438000  couples processed
+      438020 failure of find_path
+      438299 failure of find_path
+      438499 failure of find_path
+      439000  couples processed
+      439741 failure of find_path
+      439784 failure of find_path
+      440000  couples processed
+      440249 failure of find_path
+      440401 failure of find_path
+      440402 failure of find_path
+      440403 failure of find_path
+      440839 failure of find_path
+      441000  couples processed
+      441172 failure of find_path
+      441173 failure of find_path
+      441446 failure of find_path
+      441487 failure of find_path
+      441851 failure of find_path
+      442000  couples processed
+      442213 failure of find_path
+      442980 failure of find_path
+      442982 failure of find_path
+      443000  couples processed
+      443150 failure of find_path
+      443153 failure of find_path
+      443181 failure of find_path
+      443492 failure of find_path
+      443666 failure of find_path
+      443733 failure of find_path
+      443734 failure of find_path
+      444000  couples processed
+      444477 failure of find_path
+      444479 failure of find_path
+      444507 failure of find_path
+      444813 failure of find_path
+      444815 failure of find_path
+      445000  couples processed
+      445075 failure of find_path
+      445077 failure of find_path
+      445078 failure of find_path
+      445156 failure of find_path
+      445226 failure of find_path
+      445279 failure of find_path
+      445609 failure of find_path
+      446000  couples processed
+      446094 failure of find_path
+      446932 failure of find_path
+      446933 failure of find_path
+      447000  couples processed
+      447300 failure of find_path
+      447301 failure of find_path
+      447302 failure of find_path
+      447356 failure of find_path
+      447719 failure of find_path
+      448000  couples processed
+      448272 failure of find_path
+      448969 failure of find_path
+      449000  couples processed
+      449279 failure of find_path
+      449280 failure of find_path
+      449980 failure of find_path
+      449983 failure of find_path
+      450000  couples processed
+      450126 failure of find_path
+      450958 failure of find_path
+      451000  couples processed
+      451042 failure of find_path
+      451308 failure of find_path
+      451621 failure of find_path
+      452000  couples processed
+      452093 failure of find_path
+      452436 failure of find_path
+      452706 failure of find_path
+      453000  couples processed
+      453315 failure of find_path
+      454000  couples processed
+      454201 failure of find_path
+      454619 failure of find_path
+      454712 failure of find_path
+      454728 failure of find_path
+      454993 failure of find_path
+      455000  couples processed
+      455162 failure of find_path
+      455225 failure of find_path
+      455524 failure of find_path
+      455527 failure of find_path
+      455528 failure of find_path
+      455530 failure of find_path
+      455531 failure of find_path
+      455532 failure of find_path
+      456000  couples processed
+      456018 failure of find_path
+      456103 failure of find_path
+      456744 failure of find_path
+      457000  couples processed
+      457077 failure of find_path
+      457423 failure of find_path
+      457617 failure of find_path
+      458000  couples processed
+      458044 failure of find_path
+      458222 failure of find_path
+      458740 failure of find_path
+      458818 failure of find_path
+      459000  couples processed
+      459454 failure of find_path
+      460000  couples processed
+      460437 failure of find_path
+      460554 failure of find_path
+      460739 failure of find_path
+      460740 failure of find_path
+      460741 failure of find_path
+      460758 failure of find_path
+      460986 failure of find_path
+      461000  couples processed
+      461699 failure of find_path
+      461858 failure of find_path
+      461859 failure of find_path
+      462000  couples processed
+      462767 failure of find_path
+      462792 failure of find_path
+      462793 failure of find_path
+      463000  couples processed
+      463229 failure of find_path
+      463333 failure of find_path
+      463911 failure of find_path
+      464000  couples processed
+      464128 failure of find_path
+      464378 failure of find_path
+      464640 failure of find_path
+      464642 failure of find_path
+      465000  couples processed
+      465716 failure of find_path
+      465817 failure of find_path
+      466000  couples processed
+      466573 failure of find_path
+      466574 failure of find_path
+      466716 failure of find_path
+      466720 failure of find_path
+      466721 failure of find_path
+      466722 failure of find_path
+      466766 failure of find_path
+      467000  couples processed
+      467194 failure of find_path
+      467209 failure of find_path
+      467400 failure of find_path
+      467588 failure of find_path
+      468000  couples processed
+      468202 failure of find_path
+      468495 failure of find_path
+      468496 failure of find_path
+      468617 failure of find_path
+      468619 failure of find_path
+      468620 failure of find_path
+      468859 failure of find_path
+      468969 failure of find_path
+      469000  couples processed
+      469021 failure of find_path
+      469352 failure of find_path
+      469371 failure of find_path
+      469479 failure of find_path
+      469623 failure of find_path
+      469906 failure of find_path
+      470000  couples processed
+      470127 failure of find_path
+      470685 failure of find_path
+      470781 failure of find_path
+      470782 failure of find_path
+      470897 failure of find_path
+      470898 failure of find_path
+      471000  couples processed
+      471892 failure of find_path
+      472000  couples processed
+      472070 failure of find_path
+      472388 failure of find_path
+      472586 failure of find_path
+      472587 failure of find_path
+      472939 failure of find_path
+      472976 failure of find_path
+      472977 failure of find_path
+      472980 failure of find_path
+      473000  couples processed
+      473022 failure of find_path
+      473704 failure of find_path
+      473777 failure of find_path
+      473814 failure of find_path
+      473975 failure of find_path
+      474000  couples processed
+      474427 failure of find_path
+      474431 failure of find_path
+      474432 failure of find_path
+      474433 failure of find_path
+      474434 failure of find_path
+      475000  couples processed
+      475717 failure of find_path
+      475903 failure of find_path
+      476000  couples processed
+      476442 failure of find_path
+      476527 failure of find_path
+      476659 failure of find_path
+      476686 failure of find_path
+      476895 failure of find_path
+      477000  couples processed
+      477018 failure of find_path
+      477165 failure of find_path
+      477704 failure of find_path
+      478000  couples processed
+      478681 failure of find_path
+      479000  couples processed
+      479352 failure of find_path
+      479464 failure of find_path
+      479527 failure of find_path
+      480000  couples processed
+      480097 failure of find_path
+      480343 failure of find_path
+      480344 failure of find_path
+      480712 failure of find_path
+      480822 failure of find_path
+      481000  couples processed
+      481787 failure of find_path
+      482000  couples processed
+      482129 failure of find_path
+      482180 failure of find_path
+      482359 failure of find_path
+      482400 failure of find_path
+      482949 failure of find_path
+      482950 failure of find_path
+      482951 failure of find_path
+      482952 failure of find_path
+      482953 failure of find_path
+      483000  couples processed
+      483227 failure of find_path
+      483982 failure of find_path
+      484000  couples processed
+      484131 failure of find_path
+      484546 failure of find_path
+      484934 failure of find_path
+      485000  couples processed
+      485249 failure of find_path
+      485250 failure of find_path
+      485761 failure of find_path
+      486000  couples processed
+      486157 failure of find_path
+      486411 failure of find_path
+      486618 failure of find_path
+      486658 failure of find_path
+      487000  couples processed
+      487107 failure of find_path
+      487716 failure of find_path
+      488000  couples processed
+      488283 failure of find_path
+      488284 failure of find_path
+      488285 failure of find_path
+      488287 failure of find_path
+      488289 failure of find_path
+      488290 failure of find_path
+      488291 failure of find_path
+      488318 failure of find_path
+      489000  couples processed
+      489037 failure of find_path
+      489502 failure of find_path
+      489503 failure of find_path
+      489874 failure of find_path
+      490000  couples processed
+      490014 failure of find_path
+      490053 failure of find_path
+      490054 failure of find_path
+      490055 failure of find_path
+      490479 failure of find_path
+      490797 failure of find_path
+      491000  couples processed
+      491556 failure of find_path
+      491557 failure of find_path
+      492000  couples processed
+      492192 failure of find_path
+      492193 failure of find_path
+      492232 failure of find_path
+      492233 failure of find_path
+      492234 failure of find_path
+      493000  couples processed
+      493352 failure of find_path
+      493877 failure of find_path
+      494000  couples processed
+      494467 failure of find_path
+      494769 failure of find_path
+      494770 failure of find_path
+      495000  couples processed
+      495492 failure of find_path
+      495868 failure of find_path
+      495952 failure of find_path
+      496000  couples processed
+      496301 failure of find_path
+      496970 failure of find_path
+      497000  couples processed
+      497079 failure of find_path
+      497504 failure of find_path
+      497907 failure of find_path
+      498000  couples processed
+      498090 failure of find_path
+      498523 failure of find_path
+      498739 failure of find_path
+      498989 failure of find_path
+      498990 failure of find_path
+      499000  couples processed
+      499030 failure of find_path
+      499031 failure of find_path
+      499218 failure of find_path
+      499219 failure of find_path
+      499359 failure of find_path
+      499372 failure of find_path
+      499688 failure of find_path
+      499689 failure of find_path
+      499919 failure of find_path
+      499935 failure of find_path
+      500000  couples processed
+      500074 failure of find_path
+      500110 failure of find_path
+      500111 failure of find_path
+      500260 failure of find_path
+      500262 failure of find_path
+      500263 failure of find_path
+      500264 failure of find_path
+      500356 failure of find_path
+      500754 failure of find_path
+      500755 failure of find_path
+      501000  couples processed
+      501599 failure of find_path
+      502000  couples processed
+      502428 failure of find_path
+      502429 failure of find_path
+      502458 failure of find_path
+      502459 failure of find_path
+      503000  couples processed
+      503349 failure of find_path
+      503378 failure of find_path
+      503793 failure of find_path
+      503910 failure of find_path
+      504000  couples processed
+      504700 failure of find_path
+      505000  couples processed
+      505321 failure of find_path
+      505460 failure of find_path
+      505591 failure of find_path
+      505621 failure of find_path
+      505623 failure of find_path
+      506000  couples processed
+      506343 failure of find_path
+      506714 failure of find_path
+      506899 failure of find_path
+      507000  couples processed
+      507088 failure of find_path
+      507459 failure of find_path
+      507578 failure of find_path
+      507579 failure of find_path
+      507580 failure of find_path
+      507582 failure of find_path
+      507788 failure of find_path
+      507976 failure of find_path
+      508000  couples processed
+      508337 failure of find_path
+      508350 failure of find_path
+      509000  couples processed
+      509035 failure of find_path
+      509362 failure of find_path
+      509364 failure of find_path
+      509552 failure of find_path
+      509565 failure of find_path
+      509721 failure of find_path
+      509742 failure of find_path
+      510000  couples processed
+      510187 failure of find_path
+      510188 failure of find_path
+      510229 failure of find_path
+      510346 failure of find_path
+      510748 failure of find_path
+      511000  couples processed
+      511073 failure of find_path
+      511074 failure of find_path
+      511115 failure of find_path
+      511438 failure of find_path
+      511439 failure of find_path
+      511455 failure of find_path
+      511631 failure of find_path
+      511882 failure of find_path
+      511900 failure of find_path
+      512000  couples processed
+      512370 failure of find_path
+      512494 failure of find_path
+      513000  couples processed
+      513781 failure of find_path
+      513782 failure of find_path
+      513953 failure of find_path
+      514000  couples processed
+      514954 failure of find_path
+      514955 failure of find_path
+      515000  couples processed
+      515127 failure of find_path
+      515355 failure of find_path
+      515357 failure of find_path
+      515419 failure of find_path
+      515434 failure of find_path
+      515435 failure of find_path
+      515908 failure of find_path
+      516000  couples processed
+      516155 failure of find_path
+      516167 failure of find_path
+      516441 failure of find_path
+      516484 failure of find_path
+      517000  couples processed
+      518000  couples processed
+      518038 failure of find_path
+      518437 failure of find_path
+      518731 failure of find_path
+      519000  couples processed
+      519077 failure of find_path
+      519332 failure of find_path
+      519361 failure of find_path
+      519491 failure of find_path
+      519909 failure of find_path
+      520000  couples processed
+      520124 failure of find_path
+      520537 failure of find_path
+      520538 failure of find_path
+      520914 failure of find_path
+      521000  couples processed
+      521404 failure of find_path
+      521405 failure of find_path
+      521933 failure of find_path
+      521969 failure of find_path
+      522000  couples processed
+      522253 failure of find_path
+      522275 failure of find_path
+      522276 failure of find_path
+      522481 failure of find_path
+      522482 failure of find_path
+      522834 failure of find_path
+      522919 failure of find_path
+      523000  couples processed
+      523359 failure of find_path
+      524000  couples processed
+      524128 failure of find_path
+      524934 failure of find_path
+      525000  couples processed
+      525462 failure of find_path
+      525689 failure of find_path
+      525909 failure of find_path
+      526000  couples processed
+      526159 failure of find_path
+      526491 failure of find_path
+      527000  couples processed
+      528000  couples processed
+      528305 failure of find_path
+      528307 failure of find_path
+      528703 failure of find_path
+      528704 failure of find_path
+      529000  couples processed
+      529797 failure of find_path
+      530000  couples processed
+      530218 failure of find_path
+      530219 failure of find_path
+      531000  couples processed
+      531152 failure of find_path
+      532000  couples processed
+      532460 failure of find_path
+      532887 failure of find_path
+      533000  couples processed
+      533033 failure of find_path
+      533377 failure of find_path
+      533378 failure of find_path
+      533379 failure of find_path
+      533380 failure of find_path
+      533720 failure of find_path
+      534000  couples processed
+      534322 failure of find_path
+      534323 failure of find_path
+      535000  couples processed
+      535570 failure of find_path
+      535606 failure of find_path
+      535607 failure of find_path
+      535761 failure of find_path
+      535763 failure of find_path
+      535764 failure of find_path
+      535766 failure of find_path
+      535767 failure of find_path
+      535990 failure of find_path
+      536000  couples processed
+      536671 failure of find_path
+      536672 failure of find_path
+      536674 failure of find_path
+      536759 failure of find_path
+      536804 failure of find_path
+      536806 failure of find_path
+      536807 failure of find_path
+      537000  couples processed
+      537193 failure of find_path
+      537841 failure of find_path
+      538000  couples processed
+      538000 failure of find_path
+      538176 failure of find_path
+      538419 failure of find_path
+      538921 failure of find_path
+      539000  couples processed
+      539440 failure of find_path
+      540000  couples processed
+      540122 failure of find_path
+      540823 failure of find_path
+      541000  couples processed
+      541463 failure of find_path
+      541578 failure of find_path
+      542000  couples processed
+      542190 failure of find_path
+      542474 failure of find_path
+      542931 failure of find_path
+      543000  couples processed
+      543014 failure of find_path
+      543015 failure of find_path
+      543016 failure of find_path
+      543057 failure of find_path
+      543177 failure of find_path
+      543411 failure of find_path
+      543414 failure of find_path
+      543533 failure of find_path
+      543859 failure of find_path
+      543892 failure of find_path
+      543896 failure of find_path
+      543900 failure of find_path
+      544000  couples processed
+      544005 failure of find_path
+      544090 failure of find_path
+      544219 failure of find_path
+      544220 failure of find_path
+      544667 failure of find_path
+      545000  couples processed
+      545190 failure of find_path
+      545191 failure of find_path
+      545226 failure of find_path
+      545571 failure of find_path
+      545572 failure of find_path
+      545637 failure of find_path
+      545917 failure of find_path
+      546000  couples processed
+      546347 failure of find_path
+      546535 failure of find_path
+      546536 failure of find_path
+      546926 failure of find_path
+      546927 failure of find_path
+      547000  couples processed
+      547483 failure of find_path
+      547527 failure of find_path
+      547528 failure of find_path
+      548000  couples processed
+      548023 failure of find_path
+      548025 failure of find_path
+      548397 failure of find_path
+      548866 failure of find_path
+      548867 failure of find_path
+      549000  couples processed
+      549623 failure of find_path
+      549848 failure of find_path
+      550000  couples processed
+      550833 failure of find_path
+      550956 failure of find_path
+      551000  couples processed
+      551127 failure of find_path
+      551330 failure of find_path
+      551507 failure of find_path
+      552000  couples processed
+      552234 failure of find_path
+      552433 failure of find_path
+      552434 failure of find_path
+      552666 failure of find_path
+      553000  couples processed
+      554000  couples processed
+      554853 failure of find_path
+      555000  couples processed
+      555078 failure of find_path
+      555079 failure of find_path
+      555081 failure of find_path
+      555362 failure of find_path
+      555364 failure of find_path
+      555571 failure of find_path
+      555573 failure of find_path
+      555574 failure of find_path
+      555575 failure of find_path
+      555576 failure of find_path
+      555577 failure of find_path
+      555578 failure of find_path
+      555579 failure of find_path
+      555580 failure of find_path
+      555581 failure of find_path
+      556000  couples processed
+      556052 failure of find_path
+      556229 failure of find_path
+      556347 failure of find_path
+      556403 failure of find_path
+      556404 failure of find_path
+      557000  couples processed
+      557299 failure of find_path
+      557510 failure of find_path
+      557682 failure of find_path
+      557742 failure of find_path
+      558000  couples processed
+      558032 failure of find_path
+      558033 failure of find_path
+      559000  couples processed
+      559406 failure of find_path
+      559507 failure of find_path
+      560000  couples processed
+      560158 failure of find_path
+      560159 failure of find_path
+      560938 failure of find_path
+      561000  couples processed
+      561324 failure of find_path
+      561827 failure of find_path
+      561828 failure of find_path
+      562000  couples processed
+      562367 failure of find_path
+      562721 failure of find_path
+      562760 failure of find_path
+      562924 failure of find_path
+      562936 failure of find_path
+      563000  couples processed
+      563029 failure of find_path
+      563364 failure of find_path
+      563374 failure of find_path
+      563554 failure of find_path
+      563802 failure of find_path
+      564000  couples processed
+      564451 failure of find_path
+      564644 failure of find_path
+      564808 failure of find_path
+      565000  couples processed
+      565048 failure of find_path
+      565049 failure of find_path
+      565052 failure of find_path
+      565053 failure of find_path
+      565089 failure of find_path
+      565319 failure of find_path
+      565896 failure of find_path
+      566000  couples processed
+      566034 failure of find_path
+      566035 failure of find_path
+      566036 failure of find_path
+      566037 failure of find_path
+      566038 failure of find_path
+      566039 failure of find_path
+      566040 failure of find_path
+      566041 failure of find_path
+      566320 failure of find_path
+      566874 failure of find_path
+      566875 failure of find_path
+      566878 failure of find_path
+      567000  couples processed
+      567720 failure of find_path
+      568000  couples processed
+      568075 failure of find_path
+      568129 failure of find_path
+      568785 failure of find_path
+      569000  couples processed
+      569781 failure of find_path
+      569782 failure of find_path
+      570000  couples processed
+      570763 failure of find_path
+      570764 failure of find_path
+      570821 failure of find_path
+      570822 failure of find_path
+      570907 failure of find_path
+      571000  couples processed
+      571028 failure of find_path
+      571656 failure of find_path
+      571907 failure of find_path
+      572000  couples processed
+      572160 failure of find_path
+      572161 failure of find_path
+      572162 failure of find_path
+      572163 failure of find_path
+      572779 failure of find_path
+      572783 failure of find_path
+      572784 failure of find_path
+      572929 failure of find_path
+      572957 failure of find_path
+      573000  couples processed
+      573458 failure of find_path
+      573911 failure of find_path
+      573912 failure of find_path
+      573913 failure of find_path
+      573914 failure of find_path
+      574000  couples processed
+      574003 failure of find_path
+      574005 failure of find_path
+      574110 failure of find_path
+      574569 failure of find_path
+      575000  couples processed
+      575228 failure of find_path
+      575729 failure of find_path
+      576000  couples processed
+      576293 failure of find_path
+      576302 failure of find_path
+      576579 failure of find_path
+      577000  couples processed
+      577101 failure of find_path
+      577243 failure of find_path
+      577399 failure of find_path
+      578000  couples processed
+      578287 failure of find_path
+      578475 failure of find_path
+      578477 failure of find_path
+      578479 failure of find_path
+      578480 failure of find_path
+      578481 failure of find_path
+      578482 failure of find_path
+      578483 failure of find_path
+      578484 failure of find_path
+      578646 failure of find_path
+      578777 failure of find_path
+      578914 failure of find_path
+      578961 failure of find_path
+      578962 failure of find_path
+      579000  couples processed
+      579491 failure of find_path
+      580000  couples processed
+      580525 failure of find_path
+      581000  couples processed
+      581045 failure of find_path
+      581686 failure of find_path
+      581687 failure of find_path
+      581688 failure of find_path
+      581689 failure of find_path
+      581804 failure of find_path
+      581805 failure of find_path
+      581822 failure of find_path
+      582000  couples processed
+      582106 failure of find_path
+      582646 failure of find_path
+      582744 failure of find_path
+      582815 failure of find_path
+      582907 failure of find_path
+      582992 failure of find_path
+      583000  couples processed
+      583310 failure of find_path
+      583731 failure of find_path
+      583732 failure of find_path
+      583834 failure of find_path
+      583835 failure of find_path
+      583915 failure of find_path
+      584000  couples processed
+      584026 failure of find_path
+      584291 failure of find_path
+      584292 failure of find_path
+      584535 failure of find_path
+      584536 failure of find_path
+      584624 failure of find_path
+      585000  couples processed
+      586000  couples processed
+      586642 failure of find_path
+      586787 failure of find_path
+      586969 failure of find_path
+      586970 failure of find_path
+      587000  couples processed
+      587288 failure of find_path
+      587294 failure of find_path
+      587394 failure of find_path
+      587395 failure of find_path
+      587659 failure of find_path
+      587660 failure of find_path
+      588000  couples processed
+      588296 failure of find_path
+      588618 failure of find_path
+      588620 failure of find_path
+      588621 failure of find_path
+      588926 failure of find_path
+      588927 failure of find_path
+      589000  couples processed
+      589100 failure of find_path
+      589391 failure of find_path
+      589392 failure of find_path
+      589630 failure of find_path
+      589631 failure of find_path
+      590000  couples processed
+      590798 failure of find_path
+      590821 failure of find_path
+      590932 failure of find_path
+      590933 failure of find_path
+      591000  couples processed
+      591089 failure of find_path
+      591718 failure of find_path
+      591719 failure of find_path
+      592000  couples processed
+      592075 failure of find_path
+      592076 failure of find_path
+      592633 failure of find_path
+      592636 failure of find_path
+      592803 failure of find_path
+      593000  couples processed
+      593311 failure of find_path
+      593705 failure of find_path
+      593706 failure of find_path
+      593869 failure of find_path
+      594000  couples processed
+      594145 failure of find_path
+      594273 failure of find_path
+      594286 failure of find_path
+      594767 failure of find_path
+      594770 failure of find_path
+      594791 failure of find_path
+      595000  couples processed
+      595471 failure of find_path
+      595604 failure of find_path
+      595605 failure of find_path
+      595606 failure of find_path
+      596000  couples processed
+      596357 failure of find_path
+      596564 failure of find_path
+      597000  couples processed
+      597220 failure of find_path
+      597221 failure of find_path
+      597456 failure of find_path
+      598000  couples processed
+      598037 failure of find_path
+      598138 failure of find_path
+      598141 failure of find_path
+      598249 failure of find_path
+      598477 failure of find_path
+      598478 failure of find_path
+      598925 failure of find_path
+      598960 failure of find_path
+      598961 failure of find_path
+      599000  couples processed
+      599016 failure of find_path
+      599685 failure of find_path
+      599958 failure of find_path
+      599960 failure of find_path
+      600000  couples processed
+      600596 failure of find_path
+      600767 failure of find_path
+      600840 failure of find_path
+      600867 failure of find_path
+      600996 failure of find_path
+      601000  couples processed
+      601681 failure of find_path
+      601682 failure of find_path
+      601683 failure of find_path
+      601684 failure of find_path
+      602000  couples processed
+      602041 failure of find_path
+      602493 failure of find_path
+      602562 failure of find_path
+      603000  couples processed
+      603033 failure of find_path
+      603501 failure of find_path
+      603506 failure of find_path
+      603508 failure of find_path
+      603509 failure of find_path
+      603510 failure of find_path
+      603584 failure of find_path
+      603675 failure of find_path
+      604000  couples processed
+      604019 failure of find_path
+      604038 failure of find_path
+      604311 failure of find_path
+      604417 failure of find_path
+      604418 failure of find_path
+      604560 failure of find_path
+      604661 failure of find_path
+      604693 failure of find_path
+      604753 failure of find_path
+      604838 failure of find_path
+      605000  couples processed
+      605460 failure of find_path
+      605642 failure of find_path
+      605931 failure of find_path
+      605932 failure of find_path
+      606000  couples processed
+      606131 failure of find_path
+      606215 failure of find_path
+      606342 failure of find_path
+      607000  couples processed
+      607039 failure of find_path
+      607126 failure of find_path
+      607285 failure of find_path
+      607406 failure of find_path
+      607407 failure of find_path
+      607437 failure of find_path
+      607695 failure of find_path
+      607770 failure of find_path
+      607772 failure of find_path
+      607911 failure of find_path
+      607984 failure of find_path
+      608000  couples processed
+      608485 failure of find_path
+      608488 failure of find_path
+      608527 failure of find_path
+      608529 failure of find_path
+      608530 failure of find_path
+      608531 failure of find_path
+      608532 failure of find_path
+      608563 failure of find_path
+      608595 failure of find_path
+      609000  couples processed
+      609087 failure of find_path
+      609169 failure of find_path
+      609173 failure of find_path
+      609295 failure of find_path
+      610000  couples processed
+      610074 failure of find_path
+      610076 failure of find_path
+      610077 failure of find_path
+      610282 failure of find_path
+      610543 failure of find_path
+      610985 failure of find_path
+      611000  couples processed
+      611430 failure of find_path
+      611704 failure of find_path
+      612000  couples processed
+      612065 failure of find_path
+      612066 failure of find_path
+      612345 failure of find_path
+      612386 failure of find_path
+      612414 failure of find_path
+      612529 failure of find_path
+      612655 failure of find_path
+      612782 failure of find_path
+      612783 failure of find_path
+      612784 failure of find_path
+      612878 failure of find_path
+      612923 failure of find_path
+      613000  couples processed
+      613005 failure of find_path
+      613006 failure of find_path
+      613015 failure of find_path
+      613016 failure of find_path
+      613192 failure of find_path
+      613477 failure of find_path
+      614000  couples processed
+      614000 failure of find_path
+      614213 failure of find_path
+      614978 failure of find_path
+      615000  couples processed
+      615411 failure of find_path
+      615681 failure of find_path
+      615753 failure of find_path
+      615923 failure of find_path
+      616000  couples processed
+      616322 failure of find_path
+      616377 failure of find_path
+      616378 failure of find_path
+      616865 failure of find_path
+      616956 failure of find_path
+      616957 failure of find_path
+      617000  couples processed
+      617034 failure of find_path
+      617185 failure of find_path
+      617273 failure of find_path
+      617336 failure of find_path
+      617337 failure of find_path
+      617355 failure of find_path
+      617426 failure of find_path
+      617428 failure of find_path
+      617494 failure of find_path
+      617495 failure of find_path
+      617713 failure of find_path
+      617852 failure of find_path
+      617862 failure of find_path
+      618000  couples processed
+      618041 failure of find_path
+      618042 failure of find_path
+      618065 failure of find_path
+      618311 failure of find_path
+      618322 failure of find_path
+      618695 failure of find_path
+      619000  couples processed
+      619012 failure of find_path
+      619149 failure of find_path
+      619564 failure of find_path
+      619739 failure of find_path
+      620000  couples processed
+      620293 failure of find_path
+      620294 failure of find_path
+      620339 failure of find_path
+      621000  couples processed
+      621039 failure of find_path
+      621547 failure of find_path
+      621548 failure of find_path
+      621698 failure of find_path
+      621850 failure of find_path
+      621852 failure of find_path
+      621853 failure of find_path
+      621854 failure of find_path
+      621855 failure of find_path
+      621995 failure of find_path
+      622000  couples processed
+      622082 failure of find_path
+      622194 failure of find_path
+      622195 failure of find_path
+      622517 failure of find_path
+      622659 failure of find_path
+      622851 failure of find_path
+      622853 failure of find_path
+      622917 failure of find_path
+      622918 failure of find_path
+      623000  couples processed
+      623425 failure of find_path
+      624000  couples processed
+      624006 failure of find_path
+      624393 failure of find_path
+      624395 failure of find_path
+      624617 failure of find_path
+      625000  couples processed
+      625597 failure of find_path
+      625611 failure of find_path
+      625785 failure of find_path
+      626000  couples processed

@@ -1,0 +1,126 @@
+10
+
+dir
+0
+https://geosys.usc.edu/svn/seatree/trunk/modules/seismo/larry3d/lapo_new/Mat
+https://geosys.usc.edu/svn/seatree
+add
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+25978e50-7139-0410-9c66-93928dad93d2
+
+voxint_gfortran.mk
+file
+
+
+
+add
+
+rsoinc.f
+file
+
+
+
+add
+
+linint.f
+file
+
+
+
+add
+
+gceq.f
+file
+
+
+
+add
+
+param.f
+file
+
+
+
+add
+
+span.f
+file
+
+
+
+add
+
+delazs.f
+file
+
+
+
+add
+
+isqre.f
+file
+
+
+
+add
+
+PREM_VOIGT_P.txt
+file
+
+
+
+add
+
+aniprmc
+file
+
+
+
+add
+
+voxint.f
+file
+
+
+
+add
+
+PREM_VOIGT_S.txt
+file
+
+
+
+add
+
+voxint.mk
+file
+
+
+
+add
+
+path_vx.f
+file
+
+
+
+add
+

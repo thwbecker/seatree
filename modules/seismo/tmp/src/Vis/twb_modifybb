@@ -1,0 +1,65 @@
+#!/bin/bash
+#
+# change the bounding box of an EPS postscript file
+#
+# usage:
+#
+# modifybb ps_file llx lly urx ury 
+# 
+# where llx, lly are the lower left, and urx, ury
+# the upper right corner x and y coordinates
+#
+#
+# if no l1x ... are given, will try to determine the BB from eps2eps
+#
+#
+# $Id: modifybb,v 1.2 2002/12/27 21:50:09 becker Exp becker $
+#
+#
+if [ ! -s $1 ];then
+    echo $0: can not find EPS file $1 > "/dev/stderr"
+    exit
+fi
+tmpn=/tmp/$USER.$HOST.$$.modbb
+trap "rm -f $tmpn.* ; exit" 0 1 2  15
+if [ $# -ne 5 ];then
+    echo $0: attempting eps2eps mode > "/dev/stderr"
+    eps2eps $1 $tmpn.tmp
+
+    bb=`grep %%BoundingBox $1 | gawk '{if($2!="(atend)" && !p){p=1;print($0)}}'`
+    bbn=`grep %%BoundingBox $tmpn.tmp`
+    echo $0: old bounding box: $bb > "/dev/stderr"
+    echo $0: new bounding box: $bbn > "/dev/stderr"
+
+    string=s/$bb/$bbn/g
+    sed "$string" $1 > $tmpn.eps
+    mv $tmpn.eps $1
+
+else
+#
+# bring bounding box to front
+#
+    bbtofront $1
+    
+    bb=`grep %%BoundingBox $1 | \
+	gawk '{if($2!="(atend)" && !p){p=1;print($0)}}'`
+    if [ `echo $bb | gawk '{print(length($0))}'` -eq 0 ];then
+	echo $0: error, no bounding box found in $1. PS format\?
+	exit
+    fi
+    bbn="%%BoundingBox: $2 $3 $4 $5"
+    
+    string=s/$bb/$bbn/g
+    if [ -s $1 ];then
+	sed "$string" $1 > $tmpn
+	mv $tmpn $1 
+    else
+	echo $0: error > "/dev/stderr"
+	exit
+    fi
+
+    echo $0: changed BoundingBox of $1 > "/dev/stderr"
+    echo $0: from $bb > "/dev/stderr"
+    echo $0: to $bbn > "/dev/stderr"
+fi
+

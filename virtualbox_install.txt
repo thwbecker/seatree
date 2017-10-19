@@ -1,0 +1,158 @@
+USC GEODYNAMICS 
+EARTH SCIENCE COMPUTING ENVIRONMENT
+
+John Yu, Thorsten W Becker
+University of Southern California
+Los Angeles CA
+March 2012
+
+--- Abstract ---
+
+This customized Linux virtual machine is intended to provide easy
+access to a range of freely available Earth science software to
+illustrate the capabilities of such open source tools, and assist in
+teaching map making and solid Earth research.
+
+The package is provided in the hope that it will be useful, but
+without any warranties. Copyright lies with the original authors.
+
+--- Technical details ---
+
+All of the software we re-packaged here should be fairly
+straightforward to install on any Linux or OS-X platform, but the
+devil is in the details. We therefore provide a platform-independent
+way of using the Linux tools we like; this involves downloading a huge
+file (because you'll be running a second operating system, it's like a
+second hard drive), but we think that the benefits outweigh the
+drawbacks (such as reduced speed).  
+
+Depending on your application, you might actually do your work
+entirely within the virtual machine, or you might eventually want to
+install the software you like the most on your own OS.
+
+We chose to run Fedora 14 Linux, with yum-installed packages, for the
+most part, and our own GMT 4.5.7 compile. Software security updates
+are current as of March 2012. 
+
+
+--- Requirements ---
+
+- A VirtualBox install, which is freely available for Windows, OS-X,
+  and Linux at
+
+  https://www.virtualbox.org/wiki/Downloads
+
+- A copy of our Computing Environment virtual box "hard drive"
+
+  Available at 
+
+  http://geodynamics.usc.edu/~becker/ftp/SEATREE64-2012.vdi
+
+  (This file is 9GB large.)
+
+  
+
+- Enough disk space, and enough memory (shouldn't be a problem on
+  modern machines, including laptops). 
+
+
+--- Installing our virtual Linux machine ---
+
+- select "new" from menu
+
+- choose Linux-Fedora (64bit) and use something like "SEATREE-2012" as
+  a name
+
+- choose some memory that leaves enough for your other operating
+  system, depending on hardware. 2GB should be enough. Use defaults if
+  at any stage you're not sure. 
+
+- select "use existing disk" and pick the .vdi file you downloaded
+  (best to put it close to whereever your VirtualBox install likes to
+   put those "hard drives"
+
+- if this step is successful, your new Linux virtual machine should
+  show within VirtualBox as "SEATRRE-2012".
+
+
+********************************************************************************
+- IMPORTANT
+********************************************************************************
+
+  If you want your virtual box linux to use your machine's
+  internet access (very useful to download data, for example), you'll
+  need to go into virtual box settings (by selecting your Linux
+  drive), then select "network", go to adapter 1 (which should be
+  enabled and be attached to "NAT"), then select the "advanced" tab
+  and enter as MAC address
+  
+  08002701FCBD
+
+- Now, try to start up the virtual machine by clicking on the green
+  arrow. (Whenever you need to make changes to settings such as
+  virtual box' network access, the machine needs to be shut down). 
+
+--- Using the Linux machine ---
+
+- If the machine is running, you should see a Fedora/Linux login
+  screen with one user, the "Seatree User". Click on the user icon,
+  and login
+ 
+User: seatreeuser 
+Password: seatree 
+
+
+  (There might a security warning, disregard it.)
+
+  The GNOME graphical user interface should load and you're presented
+  with your user desktop. There are several program icons, on which
+  you can click, including some of our own stuff
+
+- iGMT - a graphical user interface for mapping using GMT
+
+  http://geodynamics.usc.edu/~becker/projects.i.html
+
+- SEATREE - The Solid Earth Research and Teaching Environment
+
+  http://geosys.usc.edu/projects/seatree/
+
+
+And some example for nice free software, including
+
+- Octave - a free matlab alternative
+- g3data - a plot digitizer
+- gnuplot - a simple x-y plotter
+
+
+The machine also comes preloaded with a range of earth science
+datasets, which you can access via the folders that are on the
+desktop, as well as a number of other scientific software/libraries,
+including GMT, netcdf, gnuplot, BLAS, LAPACK, g3data, and Paraview.
+
+To make sure everything works, click on the iGMT and SEATREE icons
+which should open GUIs to run the respective software. 
+
+You are now running a full Linux installation which has been
+customized to do some Earth science mapping and modeling. You can
+customize your copy of the software as you like. 
+
+Should you need to do some more (or less) hard core systems
+administration, the root (superuser) password is also "seatree". For
+example, if we missed out on a popular package, chances are you might
+be able to install it (as root) using 
+
+yum install my_favorite_software
+
+
+
+
+
+
+--- Feedback, comments, requests, bug reports ---
+
+Please direct any comments to twb@usc.edu.
+
+
+
+
+

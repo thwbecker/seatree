@@ -1,0 +1,78 @@
+Hypoinverse 2000
+
+Notes July 5 2002, revised Nov 21, 2005 and Feb 28, 2007.
+
+Various versions of the Hypoinverse earthquake location program have
+been in wide use since 1979.  Functional improvements to the program
+have been incremental, and the current release is of this incremental
+type.  This release is different because there is now an "official
+director approved" open-file document to accompany the program, which
+explains the program in more detail than most users probably need.  To
+honor the rare occasion of a coincidence of program functionality and
+documentation, I am assigning it the name hypoinverse 2000 version
+1.0.
+
+Users probably don't need to update their program code (unless they
+need the new 2-letter station location codes because they have so many
+station codes that they need 12 characters to distinguish them).  If
+you have an old version, just be advised that the current open file
+report will describe all features you already have and others that you
+would get if you updated your code.  
+
+The program documentation is available as an open file report "User's
+guide to HYPOINVERSE-2000, a fortran program to solve for earthquake
+locations and magnitudes", USGS Open file report 02-171, 2002.  The
+easiest way to get it is from the site
+
+http://geopubs.wr.usgs.gov/open-file/of02-171 
+
+as an Adobe acrobat pdf file for reading or printing.  You can also get
+a Microsoft Word 2000 document from
+
+ftp://ehzftp.wr.usgs.gov/klein/hyp2000/docs/
+
+There is a pdf file in the same ftp directory.
+
+Any revised versions will be posted to the ehzftp site before the
+geopubs site.
+
+
+The program called hyp2000 is available by anonymous ftp.  It has been
+revised and tested for several years.  Go to
+
+ftp://ehzftp.wr.usgs.gov/klein/hyp2000/
+
+The program executable is this parent directory, and the fortran souce
+files are in the subdirectories called source and subsdir.  The
+executable is for sun/solaris with fortran libraries bound inside, so
+you should not need fortran on your sun unix computer to execute. I do
+not have executable files for other platforms.
+
+The code compiles under solaris or sun-os, under VMS, and also g77
+under sun unix. I think this means the code is linux compatible.
+Source code is in fortran 77 with some sun/vms entensions.  A few small
+subroutines come in both sun (*.f) and VMS (*.for) versions, but 99% of
+the code is identical.  If there is only a *.for version in the
+directory, it compiles under both systems.  Source code and a sample
+makefile are in the klein/hyp2000/source directory.  You will need to
+modify the makefile for your computer.
+
+The VMS version will do input and output to CUSP *.mem files.  We are
+using it to read mem files and output ASCII archive files, including
+shadow cards, for our catalog.  CUSP subroutines are in the /cusp
+directory.  Hypoinverse functions independently of being in the CUSP
+environment.  You just have to have an event-ddl file and define the
+path to it.  See the documentation for more details. [We ceased CUSP
+processing in late 2006 and early 2007.]
+
+You can make a VMS version without the CUSP functions by using the
+dummy subroutines for the unix version (for example, use hycin.f
+instead of hycin.for).
+
+The standard subroutines (common to many of my programs) are in the
+/subsdir subdirectory.
+
+Many other related files such as the program ttgen, NCSN stations and
+NCSN Hypoinverse control files may be under ftp://ehzftp.wr.usgs.gov/klein/.
+
+Fred Klein

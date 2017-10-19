@@ -1,0 +1,24 @@
+#!/bin/bash
+#
+# read parameter file and generate data
+#
+parafile=${1-../global_para.dat}
+if [ ! -s $parafile ];then
+    echo $0: parameter file $parafile not found
+    exit
+fi
+grep -v \# $parafile > tmp.$$.dat
+
+read xtot dx ndata sigma ipick station_mode mtype < tmp.$$.dat
+rm tmp.$$.dat
+#
+#
+#
+echo $0:
+echo $0: determined: xtot: $xtot dx: $dx ndata: $ndata sigma: $sigma
+echo $0: mtype: $mtype
+#
+# call the make data script
+# 
+./makedata $mtype $xtot $dx $ndata $sigma $station_mode $ipick
+

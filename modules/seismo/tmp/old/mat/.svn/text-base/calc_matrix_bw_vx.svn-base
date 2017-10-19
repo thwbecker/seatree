@@ -1,0 +1,44 @@
+#!/bin/bash
+#
+# calculate a D matrix sparse format
+#
+# argument: horizontal size of voxels
+sizes=${1-"5 10"}			# resolution in degrees
+
+deltamin=24.
+deltamax=180.
+ifirst=0000001
+ilast=0626073
+
+
+if [ ! -s matrices/ ];then
+    mkdir matrices
+fi
+
+for size in $sizes;do
+echo $0:
+echo $0: working on matrix with resolution $size
+echo $0:
+date
+
+$ARCH/matrix_bw_vx << EOF
+$size
+$ifirst
+$ilast
+P0
+$deltamin
+$deltamax
+EOF
+
+mv d.vx_vec_P0_$ifirst.$ilast matrices/d.vx_vec_P0_$size
+mv a.vx_pnt_P0_$ifirst.$ilast matrices/a.vx_pnt_P0_$size
+mv a.vx_mat_P0_$ifirst.$ilast matrices/a.vx_mat_P0_$size
+mv a.vx_ind_P0_$ifirst.$ilast matrices/a.vx_ind_P0_$size
+mv stats.d matrices/stats_P0.d_$size
+mv num.px matrices/num.px_$size
+mv num.obs matrices/num.obs_$size
+
+rm rescale.d core.test
+
+date
+done

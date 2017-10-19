@@ -1,0 +1,139 @@
+ HYPOINVERSE 2000 (10/2006 VERSION) RUN ON Wed Nov  8 14:41:13 2006      RUN LABEL= 
+ PROCESSING DOMAIN=NC  PROCESSING VERSION=01
+
+
+ TEST PARAMETERS:
+   -ITERATION AND CONVERGENCE-     -WEIGHTING AND ERRORS-     -MISCELLANEOUS-
+       20=ITRLIM   0.900=DAMP    15.000=DISCUT   0.100=RMSCUT       4=MINSTA
+    0.040=DQUIT    0.001=DRQT     3.500=DISW1    2.000=RMSW1        2=NET
+    7.000=DXFIX    0.012=EIGTOL   7.000=DISW2    3.000=RMSW2 
+   30.000=DZMAX    0.020=RBACK        4=ITRDIS       4=ITRRES   5.000=ZTR
+    0.500=DZAIR    0.600=BACFAC   1.000=SWT      0.100=RDERR    1.780=POS
+                                                 1.000=ERCOF
+
+      ------DURATION MAG CONSTANTS------       -DELAYS & MISC-    -STATIONS-
+   -0.810=FMA1     0.000=FMA2   -1.0300=DMA0         T=LMULT        F=ATTEN
+    2.220=FMB1     0.000=FMB2    2.1000=DMA1         T=CODAWT       5=SITE-LET
+    0.000=FMZ1     0.000=FMZ2    0.0000=DMA2         T=LJUNK        2=NET-LET
+    0.001=FMD1     0.000=FMD2    0.0000=DMZ                         3=COMP-LET
+    0.000=FMF1     0.000=FMF2    1.0000=DMGN  
+    1.000=FMGN  9999.000=FMBRK   0.0027=DMLIN 
+   0.0050=DCOF1   40.000=DBRK1        1=LOGA0 
+   0.0006=DCOF2  350.000=DBRK2 
+   0.0140=ZCOF    10.000=ZBRK  
+
+    DUR MAG COMPONENT CORRECTIONS:  VLZ=-.06  VLE=-.30  VLN=-.30
+    AMP MAG COMPONENT CORRECTIONS:  VHZ=0.33  VDZ=0.33  EHZ=0.33  VLZ=0.20  SHZ=0.33
+
+    --- MAGNITUDE LABELS & COMPONENTS ---
+    FMAG1: LABEL=D      COMPS= VHZ BHZ EHZ SHZ HHZ
+    FMAG2: LABEL=Z      COMPS= VLZ
+    XMAG1: LABEL=X       TYPE=MX   COMPS= VHZ VLZ VLE VLN VDZ VDN VDE EHZ EHN EHE SHZ
+    XMAG2: LABEL=L       TYPE=ML   COMPS= WLN WLE HHN HHE
+    FMAG1 MAGSEL=1  FMAG2 MAGSEL=3
+
+ INPUT FILES:
+ COMMANDS:    /home/calnet/klein/hypfiles/cal2000.hyp                     
+                                                                          
+ BINARY STATION SNAPSHOT FILE: /home/calnet/klein/hypfiles/allsta3.bin                     
+ DELAYS:                                                                   
+ ATTENUATIONS: /home/calnet/klein/hypfiles/all2000.atn                     
+ CAL FACTORS:  /home/calnet/klein/hypfiles/all2000.cal                     
+ FMAG CORRECT: /home/calnet/klein/hypfiles/all2000.fmc                     
+ XMAG CORRECT: /home/calnet/klein/hypfiles/all2000.xmc                     
+
+ PHASES:       fix_me.arc                                                  
+        PHASE FORMAT CODE= 5, TERMINATOR FORMAT CODE=1
+ BINARY CRUST SNAPSHOT FILE: /home/calnet/klein/hypfiles/multmod3.bin                    
+
+ OUTPUT FILES: (T IF APPENDED TO)
+ (F) PRINTOUT:    fix_me.prt                                                  
+ (F) ARCHIVE:     fix_me.arcout                                               ARCHIVE FORMAT CODE= 3
+ 
+ ####################################################################################
+   2 NOV 2006,  9:36  SEQUENCE NO.    1, ID NO.  40190555
+                                                        ADJUSTMENTS (KM)
+  I ORIGIN   LAT N     LON W     Z   NWR  RMS    DT    DLAT   DLON    DZ    RR NF MOD
+ BEGIN FIRST DISTANCE WEIGHTING
+  1 14.87  40 15.15  124 18.80  5.00  45 0.79 -0.996  3.214  6.843  0.000 7.560 3 MEN
+  2 13.87  40 16.88  124 23.64  5.00  45 0.36 -0.264  0.833  2.055  0.000 2.218 3 MEN
+ FREE DEPTH
+  3 13.61  40 17.33  124 25.09  5.00  43 0.32  0.227  0.470 -0.536  1.405 1.576 4 MEN
+ BEGIN MAIN DISTANCE WEIGHTING
+ BEGIN RESIDUAL WEIGHTING
+  4 13.84  40 17.59  124 24.72  6.41  18 0.25  0.323  1.171 -1.543  1.695 2.574 4 MEN
+  5 14.16  40 18.22  124 23.62  8.10  16 0.18  0.122  0.413 -0.895  0.789 1.262 4 MEN
+  6 14.28  40 18.44  124 22.99  8.89  14 0.16  0.023  0.086 -0.198  0.130 0.252 4 MEN
+  7 14.30  40 18.49  124 22.85  9.02  14 0.16 -0.004 -0.002  0.007 -0.019 0.020 4 MEN
+  8 14.30  40 18.49  124 22.85  9.00  14 0.16  0.007  0.005 -0.031  0.030 0.043 4 MEN
+ ERROR ELLIPSE: <SERR AZ DIP>-<   1.12  72  7>-<   0.59 314 74>-<   0.38 163 13>
+ ------------------------------------------------------------------------------------
+ YEAR MO DA  --ORIGIN--  --LAT N-  --LON W--  DEPTH   RMS   ERH   ERZ  XMAG  FMAG  PMAG
+ 2006-11-02  0936 14.30  40 18.49  124 22.85   9.00  0.16  1.11  0.57        3.40  3.33L
+                                                                                          SOURCE
+ NSTA NPHS  DMIN MODEL GAP ITR NFM NWR NWS NVR REMRKS-AVH  N.XMG-XMMAD-T   N.FMG-FMMAD-T  L F X
+   56   56   9.1  MEN  234   8  49  14   0  56 MEN    B2A      0  0.00 X      37  0.10 D  W W  
+
+ XMAG2-N.XMG2-XMMAD-T-S  FMAG2-N.FMG2-FMMAD-T-S  PREF.MAG-N.PMAG-PRMAD-T
+                                                     3.33      8  0.00 L
+
+ BERKELEY MAG= 3.33  NUMBER READINGS=    8  TYPE=L
+ REGION= Mendocino Escarpment       MODELS USED:  MEN=1.00
+
+ STA NET COM L CR DIST AZM  AN P/S WT   SEC (TOBS -TCAL -DLY  =RES)  WT   SR  INFO  CAL DUR-W-FMAG-T -AMP-U-PER-W-XMAG-T DEV
+ KJJ  NC SHZ   VK  9.1 137 126  P  3  16.87  2.57  2.68-0.09 -0.02  0.17  W  0.018 2.80  79   3.49 D                         
+ KCT  NC HHZ   4K 18.9  11 101  PD    18.84  4.54  4.30 0.16  0.08  1.67  W  0.764 1.08 143   3.89 D                         
+ KSM  NC SHZ   VK 22.1 127  96  PD    19.01  4.71  4.86-0.23  0.08  1.67  W  0.700 5.58  89   3.47 D                         
+ KMPB NC HHZ   1K 25.2  61  92  PD    19.56  5.26  5.42-0.14 -0.02  1.67  W  0.473 1.08  90   3.56 D                         
+ KCR  NC SHZ   VK 49.4  74  72  PU    24.15  9.85  9.71 0.05  0.09  1.67  W  0.349 5.58  75 1 3.46 D                         
+ KMR  NC HHZ   VK 58.4 101  67  PU    25.48 11.18 11.23 0.15 -0.20  1.67  W  0.231 0.00  75   3.42 D                         
+ JCC  BK HHZ   VK 63.9  27  63  PU    26.15 11.85 12.14 0.00 -0.29  1.67  I  0.304 0.00  71   3.37 D                         
+ KCS  NC SHZ   VK 77.9  70  44  PU    28.89 14.59 14.12 0.30  0.17  1.55  W  0.207 5.58  55   3.32 D                         
+ KKP  NC SHZ   VK 79.6 102  44  PU    29.33 15.03 14.34 0.55  0.14  1.51  W  0.192 5.58  73   3.48 D                         
+ KBS  NC SHZ   VK 79.8 122  44  PU    28.60 14.30 14.36 0.08 -0.14  1.50  W  0.316 5.58  19 2 2.13 D                         
+ KHMB NC HHZ   4K 83.5  40  44  PU    29.35 15.05 14.84-0.01  0.22  1.41  W  0.235 0.00  69   3.36 D                         
+ KPP  NC SHZ   VK 86.6  86  44  P     30.55 16.25 15.22 0.39  0.64* 0.00  W  0.000 5.58  54   3.30 D                         
+ KIP  NC SHZ   VK 94.7 125  44  PU    30.56 16.26 16.25 0.07 -0.06  1.02  W  0.16211.65  95   3.62 D                         
+ KHBB NC HHZ   1K105.9  67  44  PU 1  32.21 17.91 17.67 0.02  0.22  0.29  W  0.007 1.00  45   3.21 D                         
+ KFP  NC SHZ   VK110.4 132  44  PU    32.20 17.90 18.24-0.19 -0.15  0.42  W  0.035 5.58  59   3.49 D                         
+ KBN  NC SHZ   VK111.2 114  44  P  2  33.02 18.72 18.33 0.42 -0.03  0.08  W  0.000 5.58  41   3.00 D                         
+ GTC  NC SHZ   VG123.2 144  44  PU 1  33.54 19.24 19.85-0.44 -0.17  0.04  W  0.000 5.58  61   3.49 D                         
+ LBP  NC SHZ   VL127.4  89  44  PU 2  35.03 20.73 20.39 0.03  0.31  0.01  W  0.000 5.58  45 1 3.20 D                         
+ KRK  NC SHZ   VK131.6 128  44  PU 2  35.12 20.82 20.92 0.01 -0.11  0.00  W  0.000 5.58  57 1 3.40 D                         
+ KOM  NC SHZ   VK133.2  35  44  PU    35.55 21.25 21.12-0.11  0.24  0.00  W  0.00011.65  57   3.09 D                         
+ GNA  NC VHZ   VG139.0 152  44  PU 1  35.56 21.26 21.86-0.55 -0.05  0.00  W  0.000 2.80  59   3.47 D                         
+ KRMB NC HHZ   1K140.7  16  44  PU 1  36.24 21.94 22.07-0.37  0.24  0.00  W  0.000 1.08   3 4 0.68XD                         
+ LPG  NC SHZ   VL145.2  96  44  PU 1  37.61 23.31 22.65 0.33  0.33  0.00  W  0.000 5.58  57 1 3.28 D                         
+ LGP  NC SHZ   VL147.5  62  44  P     37.53 23.23 22.93 0.00  0.30  0.00  W  0.00011.65  61   3.29 D                         
+ LVR  NC SHZ   VL148.6 101  44  PU 1  38.11 23.81 23.07 0.39  0.35  0.00  W  0.000 5.58  57 2 3.40 D                         
+ GWR  NC VHZ   VG153.5 142  44  PU 1  37.40 23.10 23.69-0.41 -0.18  0.00  W  0.000 2.80  45   3.40 D                         
+ LRB  NC SHZ   VL156.3  96  44  PD 2  39.79 25.49 24.04 0.67  0.78* 0.00  W  0.000 5.58  57 1 3.13 D                         
+ GHO  NC VHZ   VG157.7 152  44  PU 2  37.81 23.51 24.23-0.62 -0.10  0.00  W  0.000 5.58  63   3.56 D                         
+ WDC  BK HHZ   VL159.0  78  44  PD 2  42.13 27.83 24.39-0.08  3.52* 0.00  I  0.000 0.00  43 1 2.99 D                         
+ LBK  NC SHZ   VL168.5  58  44  P  1  40.37 26.07 25.59 0.08  0.40  0.00  W  0.00011.65  61 1 3.17 D                         
+ KSXB NC HHZ   1K174.3  13  44  PU 2  40.42 26.12 26.32-0.46  0.26  0.00  W  0.000 1.08  15 4 2.43XD                         
+ GHL  NC VHZ   VG182.9 139  44  PU    41.15 26.85 27.41-0.41 -0.15  0.00  W  0.00011.65  61   3.52 D                         
+ KTR  NC SHZ   VK196.7  25  44  PU 3  43.55 29.25 29.16-0.17  0.26  0.00  W  0.000 5.58   1 4                                
+ LSR  NC SHZ   VL199.2  62  44  PU 2  44.71 30.41 29.48 0.53  0.40  0.00  W  0.000 5.58  59   3.26 D                         
+ LPK  NC SHZ   VL200.5  49  44  PU 3  44.56 30.26 29.65 0.21  0.40  0.00  W  0.00011.65  71   3.36 D                         
+ LSH  NC SHZ   VL205.5  74  44  P  2  45.19 30.89 30.28 0.35  0.26  0.00  W  0.00011.65  63 1 3.32 D                         
+ LWH  NC SHZ   VL209.6  79  44  PD 2  45.57 31.27 30.79 0.12  0.36  0.00  W  0.00011.65  59 3 3.13 D                         
+ LGB  NC SHZ   VL217.3  57  44  PD    47.75 33.45 31.77 1.04  0.64* 0.00  W  0.000 1.40  79   4.00 D                         
+ LBO  NC SHZ   VL223.0  53  44  PD    48.58 34.28 32.49 0.00  1.79* 0.00  W  0.000 0.00  79 1 3.40 D                         
+ LMP  NC SHZ   VL228.8  54  44  P  1  49.36 35.06 33.23 1.51  0.32  0.00  W  0.000 5.58  99   3.48 D                         
+ LHE  NC SHZ   VL232.9  50  44  PU 2  49.58 35.28 33.74 1.30  0.24  0.00  W  0.000 2.80   3 4 0.61XD                         
+ LBF  NC SHZ   VL239.7  60  44  PD 2  50.63 36.33 34.60 1.40  0.33  0.00  W  0.000 5.58  29 4 2.63XD                         
+ LSI  NC SHZ   VL251.5  86  44  PU 2  51.51 37.21 36.10 0.53  0.58* 0.00  W  0.000 5.58   5 4 0.83XD                         
+ LTI  NC SHZ   VL262.7  67  44  PU 2  52.63 38.33 37.51 0.81  0.01  0.00  W  0.000 5.58   1 4                                
+ LBC  NC SHZ   VL263.3  76  44  PD 2  52.97 38.67 37.60 0.99  0.08  0.00  W  0.000 5.58   5 4 0.98XD                         
+ ORA  NC VHZ   VO270.3 109  44  PD 1  54.28 39.98 38.48-0.30  1.80* 0.00  W  0.00011.65   7 4 1.26XD                         
+ KPK  WR EHZ   VO274.9 106  44  PU    55.72 41.42 39.07 0.22  2.13* 0.00  W  0.000 0.00  13 4 1.69XD                         
+ EUR  NN SHZ   VU319.4  99  44  PD    61.09 46.79 44.69 0.00  2.10* 0.00  W  0.00011.65  13 4 1.59XD                         
+ SBT  NN SHZ   VU326.4 102  44  PD    62.09 47.79 45.58 0.00  2.21* 0.00  W  0.00011.65  17 4 1.93XD                         
+ SAT  NN SHZ   VU345.3 101  44  PU 2  63.95 49.65 47.97 0.00  1.68* 0.00  W  0.00011.65  31 4 2.34XD                         
+ JGR  NC EHZ   VJ352.0 151  44  PU 2  63.68 49.38 48.82 0.00  0.56* 0.00  W  0.000 0.00   5 4 1.34XD                         
+ IND  NN SHZ   VU363.2 104  44  PU 1  66.93 52.63 50.24 0.00  2.39* 0.00  W  0.00011.65   7 4 1.11XD                         
+ TNK  NN SHZ   VU373.5 106  44  PD 1  68.61 54.31 51.55 0.00  2.76* 0.00  W  0.00011.65   5 4 0.78XD                         
+ JBZ  NC VHZ   VJ427.9 147  44  PU 3  72.23 57.93 58.43 0.00 -0.50* 0.00  W  0.000 2.80   7 4 1.56XD                         
+ BSR  NC VHZ   VB475.0 147  44  PD 2  79.82 65.52 64.40 0.00  1.12* 0.00  W  0.000 5.58   3 4 0.96XD                         
+ BJO  NC VHZ   VB490.0 145  44  PU 1  82.07 67.77 66.30 0.00  1.47* 0.00  W  0.000 5.58   3 4 0.98XD                         

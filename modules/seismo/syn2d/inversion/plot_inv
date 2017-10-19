@@ -1,0 +1,38 @@
+#!/bin/bash
+file=${1-maps/rays.chkbd.out-10} # .xyz file 
+damp=${2-10}			 # damping (only used for label)
+cmp=${3-../pm2.cpt}
+dx=${4-1}
+xmax=${5-100}
+
+
+reg=-R0/$xmax/0/$xmax
+proj=-JX7i
+if [ ! -s $file.xyz ];then
+    echo $0: $file.xyz not found
+    exit
+fi
+xyz2grd $file.xyz -G$file.grd $reg  -I$dx/$dx -N0 -V -F
+
+grdimage $file.grd $reg -JX7i  \
+    -Y1.5i -C$cmp -K -Ba20f2/a20f2WeSn -P > $file.ps
+# variance reduction
+if [ -s lcurve.txt ];then
+
+    read rms misfit < lcurve.txt
+    echo $0: variance reduction: $vr
+    echo -.12 -.07 18 0 0 ML "VR = `echo $misfit | gawk '{printf("%4.2f%%",(1-$1)*100)}'`" | \
+	pstext -N -R0/1/0/1 -JX7i -O -K >> $file.ps
+    echo -.12 -.15 18 0 0 ML "`echo $rms | gawk '{printf("|x| = %7.1e",$1)}'`" | \
+	pstext -N -R0/1/0/1 -JX7i -O -K >> $file.ps
+    echo 0.05 0.95 22 0 0 ML "@~d@~ = `echo $damp | gawk '{printf("%8.2f",$1)}'`" | \
+	pstext -N -R0/1/0/1 -JX7i -O -K -Wgrey >> $file.ps
+fi
+
+psscale -C$cmp -O -D3.5i/-.5i/5i/.25ih -B.25 -E -V >>$file.ps
+modifybb $file.ps 0 10 590 620 2> /dev/null
+
+convert -density 72 $file.ps $file.gif
+echo $0: output in $file.ps and $file.gif
+rm $file.grd 
+

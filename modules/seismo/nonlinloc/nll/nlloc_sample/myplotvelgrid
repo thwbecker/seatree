@@ -1,0 +1,106 @@
+#!/bin/bash
+#
+# plot nonlinloc velocity grid, assuming non-global setup
+# $1 $2
+model=${1-model/layer.P.mod}
+for t in hdr buf;do		# check if files exist
+    if [ ! -s $model.$t ];then
+	echo $0: model header file $model.$t not found
+	exit
+    fi
+done
+# extract model parameters
+head -1 $model.hdr > tmp.$$
+read xNum yNum zNum xOrig yOrig zOrig dx dy dz gridType < tmp.$$ 
+echo $0: determined xNum $xNum yNum $yNum zNum $zNum \
+    zOrig $xOrig yOrig $yOrig zOrig $zOrig dx $dx dy $dy dz $dz gridType $gridType
+if [[ $xNum -ne 2 && $xNum -ne 1 ]];then
+    echo $0: error, only setup for a 2D model for now
+    echo $0: read header $model.hdr as
+    cat tmp.$$; rm tmp.$$
+    exit
+else
+    rm tmp.$$
+fi
+# determine geometry of slices in y-z and read in 
+# increment 
+inc=-I$dy/$dz
+# region -Rwest/east/south/north
+reg=-R$yOrig/`echo $yOrig $yNum $dy | gawk '{print($1+($2-1)*$3)}'`/$zOrig/`echo $zOrig $zNum $dz | gawk '{print($1+($2-1)*$3)}'`
+# number of entries in one slice
+((slicen=yNum*zNum))
+echo $0: inc $inc region $reg slicen $slicen
+
+
+#
+# adjust scale to the type of input model
+#
+is_angle=0
+case $gridType in
+    VELOCITY)			# velocity in km/s
+# make colorbar
+#	grd2cpt slice.grd -Cseis -E10 > slice.cpt
+#	grd2cpt slice.grd -Cno_green -E10 > slice.cpt
+	makecpt -T0/10/1 -Cseis > slice.cpt
+	lspc=1			# label spacing for colorbar
+	cont=0.5		# contour spacing for plot
+	label="v [km/s]"
+	;;
+    SLOW_LEN)			# slowness (1/v) times length
+	grd2cpt slice.grd -Chaxby -E20 > slice.cpt
+	makecpt -T0/.25/.05 -Cseis > slice.cpt
+	lspc=0.05;cont=0.025
+	label="sl [s]"
+	;;
+    TIME2D)			# travel time
+#	grd2cpt slice.grd -Chaxby -E20 > slice.cpt
+	makecpt -T0/50/5 -Chot -I > slice.cpt
+	lspc=10;cont=5
+	label="time [s]"
+	;;
+    ANGLE2D)			# travel time
+#	grd2cpt slice.grd -Chaxby -E20 > slice.cpt
+	makecpt -T-10/190/5 -Chot -I > slice.cpt
+	lspc=20;cont=5
+	label="angle [@+o@+]"
+	is_angle=1
+	;;
+    *)
+	echo $0: unknown type $gridType
+	grd2cpt slice.grd -Chaxby -E10 > slice.cpt
+	label="$gridType"
+	lspc=""
+	;;
+esac
+if [ $is_angle -eq 1 ];then
+# 
+# convert angle model file to a grd file
+    # use dip
+    cat $model.buf | ../bin/read_angles | gawk '{print($2)}' | head -$slicen | xyz2grd $reg $inc -ZLB -Gslice.grd -V
+else
+    echo $0: model N min/max values: `minmax -bis1 $model.buf`
+#
+    gmtconvert -bis1 $model.buf | head -$slicen | xyz2grd $reg $inc -ZLB -Gslice.grd -V
+
+fi
+
+
+#
+# plot
+#
+ofile=$model.ps			# output file
+scale=0.04
+
+proj=-Jx$scale/-$scale			# projection, flip z axis
+
+# plot
+grdimage slice.grd -Cslice.cpt -Y2 -X1.2 $reg  \
+    -Ba50f5:"y [km]":/a10f1:"z [km]"::."$model":WeSn $proj -K > $ofile
+# contours
+grdcontour $reg $proj slice.grd -C$cont -O  -K >> $ofile
+# colorbar
+psscale -D1.2/2.5/2.5/.2h -Cslice.cpt -O -B$lspc/:"$label": >> $ofile
+
+echo $0: plotted to $ofile
+
+rm slice.grd slice.cpt

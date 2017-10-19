@@ -1,0 +1,21 @@
+hrvdata: data to be inverted
+mat: code to construct the A matrix, and store it in "sparse" format
+inv: lsqr code to "invert" A, plus L-curve analysis and visualization.
+
+notes: 
+
+the number of layers in the parameterization is still
+hardwired, to 15. It is easy to modify the code to change this number
+(I have done inversions with 10, 20 layers, and it all worked. All one
+needs to do is edit the parameter instructions at the beginning of the
+main body of the program, I think), but I haven't gotten around yet to
+make it an interactive operation. The horizontal size of pixels, on
+the other hand, can be chosen interactively.
+
+the cross-section code is still hardwired to a fixed number of layers
+and pixel size. Edit the "parameter" instructions at the beginning to
+change that.
+
+note that the ray-tracing routine was mostly written by Guy Masters.
+
+Lapo Boschi, Zurich, January 8th, 2008.

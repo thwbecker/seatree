@@ -1,0 +1,42 @@
+#!/bin/bash
+#
+# convert PGM grayscale image file to model input
+#
+img=${1-"image"}			# model name, without .pgm
+xtot=${2-200}				# pixel width (needs to be square)
+#
+if [ ! -s $img.pgm ];then
+    echo $0: image file $img.pgm not found
+    exit
+fi
+#
+# get image dimensions
+#
+gawk  --assign cstring=2 -f pgm2float.awk $img.pgm > tmp.$$.dat
+read nx ny < tmp.$$.dat ; rm tmp.$$.dat
+echo $0: image $img.pgm dimensions: $nx $ny
+# check
+if [ $nx -ne $ny ];then
+    echo $0: image needs to be square for now
+    exit
+fi
+if [ $nx -ne $xtot ];then
+    echo $0: image size $nx does not match xtot $xtot parameter
+    exit
+fi
+# convert to grid
+gstring=`gawk  --assign cstring=1 -f pgm2float.awk $img.pgm`
+gawk  --assign cstring=0 -f pgm2float.awk $img.pgm | $gstring -G$img.grd -V  
+echo $0: output in $img.grd `grdinfo -C $img.grd`
+
+grd2xyz -ZBL $img.grd | gawk '{print(NR,$1)}' > $img.px 
+echo $0: output in $img.px 
+
+grd2xyz $img.grd > $img.xyz
+echo $0: output in $img.xyz
+
+# make a plot of the model using $img.xyz
+./plot_model $img ../pm2.cpt 1 
+
+
+

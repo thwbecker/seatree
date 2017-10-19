@@ -1,0 +1,49 @@
+#!/bin/bash
+#
+# plot station/receiver distribution and data coverage 
+#
+mtype=${1-"chkbd"}		# chkbd, image, etc
+xmax=${2-100}
+station_mode=${3-3}		# which station distribution was used
+
+reg=-R0/$xmax/0/$xmax
+proj=-JX7i
+
+
+for pc in 1 2 3;do
+    ofile=rayc.$mtype.$station_mode.$pc.ps
+
+    psbasemap  $reg $proj   -Y1.5i -K -Ba20f2/a20f2WeSn -P > $ofile
+    if [[ ! -s sources.txt || ! -s receivers.txt ]];then
+	echo $0: file error, need source and receiver files
+	exit
+    fi
+
+#psxy paths.txt $reg $proj -W0.5 -M -O -K -G255/0/0 >> $ofile
+
+    psxy receivers.txt $reg $proj -Si.25i -O -K -Gblue >> $ofile
+    if [ $pc -gt 1 ];then
+	psxy sources.txt $reg $proj -Sa.1i -O -K -Gred >> $ofile
+    fi
+    if [ $pc -gt 2 ];then
+	if [ `head -1 paths.txt | gawk '{print(NF)}'` -eq 4 ];then # new format
+	    gawk '{print($1,$2);print($3,$4);print(">")}' paths.txt | \
+		psxy -M $reg $proj -W.25 -O -K -Ggreen >> $ofile
+	else							   # old format
+	    psxy paths.txt -M $reg $proj -W.25 -O -K -Ggreen >> $ofile
+	fi
+    fi
+    echo 1000 1000 | psxy -Sa.2 -O $reg $proj >> $ofile
+    convert -density 72 $ofile rayc.$mtype.$station_mode.$pc.gif
+    gzip -f $ofile
+    echo $0: output in $ofile.gz and rayc.$mtype.$station_mode.$pc.gif
+done
+
+
+
+#/usr/bin/convert $ofile rayc.png
+#echo $0: output in rayc.png
+#rm $ofile
+
+
+

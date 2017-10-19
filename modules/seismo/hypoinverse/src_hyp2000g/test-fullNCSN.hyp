@@ -1,0 +1,31 @@
+* This tests hypoinverse (specifically the g77 version #1.2)
+* in a full implementation where the "ini" command is set up
+* to read station, crust, correction and calibration files.
+* This requires the system environment variable be defined
+* to point to a file that includes the commands and files
+* to read on startup. For example, put a line like this in
+* your .cshrc file:
+*   setenv HYPINITFILE /home/calnet/klein/hypfiles/cal2000seed.hyp
+*
+* To test hypoinverse with this file, type
+*   hypg	(run the program, which should identify itself with a greeting)
+*   @test-fullNCSN.hyp	(this runs the file you are reading to locate an event)
+
+* Hypoinverse does this part:
+ini		(initialize by reading in files as described above)
+phs 'test.arc'	(set sample input file, but give you a chance to change it)
+typ
+typ Now hit return to locate this file, or type in your own file:
+typ
+phs
+typ
+fil	(determine the format of the file)
+* the #date lines run the system command to show date & time
+typ
+#date
+prt 'test.prt'	(set the test output file names)
+sum 'test.sum'
+arc 'testout.arc'
+loc
+#date
+typ Now type stop to stop the program:

@@ -1,0 +1,279 @@
+#!/bin/bash
+#
+#
+# main inversion and plotting routines
+#
+#
+dtype=${1-P}		# data type, either S or P
+ndamp=${2-0}			# norm damping
+rdamp=${3-100}			# roughness damping
+res=${4-5}			# resolution
+nlay=${5-15}			# number of layers
+#
+plot_lay=${6-1}			# which layer to plot?
+#
+cmp=${7-mytomo.cpt}		# colormap to use
+remove_avg=y			# remove avg from layer
+
+
+if [ $nlay -gt 50 ];then
+    echo $0: error, number of layers $nlay out of bounds
+    exit
+fi
+
+# working directory, $seatree_dir/modules/seismo/larry3d
+base_dir=`pwd`
+#
+# where is the input data?
+#
+data_root=../../../python/data/larry3d/
+#
+# where to store the matrices
+#
+matrix_odir=matrices/
+#
+# where to store the solutions
+#
+sol_odir=solutions/
+
+if [ ! -s $sol_odir ];then
+    mkdir -p $sol_odir
+fi
+
+if [ ! -s $matrix_odir ];then
+    mkdir $matrix_odir
+fi
+
+#
+#
+# select some parameters based on type of data
+#
+if [ $dtype = "P" ];then	 # P inversion
+# minimum distance
+    delta_min=25
+    ddir=$data_root/hrvdata/
+    start_model=$ddir/PREM_VOIGT_P.txt	# reference model
+    ipol=0					# polarization
+    ray_type=P
+elif [ $dtype = "S" ];then
+# minimum distance
+    delta_min=20
+    ddir=$data_root/houser_s/
+    start_model=$ddir/Startmodel.txt	# reference model
+    ipol=1				# 1: SH 0: SV
+    ray_type=S
+else
+    echo $0: data type $dtype undefined
+    exit
+fi
+
+#
+# name of solution file
+#
+dstring=$sol_odir/sol.$dtype.$res.$nlay.$ndamp.$rdamp
+
+#
+# input data for ATA computation
+#
+dtfile=$ddir/data.$dtype.bin	# binary version of data file
+qkfile=$ddir/quakes.$dtype.bin # sources
+stfile=$ddir/receiv.$dtype.bin # stations
+#
+# make sure the code is compiled
+#
+echo $0: testing if code needs to be compiled
+make
+
+
+#
+# check if the data are converted
+#
+if [ ! -s $dtfile ];then
+    if [ ! -s $ddir/data.$dtype.ascii ];then
+	echo $0: expected ascii data $ddir/data.$dtype.ascii for conversion
+	echo $0: cannot find file
+	exit
+    fi
+    #
+    # make binary versions of data
+    #
+    echo $0: converting data in $ddir for type $dtype to binary
+
+    cd $ddir/
+    cat <<EOF | $base_dir/$ARCH/data_a2b > conv.log
+$dtype
+EOF
+    cd $base_dir
+else
+    echo $0: binary data exists, not reconverting
+fi
+
+
+# 
+# generate ATA file 
+#
+if [ ! -s $matrix_odir/a.$dtype.$res.$nlay.mat ];then
+
+    echo $0: creating ata matrix with resolution $res 
+    echo $0: please be patient, this might take a while
+    echo $dtfile
+    echo $qkfile
+    echo $stfile
+
+
+    cat << EOF | $ARCH/voxint  | tee bma.log
+$res
+$nlay
+$ray_type
+$delta_min
+$ipol
+"$dtfile"
+"$qkfile"
+"$stfile"
+"$start_model" 
+EOF
+
+    rm used_sources_stations.txt 2> /dev/null
+
+    mv a.vx_ind $matrix_odir/a.$dtype.$res.$nlay.ind
+    mv a.vx_mat $matrix_odir/a.$dtype.$res.$nlay.mat
+    mv a.vx_pnt $matrix_odir/a.$dtype.$res.$nlay.pnt
+    mv d.vx_vec $matrix_odir/d.$dtype.$res.$nlay.vec
+
+
+    rm $dstring.dat 2> /dev/null # need to recompute the solution
+else 
+    echo $0: using old  $matrix_odir/a.$dtype.$res.$nlay.mat  ATA matrix, resolution unchanged
+fi
+
+if [ ! -s $dstring.dat ];then
+    rhdamp=$rdamp		# horizontal damping
+    rvdamp=1		# vertical damping, in fractions of horizontal damping
+    ndamp_mm=0		# mid mantle norm damping
+    ani_damp=0		# anisotropic dampign
+
+    ifile=$matrix_odir/a.$dtype.$res.$nlay.ind
+    afile=$matrix_odir/a.$dtype.$res.$nlay.mat
+    pfile=$matrix_odir/a.$dtype.$res.$nlay.pnt
+    dfile=$matrix_odir/d.$dtype.$res.$nlay.vec
+
+    if [[ ! -s $ifile || ! -s $afile || ! -s $pfile  || ! -s $dfile ]];then
+	echo $0: input files not found
+	echo $0: $ifile $afile $pfile $dfile
+	exit
+    fi
+    nd=`lc $dfile`
+
+    echo $0: using files
+    echo 
+    echo $afile
+    echo $ifile
+    echo $pfile
+    echo $dfile
+    echo
+    echo $0: computing LSQR solution with norm damp $ndamp roughness damp $rdamp 
+    echo $0: number of data: $nd
+    echo $0: working, output in $dstring.log, be patient
+
+    iswit=0
+    rm fit.txt solution.txt 2> /dev/null
+    cat <<EOF > tmp.input
+9000000
+250000000
+$res
+$iswit
+$rhdamp
+$rvdamp
+$ndamp
+$ndamp_mm
+$ani_damp
+$nlay
+.
+"$afile"
+"$ifile"
+"$pfile"
+"$dfile"
+1
+3,-3
+$nd
+finished
+EOF
+    $base_dir/$ARCH//joint_lsqr_vx_isodamp < tmp.input | tee $dstring.log
+    if [ -s solution.txt ];then
+	mv solution.txt $dstring.dat
+    else
+	echo $0: inversion error
+	cat tmp.input
+    fi
+    rm tmp.input
+    grep set $dstring.log | tail -1 | gawk '{print($4,$6)}' > tmp.$$ # paramaters for this dataset 
+    read vr norm < tmp.$$; rm tmp.$$ 
+
+    echo $0: determining roughness
+    rm roughness.txt 2> /dev/null
+    $base_dir/$ARCH/vox2roughness<<EOF > /dev/null
+$nlay
+$res
+"$dstring.dat"
+EOF
+    rough=`gawk '{print($2)}' roughness.txt`
+    rm roughness.txt 2> /dev/null
+    
+    echo $0: variance reduction: $vr rough $rough norm $norm
+    echo $0: stats stored as $dstring.res.dat
+    echo $0: model stored as $dstring.dat
+    
+    echo $dtype $res $nlay $ndamp $rdamp $vr $norm $rough > $dstring.res.dat
+else
+    echo $0: old solution $dstring.dat exists
+    if [ ! -s $dstring.res.dat ];then
+	echo $0: error $dstring.res.dat not found
+	exit
+    fi
+    read old_dtype old_res old_nlay old_ndamp old_rdamp vr norm rough < $dstring.res.dat
+fi
+
+#
+# plot
+#
+if [ ! -s $cmp ];then
+    if [ $dtype = "S" ];then
+	makecpt -Chaxby -I -T-5/5/.5 -D | gawk '{if((substr($1,1,1)!="#")&&(NF==8))print($0)}' > $cmp
+    else
+	makecpt -Chaxby -I -T-2.5/2.5/.25 -D | gawk '{if((substr($1,1,1)!="#")&&(NF==8))print($0)}' > $cmp
+    fi
+    rm $data.gmt 2> /dev/null	# need to redo the GMT input 
+fi
+#
+# extract data for plotting, this generates layer files
+#
+extract $res $dstring $cmp $remove_avg 1 $nlay 
+#
+# plot a certain layer
+#
+if [[ $plot_lay -lt 1 || $plot_lay -gt $nlay ]];then
+    echo $0: plot layer $plot_lay out of bounds total $nlay
+    exit
+fi
+# reformat layer string
+plot_lays=`echo $plot_lay | gawk '{printf("%02i",$1)}'`
+if [ ! -s layer_$plot_lays ];then
+    echo $0: layer_$plot_lays not found
+    exit
+fi
+#
+# determine depth 
+#
+if [ ! -s  layerz.$nlay.dat ];then
+    echo $0: layerz.$nlay.dat not found 
+    exit
+fi
+depth=`gawk -v n=$plot_lay '{if(NR==n)printf("%.1f",$1)}' layerz.$nlay.dat`
+ofile=vel.$plot_lay.ps
+
+psxy layer_$plot_lays -m -A -C$cmp $reg $proj -K -P -Y1.5 > $ofile
+pscoast $reg $proj -Dc -A40000 -O -W1 -K >> $ofile
+psscale -C$cmp -Ba2:"@~d@~v@-$dtype@- [%] @@ z = $depth km": -O  -D3.5/-.2/3/.2h >> $ofile
+
+
+echo $0: output in $ofile

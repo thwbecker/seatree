@@ -1,0 +1,89 @@
+#!/bin/bash
+
+ver=${1-2.0.2}			# version number
+ds=${2-`date +"%m%d%y"`}		# date string
+
+
+ext_module="modules/seismo/hypoinverse"		# modules to exclude
+ext_data="python/data/nll/original_output modules/seismo/nonlinloc/nll/nlloc_sample/original_output/"
+ext_python=""
+
+
+sname=seatree-$ver-$ds		# output file name
+odir=/tmp/st.$$/$sname/		# temp directory
+
+owd=`pwd`
+
+#
+# update hc, how?
+#
+
+
+
+mkdir -p $odir 2> /dev/null
+
+#
+# assemble stuff
+#
+cd $HOME/progs/src/seatree
+#
+# files
+#
+cp COPY* READ* configure  $odir
+#
+# directories
+#
+cp -r doc/ modules/ python $odir
+
+#
+# done assebmling
+#
+
+
+cd /tmp/st.$$
+
+find > flog
+
+
+#
+# remove SVN stuff
+#
+grep "\.svn" flog | cut -c3-  > excludes.dat
+grep  \~  flog  | cut -c3-  >> excludes.dat
+grep  "\.pyc"  flog | cut -c3-  >> excludes.dat
+grep  "\.gmt"  flog | cut -c3-  >> excludes.dat
+grep  $ARCH  flog | cut -c3-  >> excludes.dat
+grep  i686  flog | cut -c3-  >> excludes.dat
+grep  "\.log"  flog | cut -c3-  >> excludes.dat
+grep  tmp  flog | cut -c3-  >> excludes.dat
+grep  "\.ps" flog | cut -c3-  >> excludes.dat
+grep  "\.o" flog | cut -c3-  >> excludes.dat
+grep  "\.ps" flog | cut -c3-  >> excludes.dat
+grep  old/ flog | cut -c3-  >> excludes.dat
+
+
+for m in $ext_module $ext_data $ext_python;do
+    grep "$m" flog | cut -c3- >> excludes.dat
+done
+
+
+tar --create --verbose --gzip --exclude-from excludes.dat --file \
+    $HOME/public_html/software/$sname.tgz $sname
+
+echo $0: output in $HOME/public_html/software/$sname.tgz 
+
+cp flog excludes.dat $HOME/tmp
+rm flog excludes.dat
+
+
+cd $HOME/public_html/software/
+ln -sf  $sname.tgz seatree.recent.tgz
+cd -
+
+cd $owd
+
+
+# remove temp dir
+rm -rf $odir/ /tmp/st.$$
+
+

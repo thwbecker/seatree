@@ -1,0 +1,22 @@
+updated
+
+--This line, and those below, will be ignored--
+
+A    gaussp.c
+M    hc.c
+M    hc_init.c
+A    hc_invert_dtopo.c
+M    hc_misc.c
+M    hc_output.c
+M    hc_polsol.c
+M    hc_solve.c
+M    hc_torsol.c
+A    hc_visc_scan.c
+M    prem_util.c
+M    rick_sh_c.c
+M    sh_ana.c
+M    sh_corr.c
+M    sh_exp.c
+M    sh_power.c
+M    sh_syn.c
+M    sh_test.c

@@ -1,0 +1,59 @@
+#!/bin/bash
+#
+# read parameter file and generate data
+#
+parafile=${1-../global_para.dat}
+if [ ! -s $parafile ];then
+    echo $0: parameter file $parafile not found
+    exit
+fi
+
+gawk '{if((substr($1,1,1)!="#")&&($1!=""))print($0)}' $parafile > tmp.$$.a.dat
+head -1 tmp.$$.a.dat > tmp.$$.1.dat
+tail -1 tmp.$$.a.dat > tmp.$$.2.dat
+
+read xtot dx ndata sigma ipick station_mode mtype < tmp.$$.1.dat
+read damps < tmp.$$.2.dat
+
+rm tmp.$$.?.dat
+#
+#
+#
+echo $0:
+echo $0: determined: xtot: $xtot dx: $dx ndata: $ndata sigma: $sigma
+echo $0: model type: $mtype
+echo $0: damping values: $damps
+echo $0:
+
+#
+# loop through damping values
+# 
+ndamps=`echo $damps | gawk '{print(NF)}'`
+if [ $ndamps -gt 1 ];then
+    cleanup=1
+    rm lcurve.$mtype.$station_mode.dat 2> /dev/null
+else
+    cleanup=0
+fi
+
+for damp in `echo $damps | gawk '{gsub("\"","");print($0)}'`;do
+#
+# call the inversion script
+# 
+    rm lcurve.txt 2> /dev/null
+    ./invert $mtype $damp $xtot $dx $ndata $cleanup
+    if [ ! -s lcurve.txt ];then
+	echo $0: error: likely no solution produced
+    fi
+    if [ $ndamps -gt 1 ];then	# append
+	echo $damp `cat lcurve.txt` >> lcurve.$mtype.$station_mode.dat
+	echo $0: solution added to lcurve.$mtype.$station_mode.dat: `tail -1 lcurve.$mtype.$station_mode.dat`
+    fi
+done
+if [ $ndamps -gt 1 ];then	# combine to movie
+    gifsicle --delay=10 --loop  `ls maps/rays.$mtype.*.gif |sort -n` > maps/movie.$mtype.$station_mode.gif
+#    gifmerge -75 -l0  `ls maps/rays.$mtype.*.gif |sort -n` > maps/movie.$mtype.$station_mode.gif
+#    rm  maps/rays.$mtype.*.gif
+fi
+
+

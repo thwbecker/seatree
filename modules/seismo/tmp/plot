@@ -1,0 +1,76 @@
+#!/bin/bash
+#
+# plot a single layer of an existing solution
+#
+dtype=${1-S}		# data file name, also used for output file
+                        # names
+ndamp=${2-0}			# norm damping
+rdamp=${3-100}			# roughness damping
+res=${4-5}			# resolution
+nlay=${5-15}			# number of layers
+plot_lay=${6-1}			# which layer to plot?
+cmp=${7-mytomo.cpt}			# GMT color scale if it doesn't exist, this will be automatically generated 
+
+remove_avg=1			# 
+
+reg=-Rg
+proj=-JH180/7
+
+
+if [ ! -s $cmp ];then
+    makecpt -Chaxby -I -T-10/10/1 | gawk '{if((substr($1,1,1)!="#")&&(NF==8))print($0)}' > $cmp
+    rm $data.gmt 2> /dev/null	# need to redo the GMT input 
+fi
+
+
+if [ $dtype = "P" ];then	 # P inversion
+    datadir=./hrvdata/
+elif [ $dtype = "S" ];then
+    datadir=./houser_s/
+else
+    echo $0: data type $dtype undefined
+    exit
+fi
+#
+# name of solution file
+#
+dstring=$datadir/sol.$dtype.$res.$nlay.$ndamp.$rdamp
+
+if [ ! -s $dstring.dat ];then
+    echo $0: solution $dstring.dat not found
+    exit
+fi
+
+#
+# extract data for plotting, this generates layer files
+#
+extract $nlay $dstring $cmp $remove_avg 1 $nlay 
+#
+# plot a certain layer
+#
+if [[ $plot_lay -lt 1 || $plot_lay -gt $nlay ]];then
+    echo $0: plot layer $plot_lay out of bounds total $nlay
+    exit
+fi
+# reformat layer string
+plot_lays=`echo $plot_lay | gawk '{printf("%02i",$1)}'`
+if [ ! -s layer_$plot_lays ];then
+    echo $0: layer_$plot_lays not found
+    exit
+fi
+#
+# determine depth 
+#
+if [ ! -s  layerz.$nlay.dat ];then
+    echo $0: layerz.$nlay.dat not found 
+    exit
+fi
+depth=`gawk -v n=$plot_lay '{if(NR==n)printf("%.1f",$1)}' layerz.$nlay.dat`
+ofile=vel.$plot_lay.ps
+
+psxy layer_$plot_lays -m -A -C$cmp $reg $proj -K -P -Y1.5 > $ofile
+pscoast $reg $proj -Dc -A40000 -O -W1 -K >> $ofile
+psscale -C$cmp -Ba2:"@~d@~v@-$dtype@- [%] @@ z = $depth km": -O  -D3.5/-.2/3/.2h >> $ofile
+
+
+echo $0: output in $ofile

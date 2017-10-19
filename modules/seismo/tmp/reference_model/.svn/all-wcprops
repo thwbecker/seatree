@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/seatree/!svn/ver/546/trunk/modules/seismo/larry3d/reference_model
+END
+PREM_VOIGT_P.txt
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/seatree/!svn/ver/546/trunk/modules/seismo/larry3d/reference_model/PREM_VOIGT_P.txt
+END
+PREM_VOIGT_S.txt
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/seatree/!svn/ver/546/trunk/modules/seismo/larry3d/reference_model/PREM_VOIGT_S.txt
+END

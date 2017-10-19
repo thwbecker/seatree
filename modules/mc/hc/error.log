@@ -1,0 +1,131 @@
+In file included from hc.h:127:0,
+                 from convert_bernhard_dens.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from ggrd_grdtrack_util.c:16:0:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from ggrd_readgrds.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from ggrd_test.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from ggrd_velinterpol.c:28:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from grdinttester.c:9:0:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from hc_extract_sh_layer.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from hc_extract_spatial.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from hc_init.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from hc_input.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from hc_matrix.c:52:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from hc_misc.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from hc_output.c:10:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from hc_polsol.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from hc_propagator.c:8:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from hc_solve.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from hc_torsol.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from main.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from prem2dsm.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from print_gauss_lat.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from rick_fft_c.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from rick_sh_c.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from sh_ana.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from shana_sh.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from sh_corr.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from sh_exp.c:12:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from sh_extract_layer.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from sh_model.c:12:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from sh_power.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from sh_syn.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from sh_test.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from spherepack_sh.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+In file included from hc.h:127:0,
+                 from test_fft.c:1:
+ggrd_grdtrack_util.h:16:23: fatal error: ggrd_base.h: No such file or directory
+compilation terminated.
+make: *** No rule to make target `ggrd_base.h', needed by `/home/walter/becker/progs/src/hc-svn//objects/x86_64/sh_exp.o'.  Stop.

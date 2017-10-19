@@ -1,0 +1,75 @@
+This test3 directory contains all the files needed to locate a small
+set of earthquakes gathered in 2/2007 by the NCSN-USGS earthworm
+system. This includes station, crust models and delay files, magnitude
+correction and gain files, and a sample earthquake file. The earthquake
+file is in hypoinverse archive format, and has already been located by
+hypoinverse inside the earthworm system. The calculated fields have
+already been filled in the input archive file, but hypoinverse
+recalculates everything.
+
+To locate the test file, just type the following:
+
+hyp2000				Run the program
+@caltest.hyp			Read and run the hypoinverse command file
+loc				Locate the earthquakes
+sto				Stop and exit from hypoinverse
+
+Here is the output from the sun terminal:
+
+puna 141? hyp2000
+ HYPOINVERSE 2000 STARTING
+ 2/2007 VERSION 1.1 (Can fix origin time)
+ COMMAND? @caltest.hyp
+  6806 STATIONS READ IN.
+  1399 STATION XMAG CORRECTIONS SET
+  1134 STATION FMAG CORRECTIONS SET
+ ALTERNATE STATUS SET FOR 588 STATIONS
+  2040 STATION DELAYS SET FOR MODEL  1
+   945 STATION DELAYS SET FOR MODEL  2
+  1184 STATION DELAYS SET FOR MODEL  3
+  1066 STATION DELAYS SET FOR MODEL  4
+  1034 STATION DELAYS SET FOR MODEL  5
+  1034 STATION DELAYS SET FOR MODEL  6
+   814 STATION DELAYS SET FOR MODEL  7
+   914 STATION DELAYS SET FOR MODEL  8
+   870 STATION DELAYS SET FOR MODEL  9
+   680 STATION DELAYS SET FOR MODEL 10
+   586 STATION DELAYS SET FOR MODEL 35
+  1566 STATION DELAYS SET FOR MODEL 11
+   506 STATION DELAYS SET FOR MODEL 12
+   956 STATION DELAYS SET FOR MODEL 13
+  1295 STATION DELAYS SET FOR MODEL 14
+   734 STATION DELAYS SET FOR MODEL 15
+   538 STATION DELAYS SET FOR MODEL 16
+   601 STATION DELAYS SET FOR MODEL 17
+  1185 STATION DELAYS SET FOR MODEL 18
+  1185 STATION DELAYS SET FOR MODEL 25
+   705 STATION DELAYS SET FOR MODEL 19
+   914 STATION DELAYS SET FOR MODEL 20
+   502 STATION DELAYS SET FOR MODEL 21
+   670 STATION DELAYS SET FOR MODEL 22
+   529 STATION DELAYS SET FOR MODEL 23
+   865 STATION DELAYS SET FOR MODEL 24
+   933 STATION DELAYS SET FOR MODEL 26
+   655 STATION DELAYS SET FOR MODEL 27
+   404 STATION DELAYS SET FOR MODEL 28
+   370 STATION DELAYS SET FOR MODEL 29
+   915 STATION DELAYS SET FOR MODEL 30
+   229 STATION DELAYS SET FOR MODEL 31
+   400 STATION DELAYS SET FOR MODEL 32
+   409 STATION DELAYS SET FOR MODEL 33
+   317 STATION DELAYS SET FOR MODEL 34
+  1692 STATION CAL FACTORS SET
+  FIND INPUT PHASE FILE TYPE & SET PHS(COP) & ARC(CAR) FORMATS
+  INPUT IS A HYPOINVERSE ARCHIVE-2000 FILE, WITH SHADOWS
+  SETTING FORMATS COP 5, CAR 3
+ 
+  Now all station & crust files have been read,
+  and the test earthquake files have been defined and formats set.
+  Now type LOC to locate...
+ COMMAND? loc
+  SEQ ---DATE--- TIME REMARK -LAT-  --LON-  DEPTH  RMS PMAG  NUM  ERH  ERZ  ID
+    1 2007- 3- 1 16:57 ALU   37 20  121 42   8.22 0.02  1.0D   7  0.6  0.8  40194032
+    2 2007- 3- 1 17:04 ALU   37 20  121 42   8.22 0.06  2.5D  80  0.1  0.3  40194033
+    3 2007- 3- 1 17:07 ALU   37 21  121 42   7.99 0.05  2.4D  66  0.1  0.3  40194034
+ COMMAND? sto

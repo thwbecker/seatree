@@ -1,0 +1,31 @@
+#!/bin/bash
+#
+# read parameter file and generate data
+#
+parafile=${1-../global_para.dat}
+if [ ! -s $parafile ];then
+    echo $0: parameter file $parafile not found
+    exit
+fi
+grep -v \# $parafile > tmp.$$.dat
+
+read xtot dx ndata sigma ipick station_mode mtype < tmp.$$.dat
+rm tmp.$$.dat
+#
+#
+#
+echo $0:
+echo $0: determined: xtot: $xtot dx: $dx ndata: $ndata sigma: $sigma
+echo $0: mtype: $mtype
+#
+# call the make data script
+# 
+if [ `echo $mtype | gawk '{if(match($1,"chkbd"))print(1);else print(0)}'` -eq 1 ];then
+    ./make_checkerboard_model $xtot $dx 
+else
+    if [ $dx -ne 1 ];then
+	echo $0: dx should be unity for image mode
+	exit
+    fi
+    ./convert_pgm_to_model $mtype $xtot
+fi

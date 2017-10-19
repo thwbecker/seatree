@@ -1,0 +1,128 @@
+# Makefile for NonLinLoc NLLoc_func_test
+#
+# Invocation:
+#     Solaris: make -f Make_NLLoc_func_test
+#     Linux:   gmake -Rf Make_NLLoc_func_test
+
+BINDIR=${MYBIN}
+INCLUDE_DIR=./
+CCFLAGS=-O3 -Wall
+#CCFLAGS=-O3 -pg -Wall
+#CCFLAGS=-g  -Wall
+
+# Linux
+TIME3D_CCFLAGS=
+
+# Custom builds
+CUSTOM=
+#CUSTOM=ETH
+
+GRID_LIB_OBJS=GridLib.o util.o geo.o octtree.o nrutil.o nrmatrix.o ran1.o map_project.o
+
+all : NLLoc_func_test
+
+
+# --------------------------------------------------------------------------
+# NLLoc_func_test
+#
+OBJS0=NLLocLib.o ${GRID_LIB_OBJS} calc_crust_corr.o velmod.o GridMemLib.o phaselist.o loclist.o
+OPTIONS0=
+# Custom builds
+ifeq ($(CUSTOM), ETH)
+	OBJS1=$(OBJS0) eth_functions.o get_region_name_nr.o magnitude.o new_sedlib.o complex.o
+	OPTIONS=$(OPTIONS0) -D CUSTOM_ETH
+else
+	OBJS1=$(OBJS0)
+	OPTIONS=$(OPTIONS0)
+endif
+PVER=1
+NLLoc_func_test : ${BINDIR}/NLLoc_func_test
+${BINDIR}/NLLoc_func_test : NLLoc_func_test.o NLLoc${PVER}.o ${OBJS1}
+	gcc NLLoc_func_test.o NLLoc${PVER}.o ${OBJS1} ${CCFLAGS} -o ${BINDIR}/NLLoc_func_test -lm
+NLLoc_func_test.o : NLLoc_func_test.c NLLocLib.h GridLib.h GridMemLib.h ${INCLUDE_DIR}nrutil.h
+	gcc -c ${CCFLAGS}  NLLoc_func_test.c  $(OPTIONS)
+NLLoc${PVER}.o : NLLoc${PVER}.c NLLocLib.h GridLib.h GridMemLib.h ${INCLUDE_DIR}nrutil.h
+	gcc -c ${CCFLAGS}  NLLoc${PVER}.c  $(OPTIONS)
+# --------------------------------------------------------------------------
+
+
+
+
+
+
+# --------------------------------------------------------------------------
+# Librarires
+#
+NLLocLib.o : NLLocLib.c NLLocLib.h GridLib.h
+	gcc -c ${CCFLAGS}  NLLocLib.c
+
+GridLib.o : GridLib.c GridLib.h  geometry.h nrutil.h util.h geo.h ${INCLUDE_DIR}octtree.h
+	gcc -c ${CCFLAGS}  GridLib.c
+
+GridMemLib.o : GridMemLib.c GridMemLib.h  GridLib.h
+	gcc -c ${CCFLAGS}  GridMemLib.c
+
+util.o : ${INCLUDE_DIR}util.c ${INCLUDE_DIR}util.h
+	gcc -c ${CCFLAGS}  ${INCLUDE_DIR}util.c
+
+octtree.o : ${INCLUDE_DIR}octtree.c ${INCLUDE_DIR}octtree.h
+	gcc -c ${CCFLAGS}  ${INCLUDE_DIR}octtree.c
+
+nrutil.o : ${INCLUDE_DIR}nrutil.c ${INCLUDE_DIR}nrutil.h
+	gcc -c ${CCFLAGS}  ${INCLUDE_DIR}nrutil.c
+
+nrmatrix.o : ${INCLUDE_DIR}nrmatrix.c
+	gcc -c ${CCFLAGS}  ${INCLUDE_DIR}nrmatrix.c
+
+ran1.o : ${INCLUDE_DIR}ran1.c ${INCLUDE_DIR}ran1.h
+	gcc -c ${CCFLAGS}  ${INCLUDE_DIR}ran1.c
+
+vector.o : ${INCLUDE_DIR}vector.c ${INCLUDE_DIR}vector.h
+	gcc -c ${CCFLAGS}  ${INCLUDE_DIR}vector.c
+
+geo.o : ${INCLUDE_DIR}geo.c ${INCLUDE_DIR}geo.h
+	gcc -c ${CCFLAGS}  ${INCLUDE_DIR}geo.c
+
+velmod.o : ${INCLUDE_DIR}velmod.c
+	gcc -c ${CCFLAGS}  ${INCLUDE_DIR}velmod.c
+
+calc_crust_corr.o :   GridLib.h ${INCLUDE_DIR}calc_crust_corr.c ${INCLUDE_DIR}crust_corr_model.h  ${INCLUDE_DIR}crust_type.h  ${INCLUDE_DIR}crust_type_key.h
+	gcc -c ${CCFLAGS}  ${INCLUDE_DIR}calc_crust_corr.c
+
+GMT_INCLUDE=./
+map_project.o : ${GMT_INCLUDE}map_project.c
+	gcc -c ${CCFLAGS}  ${GMT_INCLUDE}map_project.c
+#
+# --------------------------------------------------------------------------
+
+clean :
+	rm *.o
+
+
+
+# --------------------------------------------------------------------------
+# Custom Librarires
+#
+
+# ETH ----------------------------------------------------------------------
+ETH_DIR=custom_eth/
+eth_functions.o : $(ETH_DIR)eth_functions.c $(ETH_DIR)eth_functions.h $(ETH_DIR)new_sedlib.h $(ETH_DIR)complex.h
+	gcc -c ${CCFLAGS}  $(ETH_DIR)eth_functions.c
+get_region_name_nr.o : $(ETH_DIR)get_region_name_nr.c $(ETH_DIR)get_region_name_nr.h $(ETH_DIR)new_sedlib.h
+	gcc -c ${CCFLAGS}  $(ETH_DIR)get_region_name_nr.c
+magnitude.o : $(ETH_DIR)magnitude.c $(ETH_DIR)new_sedlib.h $(ETH_DIR)complex.h
+	gcc -c ${CCFLAGS}  $(ETH_DIR)magnitude.c
+new_sedlib.o : $(ETH_DIR)new_sedlib.c $(ETH_DIR)new_sedlib.h
+	gcc -c ${CCFLAGS}  $(ETH_DIR)new_sedlib.c  -D UNIX
+complex.o : $(ETH_DIR)complex.c $(ETH_DIR)complex.h
+	gcc -c ${CCFLAGS}  $(ETH_DIR)complex.c  -D UNIX
+#gselib.o : $(ETH_DIR)gselib.c $(ETH_DIR)gselib.h
+#	gcc -c ${CCFLAGS}  $(ETH_DIR)gselib.c  -D UNIX
+
+clean_eth :
+	rm eth_functions.o get_region_name_nr.o new_sedlib.o complex.o magnitude.o
+
+
+#
+# --------------------------------------------------------------------------
+

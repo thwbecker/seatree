@@ -1,0 +1,83 @@
+* Hypoinverse startup file for NCSN for newer 2000 formats
+* To run this file with the hyp command "ini" put a statement like this in your
+* .cshrc file: setenv HYPINITFILE /home/calnet/klein/hypfiles/cal2000.hyp
+*
+* "home" paths for hypfiles directory:
+* puna:    /home/calnet/klein/hypfiles/
+* swave:  /home1/calnet/klein/hypfiles/
+* ebird:  /ebird/calnet/klein/hypfiles/
+* hollyhock: /we/calnet/klein/hypfiles/
+* 
+* STATION DATA
+200 T 1900 0				/Enable yr 2000 formats
+LET 5 2 3				/Use new, longer station codes
+******* YOU MUST READ STATIONS BEFORE USING THE ATE, DEL, FMC OR XMC COMMANDS.
+RST '/home/calnet/klein/hypfiles/allsta2.bin'   /Read binary file of all stations.
+*H71 1 1 3					/use new station file format
+*STA '/home/calnet/klein/hypfiles/all2.sta'     /Read ASCII file of all stations.
+*
+XMC '/home/calnet/klein/hypfiles/all2000.xmc' T 0 /Read XMAG cors, use all data
+FMC '/home/calnet/klein/hypfiles/all2000.fmc' T 0 /Read FMAG cors, use all data
+UNK 6 'IRG1' 'IRG2' 'IRG3' 'IRGE' 'WWVB' 'IRG '	/CUSP phony station codes
+*
+* MULTIPLE CRUSTAL MODELS
+RCR '/home/calnet/klein/hypfiles/multmod2.bin'	/Read all model info in binary
+* READ MODELS AND DELAYS IN ASCII:
+*@/home/calnet/klein/hypfiles/multmod2.hyp
+*
+* MAGNITUDE CHOICES
+MAG 1 T 3 1				/Use Eaton for Fmag1, Hirshorn for Fmag2
+DUR -.81 2.22 0 .0011 0, 5*0, 9999 1	/Set Eaton's new magnitude constants
+DU2 .005 40, .0006 350, .014 10		/Extra dist & depth terms for Eaton
+DUB -2.06 2.95 0 .001 0, 5*0, 9999 1	/Zmag of Hirshorn; use -2.06=-.71-1.35
+* -1.35 compensates for the 1.35 gain corr used for the 42db Z stations
+FC1 'D' 4 'VHZ' 'VHE' 'VHN' 'VLZ'  	/comps for FMAG1, NEW CODE D
+FC2 'Z' 1 'VLZ'				/Use lowgain verts for FMAG2=Zmag
+XC1 'X' 7 'VHZ' 'VLZ' 'VLE' 'VLN' 'VDZ' 'VDN' 'VDE' /XMAG components & label
+XC2 'L' 6 'WLN' 'WLE' 'HHN' 'HHE' 'BHN' 'BHE' /LOCAL MAG (ML) comps
+* Use BKY's Nordquist logA0 relation for the WA & synthetic WA components
+LA0 6 'WLN' 4, 'WLE' 4, 'BHN' 4, 'BHE' 4, 'HHN' 4, 'HHE' 4
+FCM 3 'VLZ' -.06 'VLE' -.30, 'VLN' -.30	/Component corrections for Eaton Fmags
+XCM 2 'VHZ'  .33, 'VLZ'  .20		/Component corrections for Eaton Xmags
+PRE 6, 3 0 4 9, 1 1 0 9, 2 1 0 9, 4 4 4 9, 3 0 0 9, 4 0 0 9 /Preferred mags
+* Preferred mag, min readings, mag range. In pref order.
+*
+* STANDARD CHOICES FOR CALNET
+RMS 4 .10 2 3				/Residual weighting
+ERR .10					/Standard timing error
+POS 1.78				/P to S ratio
+REP T F			/Log events to terminal; don't print unweighted stations
+JUN T					/Force location of junk events
+MIN 4					/Min number of stations
+NET 2					/Use California region codes
+ZTR 5					/Trial depth
+DIS 4 15 3.5 7				/Distance weighting
+WET 1. .5 .2 .1				/Weights for P weight codes 0-3
+*
+* OUTPUT FORMAT
+ERF T					/Send error messages to terminal
+TOP F					/No page ejects
+LST 1 1 0				/No station list or models in printfile
+KPR 2					/Medium print output each event
+*
+* PMAG SETUP, 3-LETTER COMPONENT CODES, USE PMA, PMC, PC1, PC2 AND PRE COMMANDS
+*PMA T T .04 .4 5	/TURN ON PMAG CALC & PRINTING, CNT2MM FACTOR, CLIPRATIO
+*PMC 4 'W' .0488, 'P' .04, 'R' .04, 'O' .04 /DATA SOURCES W/ CNT2MM FACTORS
+*PC1 'P' -1.418 1.760 -1		/PRIMARY PMAG FROM ALL COMPONENTS
+*PC2 'G' 0.0 1.0 1 'VLZ'		/SECONDARY PMAG FROM LOW GAIN COMPONENT
+*PRE 9, 28*, 7 2 0 9, 6 4 0 9	/Add pmags to preferred mag list
+******* YOU SHOULD USE THE ATE COMMAND WITH THE DATE AND TIME OF YOUR FIRST EQ.
+******* USING A YEAR OF 0 (THE ATE COMMAND BELOW NOT COMMENTED OUT) WILL ALWAYS
+******* WORK, BUT IS INEFFICIENT.
+*
+******* AN EASY WAY IS TO USE THE ATE COMMAND BELOW WITH A 0 YEAR, THEN
+******* FOLLOW THIS COMMAND FILE WITH YOUR OWN ATE COMMAND:
+*******  ATE 1* 1984 1 1 0 0    THIS REREADS THE STANDARD FILE BUT LOADS
+******* ATTENUATIONS FROM YOUR STARTING DATE.
+*
+*ATE '/home/calnet/klein/hypfiles/all2000.atn' 1984 1 1 0 0 /Put date of your first eq here
+ATE '/home/calnet/klein/hypfiles/all2000.atn' 0	/Use this if first date is unknown
+CAL '/home/calnet/klein/hypfiles/all2000.cal' 0	/Load cal factors for digital stations
+*
+* Now add your PHS (COP), ARC (CAR), SUM, MFL, PRT and LOC commands...
+* (Use  H71 1 3 1  if you are reading an archive file (COP 3 or COP 5))

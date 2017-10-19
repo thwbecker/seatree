@@ -1,0 +1,104 @@
+################################################################################
+
+- fstrack: set of routines to trace particles in mantle flow.  Routines
+	use precomputed velocities on GMT grd files.
+	See: 
+
+	Becker et al. (GJI, 155, 696, 2003).
+
+
+May be distributed with 
+
+- d-rex: DREX Kaminski & Ribe texture routines by Eduard Kaminski and
+	Jules Browaeys, 
+	Kaminski and Browaeys. See:
+
+	Kaminski & al. (GJI, 157, 1, 2004)
+	Browaeys & Chevrot (GJI, 159, 667, 2004)
+
+- single_layer and multi_layer: 
+	shear wave splitting routines by Vera Schulte-Pelkum.
+	See: 
+
+	Schulte-Pelkum & Blackman (GJI, 154, 166, 2003)
+
+- eispack: EISPACK eigensystem routines
+
+- menke_splitting/: Bill Menke's cross-correlation routines 
+
+Copyright for these routines remains with the original authors. 
+
+for the rest
+
+(c) Thorsten Becker 2004 - 2005 twb@usc.edu
+
+$Id: README,v 1.1 2004/06/17 19:15:41 becker Exp becker $
+
+################################################################################
+
+
+INSTALLATION:
+
+
+NOTES:
+
+The file unpack is a simplified version of these installation
+instructions.
+
+
+This tar file will expand three directories, eispack, d-rex and
+fstrack, for eigenvalue routines, the DREX package and the finite
+strain tracker, respectively. 
+
+You will need a C, F77, and F90 compiler, and GMT installed. Make sure
+your Fortran and C compiler flags are set with environment variables
+CFLAGS and FFLAGS (normally they should be already). 
+
+Some F77 code expects to be able to use C preprocessor statements, in
+Intel Fortran, this is done by
+
+ifort -fpp
+
+
+
+
+Procedure:
+
+1) Define an environment variable $ARCH to
+	whatever architecture you are on, I do this by using uname
+	automated in .cshrc like so:
+
+	setenv ARCH `uname -m | gawk '{print(tolower($1))}'`
+
+2) Go to eispack and d-rex directories and make
+
+	First go to eispack, type 'make', then to d-rex and type
+	`make', this should build the DREX based libraries (for
+	copyright see note above).
+
+3) 
+
+Go to the fstrack directory. Environment variables $GMTHOME and
+$NETCDFDIR have to be set to the GMT and netcdf directories,
+respectively. (The FSE trackers uses netcdf grd files to read in
+velocity fields.) In my case, those variables point to
+
+> echo $GMTHOME/
+/usr/local/src/GMT3.4.3// 
+
+> echo $NETCDFDIR/
+/usr/local/src/netcdf-3.5.0//
+
+Then, type 'make' and 'make really_all'
+
+USAGE:
+
+The main program is 'fstrack', start with -h option for man
+page. Same for other routines. 
+
+
+STATUS:
+
+Experimental.
+
+

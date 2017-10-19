@@ -1,0 +1,2 @@
+ARCH=x86_64
+FFLAGS=-mmodel=large -O 

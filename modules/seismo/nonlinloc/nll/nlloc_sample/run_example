@@ -1,0 +1,139 @@
+#!/bin/bash
+
+# first input parameter
+modes=${1-"1 2"}
+
+
+bdir=../bin/
+
+
+
+# To run the sample location tutorial:
+#      Go to the samples directory, i.e.:
+#            cd $HOME/NLLoc/nlloc_sample
+
+
+for mode in $modes;do		# loop
+
+case $mode in
+    1)
+	
+
+#      Generate and view the model grid
+
+	echo      Create the model grid:
+
+	$bdir/Vel2Grid run/nlloc_sample.in
+#	$bdir/Vel2Grid run/vel2grid.in
+	;;
+    2)
+
+	echo      Create a GMT script and postscript image of the model:
+
+	$bdir/Grid2GMT run/nlloc_sample.in model/layer.P.mod gmt/ V G 1 0 1 301
+	#$bdir/Grid2GMT run/common.in model/layer.P.mod gmt/ V G 1 0 1 301
+	# Look at the postscript with your favorite viewer, i.e.:
+        #gv gmt/layer.P.mod.VG.ps
+
+	
+	myplotvelgrid model/layer.P.mod
+
+#	gv model/layer.P.mod.ps &
+ 
+
+	;;
+
+    3)
+
+	echo Generate and view the travel-time and take-off angle grids
+
+	echo Create the travel-time and take-off angle grids:
+        $bdir/Grid2Time run/nlloc_sample.in
+
+	# plot
+	myplotvelgrid time/layer.P.AURF.time
+
+	myplotvelgrid time/layer.P.AURF.angle
+	#gv time/layer.P.AURF.time.ps &
+ 
+
+	#echo Create a GMT script and postscript image of a travel-time grid:
+        #$bdir/Grid2GMT run/nlloc_sample.in time/layer.P.AURF.time gmt/ V G 0 0 0 301
+	#Look at the postscript with your favorite viewer, i.e.:
+        #gv gmt/layer.P.AURF.time.VG.ps
+	    
+	#echo Create a GMT script and postscript image of a take-off angle grid:
+        #$bdir/Grid2GMT run/nlloc_sample.in time/layer.P.AURF.angle gmt/ V G 0 0 0 301
+        #gv  gmt/layer.P.AURF.angle.VG.ps
+
+	;;
+
+    4)
+
+#      Generate some synthetic arrival times
+
+	echo Create the synthetic times:
+
+        $bdir/Time2EQ run/nlloc_sample.in
+
+	#Look at the synthetic times:
+
+        #more obs/synth.obs
+	;;
+
+    5)
+	echo Do the event Location
+
+	echo Locate the event using the Oct-Tree search:
+
+        $bdir/NLLoc run/nlloc_sample.in
+	
+	#Look at the NonLinLoc Hypocenter-Phase location file:
+
+        #more loc/vinti.19950421.080259.grid0.loc.hyp
+
+
+	;;
+
+    6)
+	#Plot the first event location with GMT
+
+	echo Create a GMT script and postscript image of the location PDF:
+	
+        $bdir/Grid2GMT run/nlloc_sample.in loc/vinti.19950421.080259.grid0.loc gmt/ L S
+
+
+	myplotscatter loc/vinti.19950421.080259.grid0.loc
+
+	#Look at the postscript with your favorite viewer, i.e.:
+
+         #   gs gmt/vinti.19950421.080259.grid0.loc.LS.ps
+
+
+	#Combine all event locations with LocSum
+
+	echo Combine the Hypocenter-Phase and scatter files into a location summary file:
+
+        $bdir/LocSum ./run/vinti 1 loc/vinti "loc/vinti.*.*.grid0.loc"
+
+	echo Plot the combined locations with GMT
+
+	echo Create a GMT script and postscript image of the location Expectations and Ellipsoids:
+
+        $bdir/Grid2GMT run/nlloc_sample.in loc/vinti gmt/ L E101
+
+	#Look at the postscript with your favorite viewer, i.e.:
+
+         #   gs gmt/vinti.LE_101.ps
+
+	;;
+
+esac
+
+#      Visualise the location with Seismicity Viewer (you must have installed Seismicity Viewer, see Seismicity Viewer software guide)
+
+#      Go to the viewer directory, i.e.:
+
+#            cd $HOME/NLLoc/nlloc_sample/viewer
+
+done

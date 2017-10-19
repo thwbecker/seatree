@@ -1,0 +1,27 @@
+#!/bin/bash
+#
+# arg 1 = xyz file, arg 2 = colorscale
+#
+file=${1-chkbd}			# without .xyz ending
+cmp=${2-../pm1.cpt}
+dx=${3-1}
+
+if [ ! -s $file.xyz ];then
+    echo $0: $file.xyz not found
+    exit
+fi
+reg=`minmax -I$dx $file.xyz`
+
+
+# make grid
+xyz2grd $file.xyz -G$file.grd $reg  -I$dx/$dx -N0 -V 
+
+ofile=$file.ps
+grdimage $file.grd $reg -JX7i  -Y1.5i -C$cmp -K \
+     -Ba20f2/a20f2WeSn -P > $ofile
+psscale -C$cmp -O -E -D3.5i/-.5i/5i/.25ih -V -B.25:"": >> $ofile
+modifybb $ofile 0 10 590 620 2> /dev/null
+
+convert -density 72 $ofile $file.gif
+
+echo $0: output in $ofile and  $file.gif

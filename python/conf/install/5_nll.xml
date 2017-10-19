@@ -1,0 +1,11 @@
+<SEATREEConfiguration>
+  <modules>
+    <module>
+      <importName>seatree.modules.nonLinLoc.NonLinLoc</importName>
+      <className>NonLinLoc</className>
+      <directory>nonLinLoc</directory>
+      <installImportName>nllInstaller</installImportName>
+      <installClassName>NonLinLocInstaller</installClassName>
+    </module>
+  </modules>
+</SEATREEConfiguration>

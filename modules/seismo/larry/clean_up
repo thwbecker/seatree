@@ -1,0 +1,21 @@
+#!/bin/bash
+#
+# clean up typical model output
+#
+models=${1-"R0075_1 L0035_1"}
+
+prefix="atd gmt htc ind ata pnt rhs sol xxx oldpara.dat res.dat"
+
+for f in $models;do
+    for g in $prefix;do
+	if [ -e $f.$g ];then
+	    echo $0: removing $f.$g
+	    rm -f $f.$g
+	fi
+
+    done
+done
+
+# other log files
+echo $0: cleaning up log files
+rm blk.log bma.log fit.txt fort.1 loglike.txt lsqr.log nome plot.log 2> /dev/null

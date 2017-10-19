@@ -1,0 +1,87 @@
+#!/bin/bash
+#
+# driver for invert with logic switches to see which part needs to be redone
+#
+#
+# $Id: invert_driver,v 1.2 2007/08/29 22:31:42 becker Exp becker $
+#
+#
+# options
+#
+dtype=${1-P}		# data type, P or S
+ndamp=${2-0.0}			# norm damping, should be within 0...2
+rdamp=${3-0.2}			# roughness damping, should be within 0...2
+res=${4-5}			# resolution, can be 3, 5, 7, 9, or 11
+nlay=${5-15}			# number of layers
+
+#
+
+if [ $dtype = "P" ];then	 # P inversion
+    datadir=./hrvdata/
+elif [ $dtype = "S" ];then
+    datadir=houser_s
+else
+    echo $0: data type $dtype undefined
+    exit
+fi
+#
+# name of solution file
+#
+dstring=$datadir/sol.$dtype.$res.$nlay.$ndamp.$rdamp
+
+
+echo $0: inverting data type: $dtype pixel resolution: $res nlay: $nlay
+echo $0: norm damping: $ndamp roughness: $rdamp
+#
+#
+# do some parameter changes
+#
+if [[ $res -ne 3 && $res -ne 5 && $res -ne 7 && $res -ne 9 && $res -ne 11 ]];then
+    echo $0: error: res needs to be 3, 5, 7, 9, or 11
+    echo $0: small resolutions will lead to long run times
+    exit
+fi
+
+if [ -s $dtype.oldpara.dat ];then
+    #
+    # check old parameters to see what's changed
+    #
+    read o_ndamp o_rdamp o_res o_nlay < $dtype.oldpara.dat
+    # did the norm damping change?
+    ndc=`echo $o_ndamp $ndamp | gawk '{if($1!=$2)print(1);else print(0)}'`
+
+    # did roughness damping change?
+    rdc=`echo $o_rdamp $rdamp | gawk '{if($1!=$2)print(1);else print(0)}'`
+
+    # did resolution change?
+    rc=`echo $o_res $res | gawk '{if($1!=$2)print(1);else print(0)}'`
+
+    # did number of layers changes
+    nlc=`echo $o_nlay $nlay | gawk '{if($1!=$2)print(1);else print(0)}'`
+    
+
+else
+    #
+    # first call, redo
+    #
+    rc=1
+    rdc=1
+    nlc=1
+fi
+
+#
+# dont redo the matrices
+#
+#if [[ $rc -eq 1 || $nlc ]];then  		# resolution changed, remove 
+#    rm  $datadir/a.$dtype.$res.$nlay.mat   2> /dev/null
+#fi
+#
+# don't redo the solution if it exists
+#
+#if [[ $rdc -eq 1 || $ndc -eq 1 ]];then # either norm or roughness damping changed
+#    rm  $dstring.sol  2> /dev/null
+#fi
+
+./invert $dtype $ndamp $rdamp $res $nlay				# run all routines and plot
+echo  $ndamp $rdamp $res $nlay > $dtype.oldpara.dat
+

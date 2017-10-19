@@ -1,0 +1,72 @@
+ what pixel size?
+ what horizontal roughness damping?
+ what vertical roughness damping (in fractions of horizontal damping)?
+ what norm damping?
+ what additional norm damping for mid-mantle layers?
+ number of layers?
+ total number of blocks:        1656
+ total number of parameters       24840
+ a matrix?
+ index array?
+ pointer array?
+ data vector?
+ weight?
+ number of observations in this subset?
+ opening files ./houser_s//a.S.5.15.mat                                                        ./houser_s//a.S.5.15.ind                                                        ./houser_s//a.S.5.15.pnt                                                        ./houser_s//d.S.5.15.vec                                                        
+ start from           1           1
+ weight=   1.0000000    
+       10000  rows read
+       20000  rows read
+       30000  rows read
+       40000  rows read
+       50000  rows read
+       60000  rows read
+       70000  rows read
+       80000  rows read
+       90000  rows read
+      100000  rows read
+      110000  rows read
+      120000  rows read
+      130000  rows read
+      140000  rows read
+      150000  rows read
+      160000  rows read
+ total number of data so far=      169833
+ total number of nonzero entries=     6032427
+ okay
+ check...
+  -35.469265       0.0000000    
+         375           0
+     6032427           0
+   1.1389357       0.0000000    
+ check finished
+ 2)DAMP THE ROUGHNESS
+ horizontal damp parameter           1 ;          61  0.20000000    
+ vdamp    1.0000000       1.0000000    
+ vdamp    1.0000000       2.0000000    
+ vdamp    1.0000000       2.0000000    
+ vdamp    1.0000000       2.0000000    
+ vdamp    1.0000000       2.0000000    
+ vdamp    1.0000000       2.0000000    
+ vdamp    1.0000000       2.0000000    
+ vdamp    1.0000000       2.0000000    
+ vdamp    1.0000000       2.0000000    
+ vdamp    1.0000000       2.0000000    
+ vdamp    1.0000000       2.0000000    
+ vdamp    1.0000000       2.0000000    
+ vdamp    1.0000000       2.0000000    
+ vdamp    1.0000000       2.0000000    
+ vdamp    1.0000000       1.0000000    
+ nelrhs after roughness damping:      194672
+ NO general norm damping
+ no additional mid-mantle damping
+ NO anisotropy damping
+ norm damping=   0.0000000    
+ save r.h.s.
+ call LSQR
+ lsqr inversion ran in   20.015625      seconds
+ compute variance reduction and store the solution on disc
+ use the original       169832  data.
+ compute vr for           1  subsets of data
+ set           1  vr   0.82619232      rms    4.9194188      np       169831
+ variance reduction=  0.82619232    

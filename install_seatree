@@ -1,0 +1,79 @@
+#!/bin/bash
+#
+# script to download and install SEATREE from tar ball
+#
+# See  http://geosys.usc.edu/projects/seatree/wiki/download
+#
+# for access to the developer version via SVN
+#
+#
+#
+tf=seatree.recent.tgz		# tar file name
+#source=http://geodynamics.usc.edu/~becker/software/$tf # URL
+source=http://www-udc.ig.utexas.edu/external/becker/software/$tf # URL
+#
+pname=`basename $0`
+
+echo 
+echo $pname: automated install of most recent SEATREE version
+echo 
+echo $pname: see  http://geosys.usc.edu/projects/seatree/wiki/download
+echo $pname: for help and documentation
+echo 
+
+if [ `pwd | grep seatree | wc -l` -gt 0 ];then
+    echo $pname: we appear to be in a directory with a previous seatree install
+    echo $pname: please change into a directory where you store programs 
+    echo $pname: but not the seatree install directory itself
+    echo $pname: \"cd ..\" will probably do
+    exit
+fi
+
+# 
+#
+
+
+if [ -s $tf ];then
+    echo $pname: using old $tf file in this directory
+    echo $pname: if you want new download, delete this file
+else
+    echo $pname: downloading tar ball from $source
+    wget $source
+fi
+
+
+if [ ! -s $tf ];then
+    echo $pname: download did not work, refer to the SEATREE web page
+    echo $pname: for manual install
+    exit
+fi
+
+tdir=`gunzip -c seatree.recent.tgz | tar tv |  head -1 | gawk '{print($(NF))}'`
+echo $pname: expanding into $tdir
+
+if [ -s $tdir ];then
+    echo
+    echo $pname: existing seatree directory $tdir will get overwritten
+    echo $pname: proceed\? y/n
+    read action 
+    if [[ "$action" = "n" ]];then
+	echo $pname: exiting because of user input
+	exit
+    fi
+fi
+
+
+echo $pname: expanding tar file...
+gunzip -c $tf  | tar x
+
+echo
+echo $pname: installing in $tdir by running configure script...
+echo
+cd $tdir
+./configure
+cd ..
+
+
+echo
+echo $pname: done, you might want to delete $tf
+echo

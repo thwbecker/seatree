@@ -1,0 +1,279 @@
+* sets up multiple crustal models using individual delay files.
+* execute these commands after the sta command to get delays properly.
+*
+*set alternate stations (east side of san andreas) for bear valley & loma prieta
+del -1 'multmod2.alt'
+*
+* default northern california gradient model
+crt 1 'ncg.crt'
+del 1 'ncg3.del'
+mul t 1
+*
+* mt. lewis
+crt 2 'lew.crt'
+del 2 'lew3.del'
+nod 37 29.0 121 41.7  10 5 2
+nod 37 26.1 121 49.6   7 5 2
+nod 37 29.3 121 51.5   6 5 2
+*
+* coalinga
+crt 3 'coa.crt'
+del 3 'coa3.del'
+nod 36  0.4 120  4.0  20 9 3
+nod 36  9.9 120 13.5  20 9 3
+nod 36 18.1 120 23.4  20 9 3
+nod 36 26.5 120 33.0  20 9 3
+*
+* central coast - San Simeon
+crt 4 'sim.crt'
+del 4 'sim3.del'
+nod 35 24.9 120 54.0  50 18 4
+nod 35 44.2 121 15.9  50 18 4
+nod 36  1.1 121 42.1  50 18 4
+nod 36 22.4 122  2.9  50 18 4
+*
+* bear valley (gabilan & diablo)
+crt 5 'gab.crt' /the pacific side
+del 5 'gab3.del'
+crt 6 'dia.crt' /the north america side
+del 6 'gab3.del' /use the same delay file for both station sets
+alt 5 6
+nod 36 27.6 121  1.9  15 13 5
+nod 36 35.  121 10.3  15 13 5
+nod 36 39.2 121 20.0   7  6 5
+*
+* coyote lake
+crt 7 'coy.crt'
+del 7 'coy3.del'
+nod 37  4.8 121 29.7  11 7 7
+*
+* morgan hill
+crt 8 'mor.crt'
+del 8 'mor3.del'
+nod 37 15.9 121 41.7  12 6 8
+*
+* concord-calaveras
+crt 9 'con.crt'
+del 9 'con3.del'
+nod 38  4.5 122  7.0   9 7 9
+nod 37 59.0 122  3.1   9 7 9
+nod 37 53.0 122   0  7.5 7 9
+nod 37 48.2 121 56.4 7.5 7 9
+nod 37 43.0 121 53.2 7.5 7 9
+nod 37 37.8 121 50.7 7.5 7 9
+*
+* sf peninsula north
+crt 10 'pen.crt'
+del 10 'pen3.del'
+nod 37 40.0 122 33.5  20 9 10
+nod 37 46.4 122 40.0  20 9 10
+*
+* sf peninsula south
+crt 35 'pes.crt'
+del 35 'pes3.del'
+nod 37 19.5 122 26.0 9 5 35
+nod 37 22.7 122 21.3 9 5 35
+nod 37 25.2 122 16.8 9 5 35
+*
+* mammoth lakes - long valley area
+crt 11 'mam.crt'
+del 11 'mam3.del'
+nod 37 55.5 118 46.8  75 50 11
+*
+* these subdivisions of the mammoth area will be implemented when
+* new models are derived
+* mono lake (mon)
+*nod 38 15.5 119  4  49 25 36
+*nod 38 34   118 59  43 25 36
+*nod 38 16 118 20.5  39 25 36
+*
+* foothills (fot)
+*nod 37 18 119 42  57 30 37
+*
+* long valley caldera (lvc)
+*nod 37 41.6 118 54.4  8 8 11
+*nod 37 41.0 118 49.0  8 8 11
+*
+* sierra block (sie)
+*nod 37 37.6 119  4.0  5 4 38
+*nod 37 33.5 119  0.5  6 5 38
+*nod 37 31   118 52   10 8 38
+*nod 37 33.2 118 45.8  4 4 38
+*
+* round valley (rou)
+*nod 37 26.2 118 36  11 5 39
+*nod 37 16.4 118 38  19 9 39
+*nod 37 33.0 118 38.5 5 3 39
+*
+* chalfant valley (cha)
+*nod 37 41.5 118  23  19 15 35
+*nod 37 33  118 1.5   38 20 35
+*
+* geysers
+crt 12 'gey.crt'
+del 12 'gey3.del'
+nod 38 49.0 122 48.6  11 8 12
+nod 38 57.0 122 43.0  11 8 12
+*
+* north bay coast ranges
+crt 13 'nby.crt'
+del 13 'nby3.del'
+nod 38 42   122 12  35 16 13
+nod 38 24.5 122 28  35 16 13
+nod 38 19.5 123  0  43 16 13
+nod 38  9.5 123 26  51 16 13
+*
+* auburn - sierra foothills
+crt 14 'aub.crt'
+del 14 'aub3.del'
+nod 39  3. 120 51.  85 40 14
+nod 38 18. 120 25.  52 25 14
+nod 38 55. 120  8.  52 30 14
+*
+* lassen region
+crt 15 'las.crt'
+del 15 'las3.del'
+nod 40 18. 121 34.  55 30 15
+nod 40 27.4 120 44  54 37 15
+nod 40 51.5 120 18  27 25 15
+*
+* maacama fault region
+crt 16 'maa.crt'
+del 16 'maa3.del'
+nod 39 26.7 123 20.9 10 8 16
+nod 39 22.3 123 18.3 10 8 16
+nod 39 19.6 123 16.6 10 8 16
+nod 39 15.2 123 14.4 12 8 16
+nod 39 09.4 123 12.0 12 8 16
+*
+* cape mendocino
+crt 17 'men.crt'
+del 17 'men3.del'
+nod 40 42   125 45   135 40 17
+nod 40 34.8 124 27.4  78 20 17
+nod 40 27   123 35    59 20 17
+nod 40 12.7 122 51.8  37 18 17
+nod 40 29.5 122 49    37 18 17
+*
+* loma prieta - san juan bautista
+crt 18 'lom.crt' /the pacific side
+del 18 'lom3.del' /both sides together
+crt 25 'lon.crt' /the north america side
+del 25 'lom3.del' /use the same delay file for both station sets
+alt 18 25
+nod 37  8.0 122  6.0  23 16 18
+nod 37  3.0 121 52.7  14  8 18
+nod 36 56.5 121 45.0  13  8 18
+nod 36 50.7 121 37.0  13  8 18
+nod 36 45.7 121 31.3  10  5 18
+*
+* tres pinos
+crt 19 'tre.crt'
+del 19 'tre3.del'
+nod 36 49.1 121 16.1  10 5 19
+nod 36 53.1 121 20.0  10 5 19
+*
+* walker pass
+crt 20 'wal.crt'
+del 20 'wal3.del'
+nod 35 42.5 118  5.  86 40 20
+nod 36 27.  118 20.  72 60 20
+*
+* shasta & oregon
+crt 21 'sha.crt'
+del 21 'sha3.del'
+nod 43  0. 121 58. 230 45 21
+*
+* transverse ranges
+crt 22 'tra.crt'
+del 22 'tra3.del'
+nod 34 19. 119 36.  90 25 22
+nod 33 55. 118 46.  90 35 22
+*
+* southern calif.
+crt 23 'sca.crt'
+del 23 'sca3.del'
+nod 32 19. 116 24.  170 40 23
+nod 34  6. 115 43.  170 40 23
+*
+* basin & range
+crt 24 'bas.crt'
+del 24 'bas3.del'
+nod 37 30. 115 35.  170 40 24
+nod 39 19. 116  4.  170 40 24
+nod 40 25. 117 52.  170 55 24
+*
+* hayward fault
+crt 26 'hay.crt'
+del 26 'hay3.del'
+nod 37 58.1 122 20.0   9 10 26
+nod 37 52.9 122 15.9   9 7 26
+nod 37 46.8 122 11.5   9 7 26
+nod 37 40.8 122  7.9   9 7 26
+nod 37 35.6 122  4.0   9 7 26
+nod 37 30.2 122  2.8   9 7 26
+*
+* parkfield (middle mountain)
+crt 27 'pmm.crt'
+del 27 'pmm3.del'
+nod 35 58.5 120 31.5  10 11 27
+nod 36  1.5 120 35.0  10 11 27
+nod 36  5.0 120 39.5  10 11 27
+nod 36  8.4 120 43.6  10 11 27
+nod 36 12.4 120 47.6  10 11 27
+*
+* parkfield (gold hill)
+crt 28 'pgh.crt'
+del 28 'pgh3.del'
+nod 35 44.1 120 16.5  10 9 28
+nod 35 48.5 120 21.5  10 9 28
+*
+* parkfield (simmler)
+crt 29 'psm.crt'
+del 29 'psm3.del'
+nod 35 27.4 119 58.7  29 11 29
+*
+* livermore-antioch
+crt 30 'liv.crt'
+del 30 'liv3.del'
+nod 38 14.3 121 54.3  12 7 30
+nod 38  6.6 121 49.8  12 7 30
+nod 37 58.9 121 46.0  12 7 30
+nod 37 51.6 121 41.3  12 7 30
+nod 37 43.9 121 37.9  12 7 30
+*
+* maacama north
+* terminus of maacama and bartlett springs
+crt 31 'man.crt'
+del 31 'man3.del'
+nod 39 43.8 123 28.3 18 10 31
+nod 39 46.7 123 16.9 14 8 31
+nod 39 48.0 123 11.0 13 8 31
+*
+* point arena to fort bragg
+crt 32 'pta.crt'
+del 32 'pta3.del'
+nod 39 40   124  1   24 13 32
+nod 39 22   123 52   31 14 32
+nod 39 14.7 123 38.0 16  7 32
+nod 39 02.8 123 50.2 37 17 32
+nod 38 52.6 123 29.0 24 10 32
+nod 38 53   123 10.5 15  8 32
+nod 38 58   123 0.5  10  8 32
+*
+* bartlett springs east
+crt 33 'bae.crt'
+del 33 'bae3.del'
+nod 39 42.5 122 29.6 20 18 33
+nod 39 42.2 122 48.9 16  9 33
+nod 39 31.6 122 42.3 12  7 33
+*
+* bartlett springs
+crt 34 'bar.crt'
+del 34 'bar3.del'
+nod 39 32.9 123 08.2  9 9 34
+nod 39 29.0 123 04.3 11 7 34
+nod 39 24.8 122 59.4 12 7 34
+nod 39 20.3 122 55.1 12 7 34
+nod 39 14.3 122 48.8 17 11 34
+*

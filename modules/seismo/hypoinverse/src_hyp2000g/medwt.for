@@ -1,0 +1,92 @@
+      SUBROUTINE MEDWT (N, K, KW, MED)
+C--COMPUTES THE WEIGHTED MEDIAN OF N VALUES (MAGNITUDES). THE VALUES ARE IN K
+C  AND THE WEIGHTS IN KW. THE MEDIAN IS RETURNED IN MED.
+C--EACH WEIGHT KW MUST BE LARGER THAN 0, BUT NEED NOT BE NORMALIZED.
+C--K AND KW ARE REARRANGED IN THIS PROCESS.
+C      INTEGER*4      N      !THE NUMBER OF VALUES DEFINED IN K & KW.
+C      INTEGER*2      K(N)      !ARRAY OF VALUES.
+C      INTEGER*2      KW(N)      !WEIGHTS OF THE VALUES OF K.
+C      INTEGER*4      MED      !THE RESULTING MEDIAN OF N VALUES OF K.
+      DIMENSION K(N), KW(N)
+
+C--HANDLE THE TRIVIAL CASE OF N=1
+      IF (N.LT.2) THEN
+        MED=K(1)
+        RETURN
+      END IF
+
+C--FIRST SORT THE VALUES OF K IN ASCENDING ORDER
+      CALL SORT2 (N,K,KW)
+
+C--GET THE TOTAL WEIGHT THEN DIVIDE BY 2
+      KX=KW(1)
+      DO I=2,N
+        KX=KX+KW(I)
+      END DO
+      X=KX*.5
+
+C--FIND THE INDEX I OF THE WEIGHT AT OR BELOW THE HALFWAY POINT
+      KX=KW(1)
+      DO I=2,N
+        IF (KX+.5*KW(I) .GT. X) GOTO 30
+        KX=KX+KW(I)
+      END DO
+
+30    I=I-1
+C--HALF THE TOTAL WEIGHT X IS NOW AT I OR BETWEEN I & I+1
+C  THE CUMULATIVE WEIGHT AT I   IS NOW KX-.5*KW(I)
+C  THE CUMULATIVE WEIGHT AT I+1 IS NOW KX+.5*KW(I+1)
+C--NOW USE LINEAR INTERPOLATION BETWEEN I AND I+1
+      MED= NINT( K(I) + (K(I+1)-K(I)) * (2.*(X-KX) + KW(I)) /
+     2 (KW(I+1)+KW(I)) )
+      RETURN
+      END
+C---------------------------------------------------------------------
+      SUBROUTINE SORT2 (N,KA,KB)
+C--THIS IS AN INTEGER VERSION OF THE HEAPSORT SUBROUTINE FROM THE NUMERICAL
+C  RECIPES BOOK. KA IS REARRANGED IN ASCENDING ORDER & KB IS PUT IN THE SAME
+C  ORDER AS KA.
+C      INTEGER*4      N      !THE NUMBER OF VALUES OF KA TO BE SORTED
+C      INTEGER*2      KA(N)      !SORT THIS ARRAY IN ASCENDING ORDER
+C      INTEGER*2      KB(N)      !PASSIVELY REARRANGE THIS ARRAY TOO
+C      INTEGER*2      KKA,KKB
+      DIMENSION KA(N), KB(N)
+
+      L=N/2+1
+      IR=N
+10    IF (L.GT.1) THEN
+        L=L-1
+        KKA=KA(L)
+        KKB=KB(L)
+      ELSE
+        KKA=KA(IR)
+        KKB=KB(IR)
+        KA(IR)=KA(1)
+        KB(IR)=KB(1)
+        IR=IR-1
+        IF (IR.EQ.1) THEN
+          KA(1)=KKA
+          KB(1)=KKB
+          RETURN
+        END IF
+      END IF
+      I=L
+      J=L+L
+20    IF (J.LE.IR) THEN
+        IF (J.LT.IR) THEN
+          IF (KA(J) .LT. KA(J+1)) J=J+1
+        END IF
+        IF (KKA .LT. KA(J)) THEN
+          KA(I)=KA(J)
+          KB(I)=KB(J)
+          I=J
+          J=J+J
+        ELSE
+          J=IR+1
+        END IF
+        GOTO 20
+      END IF
+      KA(I)=KKA
+      KB(I)=KKB
+      GOTO 10
+      END

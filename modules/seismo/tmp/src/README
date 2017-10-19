@@ -1,0 +1,119 @@
+In this file there are all the instruction for a complete run from the data to
+the final model picture.
+For each program, an explanation about input and output is given.
+
+
+Data
+- bin2ascii. Is the code to convert the ASCII files with stations, sources 
+or travel-time delays in binary format. It converts tables with only real 
+(both double or single precision) or integer numbers. A file with both 
+integers and real numbers will not be correctly converted, and the same holds 
+for files with both single and double precision floating-point numbers. 
+Integer numbers are only supported in 4-bytes precision
+The files with travel-time delay contains only the numerical values of 
+them, the one with sources has longitudes, latitudes and depths, the one with 
+receivers includes longitudes and latitudes.
+
+Input
+- A flag to tell the program if it has to convert from bin 2 ascii (flag=1) or 
+the reverse (flag=2).
+- Another flag to tell the program if it has to handle real (=r) or integer 
+numbers (=i)
+- Record length; it must be equal to the precision of the variable to read 
+(single precision=4, double precision=8) times the number of fields on each row.
+- Number of fields to read on each row
+- Binary file (to convert or to be generated)
+- ASCII file (to convert or to be generated)
+
+
+Mat
+In this directory there are the programs to generate the matrix and the vector 
+to invert, in sparse and binary format.
+The program does discard some data, depending on their associated 
+epicentral distance or possible failures in the ray-tracing procedure.
+One can compile the program voxint with either the make file 
+"voxint.mk" or "voxint_gfortran.mk". The only difference is that the former 
+compiles everything with the Intel Fortran Compile ifort, the latter with 
+the GNU compiler gfortran.
+
+Input files: 
+- aniprmc, hardwired
+- File with reference model (PREM_VOIGT_P.txt or PREM_VOIGT_S.txt for P or S model respectively)
+- Files with travel-time delays, sources and receivers, generated in binary 
+format at the previous step. Only 4-bytes floating point values are correctly 
+read by voxint.
+
+Standard input
+- grid size at equator (in degrees)
+- number of layers
+- wave type (P or S)
+- Lowest acceptable epicentral distance
+- Flag for polarization (0=SV, 1=SH). If you use P waves, this value does not 
+make any difference
+- dt file (in binary format)
+- source file
+- receiver file           
+- File with reference model
+
+Output files
+- a_vx.mat, the non-zero elements of the matrix to invert
+- a_vx.ind, the column indexes of the non-zero elements
+- a_vx.pnt, the delimiters of each row of the matrix
+- d_vx.vec, the data vector.
+- used_stations.txt, the list of used rays from the input catalogue.
+
+
+Inv
+As in the "Mat" section, two make files are given, depending on the compiler 
+that one wishes to employ.
+With the main executable, joint_lsqr_vx_isodamp, one performs an LSQR inversion 
+of the matrix and vector generated at the previous step.
+
+Input files: the files a_vx.??? and d_vx.vec generated at the previous step
+
+Standard input
+- The largest possible number of elements in the vector. If the problem 
+is regularized, it must be larger than the number of data.
+- Largest possible number of non-zero elements in the matrix to invert 
+(regularized or not). Again, if the problem is regularized, it must be 
+larger than the number of non-zero elements of the matrix generated at the 
+previous step
+- Grid size at equator (in degrees)
+- Flag to force the off-equator voxel size to be an integer multiple of the 
+grid size at equator (1=yes, 0=no)
+- Horizontal roughness damping
+- Ratio between vertical and horizontal roughness damping
+- Norm damping
+- Additional norm damping for mid-mantle layers
+- Anisotropy norm damping
+- Number of layers
+- Working directory
+- File .mat generated at previous step
+- File .ind generated at previous step
+- File .pnt generated at previous step
+- File .vec generated at previous step
+- Weight to give to the actual data set
+- Positive and negative extreme from where start to tape the data with an 
+exponential function
+- Number of data
+- "finished", if one wants to stop adding data, otherwise start again from the 
+.mat file
+
+Output files
+- hits.dat, hitcount for each block
+- sensitivity.dat, the sensitivity for each block according to the data
+- fit.txt, with the roughness parameters, the number of steps to perform and 
+the variance reduction. If the file already exists, the program appends the 
+new results to the old ones.
+- vr.txt, with the variance reduction only. Again, if the file already exists, 
+the program will append the new results
+- solution.txt, the result of the inversion
+
+Vis
+It contains scripts and programs to visualize the solution generated at the 
+previous step.
+Compile the file mapview_3d with one of the two available make files (the 
+only difference between them is that one compiles with ifort, the other one 
+with gfortran), and then run 
+./overview-flexi-pac.sh 1 model 2 cpt file 3 grid size 4 remove average y/n
+

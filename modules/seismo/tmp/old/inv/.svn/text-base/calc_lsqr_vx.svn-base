@@ -1,0 +1,72 @@
+#!/bin/bash
+#
+# compute solutions and plot
+#
+#size=${1-10}
+size=${1-5}			# resolution
+damprs=${2-"0. 0.001 0.01 0.1 1. 1.75 2.5 3.25 4. 5. 6.25 7.5 10. 12.5 15. 17.5 20. 22.5 25. 27.5 30. 32.5 35. 37.5 40. 43. 47. 50. 53. 57. 60. 63. 67. 70. 73. 77. 80. 87. 93. 100. 112.5 125. 137.5 150. 162.5 175. 187.5 200. 230. 270. 300. 370. 430. 500. 580. 670. 750. 830. 920. 1000. 1300. 1700. 2000. 3000. 4000.  5000. 7000. 9000. 11000. 13000"} # roughness damping settings
+#damprs=${2-"1000."}
+
+# normal damping
+dampn=0
+
+
+if [ `echo $damprs | gawk '{print(NF)}'` -gt 1 ];then
+    loop=1
+    rm fit.txt hits.dat  roughness.txt 2> /dev/null
+else
+    loop=0
+fi
+
+date
+
+for dampr in $damprs;do
+    if [ ! -s ../mat/matrices/num.obs_$size ];then # make matrix
+	echo 
+	echo matrix not found, constructing
+	echo
+	cd ../mat/
+	calc_matrix_bw_vx $size
+	cd ../inv/
+    fi
+    read nobs < ../mat/matrices/num.obs_$size
+
+# invert
+$ARCH/lsqr_vx <<EOF
+$size
+$dampr
+$dampn
+"../mat/matrices/a.vx_mat_P0_$size"
+"../mat/matrices/a.vx_ind_P0_$size"
+"../mat/matrices/a.vx_pnt_P0_$size"
+"../mat/matrices/d.vx_vec_P0_$size"
+1.
+$nobs
+EOF
+
+# plot
+    ./plot_overview deltavp.dat one.cpt $size
+    mv overview.ps maps/dvp.$size.$dampn.$dampr.ps
+    gzip -f maps/dvp.$size.$dampn.$dampr.ps 
+
+
+    mv deltavp.dat maps/dvp.$size.$dampn.$dampr.vox
+    
+$ARCH/vox2roughness <<EOF
+$size
+"maps/dvp.$size.$dampn.$dampr.vox"
+EOF
+
+done
+
+if [ $loop -eq 1 ];then
+
+    ./lcurve.vox.sh
+    mv lcurve.txt curves/lcurve.txt_$size
+    mv roughness.txt curves/roughness.txt_$size
+    mv fit.txt curves/fit.txt_$size
+    mv loglike.txt curves/loglike.txt_$size
+fi
+
+
+date

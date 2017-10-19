@@ -1,0 +1,22 @@
+use calc_matrix_bw_vx
+
+
+Original comments:
+
+Compile the code to build the matrix with the included Makefile.
+
+use the attached script matrix*.csh to run the program matrix_bw_vx
+(matrix_body waves_voxels) and build matrices that will be stored in
+the subdirectory matrices/
+
+notice that the matrices are stored efficiently to take advantage of
+their sparsity. One file *mat* with the nonzero values of the matrix;
+one file *ind* with their column indexes; one file *pnt* with the
+number of nonzero entries at each row; and the data vector *vec*.
+
+aniprmc is the reference model: anisotropic PREM with a 2-layer crust,
+stored in the classical PREM format (see Anderson and Dziewonski,
+1991).
+
+
+

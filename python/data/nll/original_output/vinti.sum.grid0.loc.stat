@@ -1,0 +1,116 @@
+
+Average Phase Residuals (CalcResidual)  RMS_Max: 9999.000000  NRdgs_Min: -1  Gap_Max: 9999.000000  P_Res_Max: 1.000000  S_Res_Max: 1.000000
+          ID      Phase   Nres      AveRes       StdDev       ResMin       ResMax     ignored
+LOCDELAY  AURF    G       3        0.091302     0.060785     0.021944     0.169962     0
+LOCDELAY  AURF    P       1        0.012084     -1.000000    0.012084     0.012084     0
+LOCDELAY  AUTN    G       2        -0.078508    0.229804     -0.308312    0.151296     0
+LOCDELAY  AUTN    P       1        0.013348     -1.000000    0.013348     0.013348     0
+LOCDELAY  AUTN    p       1        -0.159635    -1.000000    -0.159635    -0.159635    0
+LOCDELAY  CEPP    P       4        -0.003828    0.058814     -0.053171    0.096636     0
+LOCDELAY  CEPP    S       3        -0.077652    0.037067     -0.119234    -0.029218    0
+LOCDELAY  IMI     P       3        0.093153     0.024194     0.059037     0.112470     0
+LOCDELAY  IMI     S       2        0.027887     0.037155     -0.009268    0.065042     0
+LOCDELAY  MVIF    G       2        -0.314459    0.434373     -0.748832    0.119914     0
+LOCDELAY  MVIF    P       1        -0.018014    -1.000000    -0.018014    -0.018014    0
+LOCDELAY  MVIF    S       1        0.624372     -1.000000    0.624372     0.624372     0
+LOCDELAY  MVIF    p       1        0.083344     -1.000000    0.083344     0.083344     0
+LOCDELAY  NEGI    P       4        0.007600     0.064690     -0.080496    0.100028     0
+LOCDELAY  NEGI    S       3        0.042912     0.125387     -0.132804    0.151398     0
+LOCDELAY  REVF    G       2        -0.200848    0.054787     -0.255635    -0.146061    0
+LOCDELAY  REVF    P       1        -0.071345    -1.000000    -0.071345    -0.071345    0
+LOCDELAY  RONE    P       4        -0.050176    0.075107     -0.115244    0.076376     0
+LOCDELAY  RONE    S       3        -0.113974    0.106061     -0.262940    -0.024317    0
+LOCDELAY  SBF     G       2        0.399668     0.121316     0.278352     0.520984     0
+LOCDELAY  SBF     P       1        0.224260     -1.000000    0.224260     0.224260     0
+LOCDELAY  SBF     p       1        0.088149     -1.000000    0.088149     0.088149     0
+LOCDELAY  TOUF    G       1        0.212046     -1.000000    0.212046     0.212046     0
+LOCDELAY  TOUF    P       1        -0.087997    -1.000000    -0.087997    -0.087997    0
+LOCDELAY  TOUF    S       1        -0.472799    -1.000000    -0.472799    -0.472799    0
+LOCDELAY  TOUF    p       1        0.088536     -1.000000    0.088536     0.088536     0
+
+Total Phase Corrections (CalcResidual + InputDelay)  RMS_Max: 9999.000000  NRdgs_Min: -1  Gap_Max: 9999.000000  P_Res_Max: 1.000000  S_Res_Max: 1.000000
+          ID      Phase   Nres      TotCorr
+LOCDELAY  AURF    G       3        0.091302    
+LOCDELAY  AURF    P       1        0.012084    
+LOCDELAY  AUTN    G       2        -0.078508   
+LOCDELAY  AUTN    P       1        0.013348    
+LOCDELAY  AUTN    p       1        -0.159635   
+LOCDELAY  CEPP    P       4        -0.003828   
+LOCDELAY  CEPP    S       3        -0.077652   
+LOCDELAY  IMI     P       3        0.093153    
+LOCDELAY  IMI     S       2        0.027887    
+LOCDELAY  MVIF    G       2        -0.314459   
+LOCDELAY  MVIF    P       1        -0.018014   
+LOCDELAY  MVIF    S       1        0.624372    
+LOCDELAY  MVIF    p       1        0.083344    
+LOCDELAY  NEGI    P       4        0.047600    
+LOCDELAY  NEGI    S       3        0.082912    
+LOCDELAY  REVF    G       2        -0.200848   
+LOCDELAY  REVF    P       1        -0.071345   
+LOCDELAY  RONE    P       4        -0.050176   
+LOCDELAY  RONE    S       3        -0.113974   
+LOCDELAY  SBF     G       2        0.399668    
+LOCDELAY  SBF     P       1        0.224260    
+LOCDELAY  SBF     p       1        0.088149    
+LOCDELAY  TOUF    G       1        0.252046    
+LOCDELAY  TOUF    P       1        -0.087997   
+LOCDELAY  TOUF    S       1        -0.472799   
+LOCDELAY  TOUF    p       1        0.088536    
+
+Average Phase Residuals PDF (CalcPDFResidual)  RMS_Max: 9999.000000  NRdgs_Min: -1  Gap_Max: 9999.000000  P_Res_Max: 1.000000  S_Res_Max: 1.000000
+          ID      Phase   Nres      AveRes       StdDev       ResMin       ResMax     ignored
+LOCDELAY  AURF    G       0        0.000000     -1.000000    0.021944     0.169962     0
+LOCDELAY  AURF    P       0        0.000000     -1.000000    0.012084     0.012084     0
+LOCDELAY  AUTN    G       0        0.000000     -1.000000    -0.308312    0.151296     0
+LOCDELAY  AUTN    P       0        0.000000     -1.000000    0.013348     0.013348     0
+LOCDELAY  AUTN    p       0        0.000000     -1.000000    -0.159635    -0.159635    0
+LOCDELAY  CEPP    P       0        0.000000     -1.000000    -0.053171    0.096636     0
+LOCDELAY  CEPP    S       0        0.000000     -1.000000    -0.119234    -0.029218    0
+LOCDELAY  IMI     P       0        0.000000     -1.000000    0.059037     0.112470     0
+LOCDELAY  IMI     S       0        0.000000     -1.000000    -0.009268    0.065042     0
+LOCDELAY  MVIF    G       0        0.000000     -1.000000    -0.748832    0.119914     0
+LOCDELAY  MVIF    P       0        0.000000     -1.000000    -0.018014    -0.018014    0
+LOCDELAY  MVIF    S       0        0.000000     -1.000000    0.624372     0.624372     0
+LOCDELAY  MVIF    p       0        0.000000     -1.000000    0.083344     0.083344     0
+LOCDELAY  NEGI    P       0        0.000000     -1.000000    -0.080496    0.100028     0
+LOCDELAY  NEGI    S       0        0.000000     -1.000000    -0.132804    0.151398     0
+LOCDELAY  REVF    G       0        0.000000     -1.000000    -0.255635    -0.146061    0
+LOCDELAY  REVF    P       0        0.000000     -1.000000    -0.071345    -0.071345    0
+LOCDELAY  RONE    P       0        0.000000     -1.000000    -0.115244    0.076376     0
+LOCDELAY  RONE    S       0        0.000000     -1.000000    -0.262940    -0.024317    0
+LOCDELAY  SBF     G       0        0.000000     -1.000000    0.278352     0.520984     0
+LOCDELAY  SBF     P       0        0.000000     -1.000000    0.224260     0.224260     0
+LOCDELAY  SBF     p       0        0.000000     -1.000000    0.088149     0.088149     0
+LOCDELAY  TOUF    G       0        0.000000     -1.000000    0.212046     0.212046     0
+LOCDELAY  TOUF    P       0        0.000000     -1.000000    -0.087997    -0.087997    0
+LOCDELAY  TOUF    S       0        0.000000     -1.000000    -0.472799    -0.472799    0
+LOCDELAY  TOUF    p       0        0.000000     -1.000000    0.088536     0.088536     0
+
+Total Phase Corrections PDF (CalcPDFResidual + InputDelay)  RMS_Max: 9999.000000  NRdgs_Min: -1  Gap_Max: 9999.000000  P_Res_Max: 1.000000  S_Res_Max: 1.000000
+          ID      Phase   Nres      TotCorr
+LOCDELAY  AURF    G       0        0.000000    
+LOCDELAY  AURF    P       0        0.000000    
+LOCDELAY  AUTN    G       0        0.000000    
+LOCDELAY  AUTN    P       0        0.000000    
+LOCDELAY  AUTN    p       0        0.000000    
+LOCDELAY  CEPP    P       0        0.000000    
+LOCDELAY  CEPP    S       0        0.000000    
+LOCDELAY  IMI     P       0        0.000000    
+LOCDELAY  IMI     S       0        0.000000    
+LOCDELAY  MVIF    G       0        0.000000    
+LOCDELAY  MVIF    P       0        0.000000    
+LOCDELAY  MVIF    S       0        0.000000    
+LOCDELAY  MVIF    p       0        0.000000    
+LOCDELAY  NEGI    P       0        0.040000    
+LOCDELAY  NEGI    S       0        0.040000    
+LOCDELAY  REVF    G       0        0.000000    
+LOCDELAY  REVF    P       0        0.000000    
+LOCDELAY  RONE    P       0        0.000000    
+LOCDELAY  RONE    S       0        0.000000    
+LOCDELAY  SBF     G       0        0.000000    
+LOCDELAY  SBF     P       0        0.000000    
+LOCDELAY  SBF     p       0        0.000000    
+LOCDELAY  TOUF    G       0        0.040000    
+LOCDELAY  TOUF    P       0        0.000000    
+LOCDELAY  TOUF    S       0        0.000000    
+LOCDELAY  TOUF    p       0        0.000000    

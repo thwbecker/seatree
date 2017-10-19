@@ -1,0 +1,5 @@
+#!/bin/bash
+# for a larry type surface wave data file
+# extract station locations, receiver locations, or paths, GMT style
+#
+ifile=${

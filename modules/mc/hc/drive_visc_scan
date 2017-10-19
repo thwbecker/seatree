@@ -1,0 +1,47 @@
+#!/bin/bash
+#
+# compute viscosity scans using HC for single, or simple (2-4) layer structures
+#
+layers=${1-"-2 2 3 4"}
+smodels=${2-"smean2 lrr98d s40rts semucb-wm1 smean2_ntn st11den-1 stb00d"}
+zlm=${3-660}		# depth of the upper/lower mantle boundary
+zau=${4-410}			# depth of the asthenosphere, from 100.... zau
+
+geoid_ref=$HOME/progs/src/seatree/python/data/hc/itg-hc-geoid.chambat.ab
+mkdir -p visc_scan_out/
+
+for lay in $layers;do
+
+    if [ $lay -eq 2 ];then
+	dv=0.001
+    elif [ $lay -eq -2 ];then
+	dv=0.01
+    elif [ $lay -eq 3 ];then
+	dv=0.05
+    elif [ $lay -eq 4 ];then
+	dv=0.05
+    else
+	echo error
+	exit
+    fi
+    for smodel in $smodels;do
+	while [ `ps aux | grep  hc_visc_scan | lc ` -gt $NR_CPUS ];do
+	    echo $0: waiting for jobs to terminate
+	    sleep 30
+	done
+	if [ $zau = 410 ];then
+	    suf=dat.gz
+	else
+	    suf=a.$zau.dat.gz
+	fi
+	if [ $zlm = 660 ];then
+	    ofile=visc_scan_out/visc_scan.$smodel.$lay.$suf 
+	else
+	    ofile=visc_scan_out/visc_scan.$smodel.$lay.$zlm.$suf 
+	fi
+	hc_visc_scan -dens $datadir/tomography/models/$smodel.31.m.ab -dshs \
+		     -vs_zlm $zlm -vs_zau $zau \
+		     -gref $geoid_ref -vs_n $lay -vs_dv $dv # gzip -c > $ofile &
+    done
+
+done

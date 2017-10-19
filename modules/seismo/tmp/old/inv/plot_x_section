@@ -1,0 +1,27 @@
+#!/bin/bash
+# arg 1 = longitude
+lon=${1-0}
+# arg 2 = latitude
+lat=${2-0}
+# arg 3 = name of model file
+model=${3-model}
+#SCALE = "../monte1.cpt"
+SCALE=one.cpt
+
+$ARCH/cross_sec <<EOF
+$model
+n
+n
+$lat
+$lon
+EOF
+
+gmtset LABEL_FONT_SIZE 12 ANOT_FONT_SIZE 11 ANOT_OFFSET .2 ANOT_FONT 6 LABEL_FONT 6 BASEMAP_TYPE plain
+xyz2grd cross.dat -Ggrd.bin -I1/29 -R0/360/3485.5/6356.5
+pstext -Jx1 -R0/21/0/29.7 -P /dev/null -K >! xsec_$1_$2.ps
+#pstext -Jx1 -X-1 -Y-1 -R -O -K << ! >> xsec_$1_$2.ps
+#0.5 4 14 0 0 1 pole of great circle: longitude=$1 latitude=$2
+#!
+grdimage grd.bin -E300 -JP12 -X1 -Y6 -O -K -V -Bwesn -P -C$SCALE >> xsec_$1_$2.ps
+psscale -C$SCALE -D6/-0.5/5/0.4h -O -L -K -B.5:" @~d@~v@-P@-/v@-P@- (%) ": >> xsec_$1_$2.ps
+pscoast -R0/360/-90/90 -X3 -Y3 -O -JS$1/$2/6 -Bwesn -G150 -W1 -Dc -A10000 >> xsec_$1_$2.ps

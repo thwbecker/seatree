@@ -1,0 +1,166 @@
+#!/bin/bash
+#
+#
+# main inversion and plotting routines
+#
+#
+data=${1-R0075.1}		# data file name, also used for output file
+                                # names
+ndamp=${2-0.0}			# norm damping
+rdamp=${3-0.2}			# roughness damping
+res=${4-5}			# resolution
+
+
+# refinement, not implemented
+refine=1
+
+# inversion method
+im=2			# 1: cholesky 2: LSQR method of finding the
+                        #   least squares solution
+#
+# plotting
+#
+ravg=0			# remove average from solution?
+#
+# style
+pstyle=2
+
+
+cmp=mytomo.cpt
+
+
+#
+# make sure the code is compiled
+#
+if [ ! -s ./$ARCH/ ]; then
+    mkdir $ARCH
+fi
+echo $0: testing if code needs to be compiled
+make
+
+
+if [ ! -s $cmp ];then
+    makecpt -Chaxby -I -T-10/10/1 | gawk '{if((substr($1,1,1)!="#")&&(NF==8))print($0)}' > $cmp
+    rm $data.gmt 2> /dev/null	# need to redo the GMT input 
+fi
+
+# 
+# generate ATA file and RHS
+#
+if [ ! -s $data.ata ];then
+    if [ ! -s $data.txt ];then
+	echo $0: error: data input file $data.txt not found
+	exit
+    fi
+    if [ $res -le 5 ];then
+	echo $0: please be patient, this might take a while
+    fi
+
+
+    echo $0: creating ata matrix with resolution $res refinement $refine
+    cat <<EOF | $ARCH/blk_matrix_ata  > bma.log
+$res
+$refine
+$data.txt 
+$data
+EOF
+if [ ! -s $data.ata ];then
+    echo $0: error. did you use an odd number for resolution\?
+    exit
+fi
+
+
+rm $data.sol 2> /dev/null # need to recompute the solution
+else 
+    echo $0: using old $data.ata ATA matrix, resolution unchanged
+fi
+
+
+#exit
+
+if [ ! -s $data.sol ];then
+#
+# compute a solution
+#
+if [ $im -eq 1 ];then		# Cholesky
+
+ 
+    cat <<EOF | $ARCH/blk_cholesky
+02.$data.txt
+$data.ata
+$data.atd
+$data.sol
+$ndamp
+$rdamp
+$ravg
+EOF
+
+elif [ $im -eq 2 ];then		# LSQR, NEEDS TO BE FIXED
+
+    rdampf=$rdamp		# damping in fine region
+    
+    echo $0: computing LSQR solution with norm damp $ndamp roughness damp $rdamp froughness $rdampf
+    if [ $res -lt 5 ];then
+	echo $0: please be patient, this might take a while
+    fi
+
+
+    cat <<EOF | $ARCH/blk_lsqr > lsqr.log
+$data.txt
+$data
+$data.sol
+$res
+$refine
+$ravg
+$ndamp
+$rdamp
+$rdampf
+
+EOF
+ 
+       grep variance lsqr.log | grep norm | gawk '{print($3,$5)}' > tmp.dat
+       read vr norm < tmp.dat; rm tmp.dat
+       echo $0: variance reduction: $vr norm: $norm, results in $data.res.dat
+       
+       echo $res $refine $ravg $ndamp $rdamp $rdampf $vr $norm > $data.res.dat
+else
+    echo $0: solution method $im undefined
+    exit
+fi
+
+rm $data.gmt 2> /dev/null	# need to redo GMT input
+else
+    echo $0: using old $data.sol, damping and inversion choices have not changed
+fi
+
+#
+# extract a file for plotting
+#
+
+if [[ ! -s $data.gmt ]];then
+
+
+    echo $0: crating GMT input
+    cat <<EOF | $ARCH/blk2gmt > blk.log
+$data.sol
+$data.gmt
+$cmp
+$res
+$refine
+EOF
+
+    rm $data.ps 2> /dev/null	# need to redo the plot
+else
+    echo $0: using old $data.gmt, no new solution produced
+fi
+
+if [ ! -s $data.ps ];then
+#
+# plot
+#
+    echo $0: plotting $data with $cmp colormap
+    
+    ./plotblk $data $cmp $pstyle > plot.log 2>> plot.log
+else
+    echo $0: not redoing plot, old solution
+fi

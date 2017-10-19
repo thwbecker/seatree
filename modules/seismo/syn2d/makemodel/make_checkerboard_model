@@ -1,0 +1,37 @@
+#!/bin/bash
+#
+# generate a square region checkerboard model
+#
+xtot=${1-100.}			# spatial extent, from 0 to xtot
+ytot=$xtot
+# equal parameterization increment in both directions:
+dx=${2-1}
+dy=$dx
+#
+# colorscale for plotting
+scale=../pm2.cpt
+#
+# length (in parameterization pixels) of side of checkerboard elements:
+#
+dcheckx=21
+dchecky=$dcheckx
+#
+# abs(amplitude of anomalies):
+anoma=1.0
+
+#
+# make input data (.xyz used for plotting, .px used for inversion)
+# 
+./bin/chkbd<<EOF
+$dx
+$dy
+$xtot
+$ytot
+$dchecky
+$dcheckx
+$anoma
+EOF
+./plot_model chkbd $scale $dx $xtot
+#ghostview chkbd.ps &
+
+

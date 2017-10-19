@@ -1,0 +1,85 @@
+* Hypoinverse test file to mimic the full NCSN processing using SEED codes
+* Hypoinverse startup file for NCSN for newer SEED station files
+* Uses gain history from cal file, no attenuation history is used
+* To run this file with the hyp command "ini" put a statement like this in your
+* .cshrc file: 
+*
+* puna:    setenv HYPINITFILE /home/calnet/klein/hypfiles/cal2000seed.hyp
+* swave:  setenv HYPINITFILE /home1/calnet/klein/hypfiles/cal2000seed.hyp
+* andreas:  setenv HYPINITFILE /home/ehz/klein/hypfiles/cal2000seed.hyp
+* ebird:  setenv HYPINITFILE /ebird/calnet/klein/hypfiles/cal2000seed.hyp
+* 
+200 T 1900 0				/Enable yr 2000 formats
+LET 5 2 3 2 2				/Use new, longer SEED station codes
+VER 'NC' '01'				/Processing domain and version
+* STATION DATA
+******* YOU MUST READ STATIONS BEFORE USING THE ATE, DEL, FMC OR XMC COMMANDS.
+H71 1 1 3					/use new station file format
+STA 'allseed.sta'    			/Read ASCII file of all stations.
+*
+XMC 'all2000seed.xmc' T 0 		/Read XMAG cors, use all data
+FMC 'all2000seed.fmc' T 0 		/Read FMAG cors, use all data
+UNK 6 'IRG1' 'IRG2' 'IRG3' 'IRGE' 'WWVB' 'IRG '	/CUSP phony station codes
+*
+* MULTIPLE CRUSTAL MODELS
+* READ MODELS AND DELAYS IN ASCII:
+@multtest.hyp
+*
+* MAGNITUDE CHOICES
+MAG 1 T 3 1				/Use Eaton for Fmag1, Hirshorn for Fmag2
+DUR -.81 2.22 0 .0011 0, 5*0, 9999 1	/Set Eaton's new magnitude constants
+DU2 .005 40, .0006 350, .014 10		/Extra dist & depth terms for Eaton
+DUB -2.06 2.95 0 .001 0, 5*0, 9999 1	/Zmag of Hirshorn; use -2.06=-.71-1.35
+* -1.35 compensates for the 1.35 gain corr used for the 42db Z stations
+DUG 5 'EHZ' 'ELZ' 'ELE' 'ELN' 'SHZ'	/Only apply dur mag gain corrs to these
+FC1 'D' 4 'EHZ' 'SHZ' 'HHZ' 'BHZ' 	/comps for FMAG1. 
+* EHZ Nanometrics: same as (renamed) VDZ but EHZ has no duration gain correction
+FC2 'Z' 1 'ELZ'				/Use lowgain verts for FMAG2=Zmag
+XMT 2 1 /Use Mx for xmag1 and ML for xmag2. If amptype is unlabeled, use comps
+* XMAG comps
+XC1 'X' 7 'EHZ' 'ELZ' 'ELE' 'ELN' 'EHN' 'EHE' 'SHZ'
+XC2 'L' 4 'WLN' 'WLE' 'HHN' 'HHE' 	/LOCAL MAG (ML) comps
+* Use BKY's Nordquist logA0 relation for the WA & synthetic WA components
+LA0 6 'WLN' 4, 'WLE' 4, 'BHN' 4, 'BHE' 4, 'HHN' 4, 'HHE' 4
+FCM 3 'ELZ' -.06 'ELE' -.30 'ELN' -.30	/Comp corrections for Eaton Fmags
+XCM 3 'EHZ' .33 'VLZ' .20 'SHZ' .33 /Component corrs for Eaton Xmags
+PRE 6, 3 0 3 9, 1 1 0 9, 2 1 0 9, 4 4 4 9, 3 0 0 9, 4 0 0 9 /Preferred mags
+* Preferred mag, min readings, mag range. In pref order.
+*
+* STANDARD CHOICES FOR CALNET
+RMS 4 .10 2 3				/Residual weighting
+ERR .10					/Standard timing error
+POS 1.78				/P to S ratio
+REP T F			/Log events to terminal; don't print unweighted stations
+JUN T					/Force location of junk events
+MIN 4					/Min number of stations
+NET 2					/Use California region codes
+ZTR 5					/Trial depth
+DI1 1 50 3 6				/Initial Distance weighting
+DIS 4 15 3.5 7				/Main Distance weighting
+WET 1. .5 .2 .1				/Weights for P weight codes 0-3
+*
+* OUTPUT FORMAT
+ERF T					/Send error messages to terminal
+TOP F					/No page ejects
+LST 1 1 0				/No station list or models in printfile
+KPR 2					/Medium print output each event
+*
+******* YOU SHOULD USE THE CAL COMMAND WITH THE DATE AND TIME OF YOUR FIRST EQ.
+******* USING A YEAR OF 0 (THE ATE COMMAND BELOW NOT COMMENTED OUT) WILL ALWAYS
+******* WORK, BUT IS INEFFICIENT.
+*
+CAL 'all2000seed.cal' 0			/Load cal factors for digital stations
+*
+* Now add your PHS (COP), ARC (CAR), SUM, PRT and LOC commands...
+* (Use  H71 1 3 1  if you are reading an archive file (COP 3 or COP 5))
+PHS 'test3.arc'
+fil			/query phase file for its format, set phs & arc formats
+ARC 'test3out.arc'
+PRT 'test3.prt'
+SUM 'test3.sum'
+typ
+typ Now all station & crust files have been read,
+typ and the test earthquake files have been defined and formats set.
+typ Now type LOC to locate...
+typ

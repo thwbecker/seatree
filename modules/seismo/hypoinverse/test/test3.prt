@@ -1,0 +1,219 @@
+ HYPOINVERSE 2000 (1/99 VERSION) RUN ON Fri Aug 27 17:35:07 1999      RUN LABEL= 
+
+
+ TEST PARAMETERS:
+   -ITERATION AND CONVERGENCE-     -WEIGHTING AND ERRORS-     -MISCELLANEOUS-
+       20=ITRLIM   0.900=DAMP    15.000=DISCUT   0.100=RMSCUT       4=MINSTA
+    0.040=DQUIT    0.001=DRQT     3.500=DISW1    2.000=RMSW1        2=NET
+    7.000=DXFIX    0.012=EIGTOL   7.000=DISW2    3.000=RMSW2 
+   30.000=DZMAX    0.020=RBACK        4=ITRDIS       4=ITRRES   5.000=ZTR
+    0.500=DZAIR    0.600=BACFAC   1.000=SWT      0.100=RDERR    1.780=POS
+                                                 1.000=ERCOF
+
+      ------DURATION MAG CONSTANTS------       -DELAYS & MISC-    -STATIONS-
+   -0.810=FMA1     0.000=FMA2   -1.0300=DMA0         T=LMULT        F=ATTEN
+    2.220=FMB1     0.000=FMB2    2.1000=DMA1         T=CODAWT       5=SITE-LET
+    0.000=FMZ1     0.000=FMZ2    0.0000=DMA2         T=LJUNK        2=NET-LET
+    0.001=FMD1     0.000=FMD2    0.0000=DMZ                         3=COMP-LET
+    0.000=FMF1     0.000=FMF2    1.0000=DMGN  
+    1.000=FMGN  9999.000=FMBRK   0.0027=DMLIN 
+   0.0050=DCOF1   40.000=DBRK1        1=LOGA0 
+   0.0006=DCOF2  350.000=DBRK2 
+   0.0140=ZCOF    10.000=ZBRK  
+
+    DUR MAG COMPONENT CORRECTIONS:  VLZ=-.06  VLE=-.30  VLN=-.30
+    AMP MAG COMPONENT CORRECTIONS:  VHZ=0.33  VLZ=0.20
+
+    --- MAGNITUDE LABELS & COMPONENTS ---
+    FMAG1: LABEL=D      COMPS= VHZ VHE VHN VLZ
+    FMAG2: LABEL=Z      COMPS= VLZ
+    XMAG1: LABEL=X      COMPS= VHZ VLZ VLE VLN VDZ VDN VDE
+    XMAG2: LABEL=L      COMPS= WLN WLE HHN HHE BHN BHE
+    FMAG1 MAGSEL=1  FMAG2 MAGSEL=3
+
+ INPUT FILES:
+ COMMANDS:    /home/calnet/klein/hypfiles/cal2.hyp                        
+                                                                          
+ BINARY STATION SNAPSHOT FILE: /home/calnet/klein/hypfiles/allsta2.bin                     
+ DELAYS:                                                                   
+ ATTENUATIONS: /home/calnet/klein/hypfiles/all2.atn                        
+ CAL FACTORS:  /home/calnet/klein/hypfiles/all2.cal                        
+ FMAG CORRECT: /home/calnet/klein/hypfiles/all2.fmc                        
+ XMAG CORRECT: /home/calnet/klein/hypfiles/all2.xmc                        
+
+ PHASES:       test3.arc                                                   
+        PHASE FORMAT CODE= 5, TERMINATOR FORMAT CODE=1
+ BINARY CRUST SNAPSHOT FILE: /home/calnet/klein/hypfiles/multmod2.bin                    
+
+ OUTPUT FILES: (T IF APPENDED TO)
+ (F) PRINTOUT:    test3.prt                                                   
+ 
+ USE SUPPLIED TRIAL HYPOCENTER FOR EVENT: 1998 11  1  0 14
+ ####################################################################################
+   1 NOV 1998,  0:14  SEQUENCE NO.    1, ID NO.  30204481
+                                                        ADJUSTMENTS (KM)
+  I ORIGIN   LAT N     LON W     Z   NWR  RMS    DT    DLAT   DLON    DZ    RR NF MOD
+  1 10.56  37 36.02  118 48.50  7.93  17 0.23  0.029 -1.634 -1.396  0.000 2.150 3 MAM
+ FREE DEPTH
+  2 10.59  37 35.14  118 47.55  7.93  17 0.06 -0.022 -0.203 -0.073 -0.001 0.216 4 MAM
+  3 10.57  37 35.03  118 47.50  7.93  17 0.06  0.000 -0.032 -0.007 -0.030 0.044 4 MAM
+ BEGIN DISTANCE WEIGHTING
+ BEGIN RESIDUAL WEIGHTING
+  4 10.57  37 35.01  118 47.49  7.90  16 0.06 -0.002  0.017  0.014  0.019 0.029 4 MAM
+  5 10.56  37 35.02  118 47.50  7.92  16 0.06  0.000 -0.003 -0.022 -0.019 0.029 4 MAM
+ ERROR ELLIPSE: <SERR AZ DIP>-<   0.62 251 77>-<   0.24 356  3>-<   0.22  85 12>
+ ------------------------------------------------------------------------------------
+ YEAR MO DA  --ORIGIN--  --LAT N-  --LON W--  DEPTH   RMS   ERH   ERZ  XMAG  FMAG  PMAG
+ 1998-11-01  0014 10.56  37 35.02  118 47.50   7.92  0.06  0.24  0.61  0.84  1.06  1.06D
+                                                                                          SOURCE
+ NSTA NPHS  DMIN MODEL GAP ITR NFM NWR NWS NVR REMRKS-AVH  N.XMG-XMMAD-T   N.FMG-FMMAD-T  L F X
+   25   27   3.4  MAM   63   5  12  16   1  17 MOR          7.00  0.29 X   11.00  0.24 D  2 2 2
+
+ XMAG2-N.XMG2-XMMAD-T-S  FMAG2-N.FMG2-FMMAD-T-S  PREF.MAG-N.PMAG-PRMAD-T
+                                                     1.06  11.00  0.24 D
+ REGION= Mt. Morrison (RSM)         MODELS USED:  MAM=1.00
+
+ STA NET COM CR DIST AZM  AN P/S WT   SEC (TOBS -TCAL -DLY  =RES)  WT   SR  INFO  CAL DUR-W-FMAG-T AMP-PER-W-XMAG-T
+ MCV  NC VHZ VM  3.4 282 153 IPD    12.22  1.66  1.70-0.07  0.03  1.97  2M 0.659 2.80   6   0.89 D  71 .11   1.31 X       
+                             ES  3  13.22  2.66  3.03-0.12 -0.24  0.06S 2M 0.003
+ HTC  NN VHZ VU  6.2 162 135  PD 1  12.48  1.92  1.98-0.02 -0.04  0.98  W  0.162 5.58  15   1.49 D                        
+ MDR  NC VHZ VM  7.2 328 131 IPU 1  12.83  2.27  2.09 0.09  0.09  0.98  2M 0.111 2.80   9   1.30 D  42 .09 5 1.09XX       
+ MDR  NC VLN NM  7.2 328 131 EP  4  12.87  2.31  2.09 0.09  0.13X       2M       0.18              7.0 .20   1.50 X       
+                             ES  3  14.35  3.79  3.72 0.16 -0.09  0.20S 2M 0.020
+ MCM  NC VHZ VM  7.8 292 128 EPD 2  12.63  2.07  2.16-0.14  0.05  0.39  2M 0.018 2.80   9   1.06 D  43 .11   0.64 X       
+ MLH  NC VHZ VM 10.7 349 117  PU    13.40  2.84  2.58 0.35 -0.09  1.97  W  0.428 1.40   9   1.62 D                        
+ MGP  NC VHZ VM 10.9 296 117 EP  3  13.29  2.73  2.60 0.00  0.13  0.20  2M 0.005 2.80   7   0.50 D  17 .11   0.26 X       
+ MLC  NC VHZ VM 11.4 287 115 EP  3  13.18  2.62  2.67-0.13  0.08  0.20  2M 0.006 1.40   8   1.42 D  28 .07   0.84 X       
+ MRS  NN VHZ VM 11.4 225 115 IPD 1  13.23  2.67  2.67 0.00  0.00  0.98  2  0.204 0.00   7   0.94 D                        
+ RCC  NN VHZ VU 12.3 149 110 IPD    13.22  2.66  2.82-0.12 -0.04  1.97  2  0.644 5.58   8   0.92 D                        
+ ORC  NN VHZ VU 13.3  64 109 IPU    13.51  2.95  2.97-0.09  0.07  1.97  2  0.388 0.35  12   2.52 D                        
+ MMP  NC VHZ VM 21.1 278 101 IPU 1  14.67  4.11  4.21-0.20  0.10  0.98  2M 0.343 2.80               22 .14   0.96 X       
+ CAS  NN VHZ VU 21.2  92 100 IPD 1  14.81  4.25  4.23-0.01  0.03  0.98  2  0.124                                          
+ MRD  NC VHZ VM 23.6 274  98 IPU 1  15.12  4.56  4.62-0.10  0.04  0.98  2M 0.381 2.80              4.0 .15   0.55 X       
+ BEN  NN VHZ VU 24.2  52  97 IPD    15.08  4.52  4.72-0.19 -0.01  1.97  2  0.490                                          
+ MRC  NC VHZ VM 27.0  68  96 EP  3  15.69  5.13  5.19-0.09  0.03  0.20  2  0.005                                          
+ MCD  NC VHZ VM 31.0  97  94 EP  4  15.92  5.36  5.85 0.13 -0.62X       2        2.80  14   1.04 D                        
+    8 UNWEIGHTED STATIONS NOT PRINTED.
+ ####################################################################################
+   1 NOV 1998,  0:40  SEQUENCE NO.    2, ID NO.  30204483
+ CURB DISTANCE STEP. ALL ADJUSTMENTS DAMPED BY 0.573
+                                                        ADJUSTMENTS (KM)
+  I ORIGIN   LAT N     LON W     Z   NWR  RMS    DT    DLAT   DLON    DZ    RR NF MOD
+  1 31.00  40  6.82  120 17.76  5.00  1712.11  0.459-38.065 32.420  0.00050.000 3 LAS
+  2 31.46  39 46.28  120 40.52  5.00  17 6.07 -5.695 -3.102 -2.810  0.000 4.186 3 AUB
+ FREE DEPTH
+  3 25.76  39 44.61  120 38.55  5.00  17 0.66 -0.593 -0.307 -0.457  1.149 1.274 4 AUB
+ BEGIN DISTANCE WEIGHTING
+ BEGIN RESIDUAL WEIGHTING
+  4 25.17  39 44.44  120 38.23  6.15  14 0.17 -0.082  0.111 -0.256  2.227 2.245 4 AUB
+  5 25.09  39 44.50  120 38.05  8.38  14 0.15 -0.027 -0.011 -0.187  2.017 2.026 4 AUB
+  6 25.06  39 44.49  120 37.92 10.39  14 0.15 -0.020 -0.015 -0.108  1.327 1.332 4 AUB
+ ERROR ELLIPSE: <SERR AZ DIP>-<   7.85  73 85>-<   0.77 320  1>-<   0.43 230  3>
+ ------------------------------------------------------------------------------------
+ YEAR MO DA  --ORIGIN--  --LAT N-  --LON W--  DEPTH   RMS   ERH   ERZ  XMAG  FMAG  PMAG
+ 1998-11-01  0040 25.06  39 44.49  120 37.92  10.39  0.15  0.77  7.83        2.19  2.19D
+                                                                                          SOURCE
+ NSTA NPHS  DMIN MODEL GAP ITR NFM NWR NWS NVR REMRKS-AVH  N.XMG-XMMAD-T   N.FMG-FMMAD-T  L F X
+   19   19  50.1  AUB  173   6  17  14   0  17 WAK          0.00  0.00 X    2.00  0.22 D  2 2  
+
+ XMAG2-N.XMG2-XMMAD-T-S  FMAG2-N.FMG2-FMMAD-T-S  PREF.MAG-N.PMAG-PRMAD-T
+                                                     2.19   2.00  0.22 D
+ REGION= Walker Lane                MODELS USED:  AUB=1.00
+
+ STA NET COM CR DIST AZM  AN P/S WT   SEC (TOBS -TCAL -DLY  =RES)  WT   SR  INFO  CAL DUR-W-FMAG-T AMP-PER-W-XMAG-T
+ BMR  NN VHZ VU 50.1  35  96 IPU 1  33.00  7.94  8.18-0.20 -0.04  1.56  2  0.982                                          
+ KPK  WR VHZ VO 60.4 254  93 EPU 2  34.61  9.55  9.79 0.03 -0.27  0.62  2  0.202                                          
+ AAR  NC VHZ VA 61.9 214  93 EPD 2  35.22 10.16 10.01 0.07  0.08  0.62  2  0.205                                          
+ OBH  NC VHZ VO 72.0 263  91 IPU 2  36.53 11.47 11.60 0.02 -0.15  0.62  2  0.064 2.80  13   1.97 D                        
+ AFH  NC VHZ VA 79.1 191  91 EPD 2  38.60 13.54 12.72 0.12  0.70* 0.00  2  0.000                                          
+ MGL  WR VHZ VO 79.6 276  88 IPD 1  38.08 13.02 12.80-0.01  0.23  1.56  2  0.251                                          
+ ABJ  NC VHZ VA 80.1 218  88 IPD 1  37.99 12.93 12.87-0.14  0.20  1.56  2  0.552                                          
+ OWY  NC VHZ VO 80.2 247  88 EPD 2  37.73 12.67 12.88-0.05 -0.16  0.62  2  0.032                                          
+ OGO  NC VHZ VO 84.7 264  89 IPU    38.63 13.57 13.59 0.04 -0.06  3.12  2  0.642                                          
+ OHC  NC VHZ VO 86.1 239  89 IPD 2  38.48 13.42 13.81-0.13 -0.26  0.62  2  0.035                                          
+ LCM  NC VHZ VL 88.4 301  88 EPD 2  40.29 15.23 14.17 0.04  1.02* 0.00  2  0.000                                          
+ OST  NC VHZ VO 91.7 244  87 EPU 2  39.38 14.32 14.69 0.15 -0.52* 0.00  2  0.000                                          
+ OCR  NC VHZ VO 96.8 279  87 EPU 2  40.83 15.77 15.49 0.31 -0.03  0.62  2  0.078                                          
+ AVR  NC VHZ VA 96.9 215  87 EPD 2  40.08 15.02 15.49-0.14 -0.33  0.62  2  0.146                                          
+ LRD  NC VHZ VL107.1 319  85 EPD 2  42.53 17.47 17.10 0.03  0.34  0.61  2  0.330                                          
+ APR  NC VHZ VA108.5 208  85 EPD 2  42.19 17.13 17.31-0.04 -0.14  0.62  2  0.284                                          
+ OSU  NC VHZ VO117.3 244  84 EPU 2  44.15 19.09 18.69 0.70 -0.30  0.62  2  0.190                                          
+ AOD  NC VHZ VA125.4 184  83 EP  4  44.71 19.65 19.95-0.03 -0.27X       2        5.58  22   2.40 D                        
+    1 UNWEIGHTED STATIONS NOT PRINTED.
+ USE SUPPLIED TRIAL HYPOCENTER FOR EVENT: 1998 11  1  0 40
+ ####################################################################################
+   1 NOV 1998,  0:40  SEQUENCE NO.    3, ID NO.  30204483
+ FIX HYPOCENTER FOR THIS EVENT (f)
+ BEGIN DISTANCE WEIGHTING
+ BEGIN RESIDUAL WEIGHTING
+                                                        ADJUSTMENTS (KM)
+  I ORIGIN   LAT N     LON W     Z   NWR  RMS    DT    DLAT   DLON    DZ    RR NF MOD
+  1 25.06  39 44.49  120 37.92 10.39  14 0.15 -0.006 -0.044 -0.018  0.000 0.047 3 AUB
+ AVERAGE RESIDUAL REMOVED; O.T. ADJUSTED
+ ERROR ELLIPSE: <SERR AZ DIP>-<  31.61   0 90>-<   0.77 139  0>-<   0.43  49  0>
+ ------------------------------------------------------------------------------------
+ YEAR MO DA  --ORIGIN--  --LAT N-  --LON W--  DEPTH   RMS   ERH   ERZ  XMAG  FMAG  PMAG
+ 1998-11-01  0040 25.04  39 44.49  120 37.92  10.39  0.15  0.77 31.61        2.19  2.19D
+                                                                                          SOURCE
+ NSTA NPHS  DMIN MODEL GAP ITR NFM NWR NWS NVR REMRKS-AVH  N.XMG-XMMAD-T   N.FMG-FMMAD-T  L F X
+   19   19  50.1  AUB  173   1  17  14   0  17 WAK  X       0.00  0.00 X    2.00  0.22 D  2 2  
+
+ XMAG2-N.XMG2-XMMAD-T-S  FMAG2-N.FMG2-FMMAD-T-S  PREF.MAG-N.PMAG-PRMAD-T
+                                                     2.19   2.00  0.22 D
+ REGION= Walker Lane                MODELS USED:  AUB=1.00
+
+ STA NET COM CR DIST AZM  AN P/S WT   SEC (TOBS -TCAL -DLY  =RES)  WT   SR  INFO  CAL DUR-W-FMAG-T AMP-PER-W-XMAG-T
+ BMR  NN VHZ VU 50.1  35  96 IPU 1  33.00  7.96  8.18-0.20 -0.02  1.56  2  0.976                                          
+ KPK  WR VHZ VO 60.4 254  93 EPU 2  34.61  9.57  9.79 0.03 -0.25  0.62  2  0.023                                          
+ AAR  NC VHZ VA 61.8 214  93 EPD 2  35.22 10.18 10.01 0.07  0.10  0.62  2  0.102                                          
+ OBH  NC VHZ VO 72.0 263  91 IPU 2  36.53 11.49 11.60 0.02 -0.13  0.62  2  0.025 2.80  13   1.97 D                        
+ AFH  NC VHZ VA 79.1 191  91 EPD 2  38.60 13.56 12.72 0.12  0.72* 0.00  2  0.000                                          
+ MGL  WR VHZ VO 79.6 276  88 IPD 1  38.08 13.04 12.80-0.01  0.25  1.56  2  0.232                                          
+ ABJ  NC VHZ VA 80.1 218  88 IPD 1  37.99 12.95 12.87-0.14  0.22  1.56  2  0.550                                          
+ OWY  NC VHZ VO 80.1 247  88 EPD 2  37.73 12.69 12.88-0.05 -0.14  0.62  2  0.026                                          
+ OGO  NC VHZ VO 84.7 264  89 IPU    38.63 13.59 13.59 0.04 -0.04  3.12  2  0.642                                          
+ OHC  NC VHZ VO 86.1 239  89 IPD 2  38.48 13.44 13.81-0.13 -0.24  0.62  2  0.035                                          
+ LCM  NC VHZ VL 88.4 301  88 EPD 2  40.29 15.25 14.17 0.04  1.04* 0.00  2  0.000                                          
+ OST  NC VHZ VO 91.7 244  87 EPU 2  39.38 14.34 14.69 0.15 -0.50* 0.00  2  0.000                                          
+ OCR  NC VHZ VO 96.8 279  87 EPU 2  40.83 15.79 15.49 0.31 -0.01  0.62  2  0.041                                          
+ AVR  NC VHZ VA 96.8 215  87 EPD 2  40.08 15.04 15.49-0.14 -0.31  0.62  2  0.097                                          
+ LRD  NC VHZ VL107.1 319  85 EPD 2  42.53 17.49 17.10 0.03  0.36  0.60  2  0.093                                          
+ APR  NC VHZ VA108.5 208  85 EPD 2  42.19 17.15 17.31-0.04 -0.12  0.62  2  0.125                                          
+ OSU  NC VHZ VO117.3 244  84 EPU 2  44.15 19.11 18.69 0.70 -0.28  0.62  2  0.028                                          
+ AOD  NC VHZ VA125.4 184  83 EP  4  44.71 19.67 19.95-0.03 -0.25X       2        5.58  22   2.40 D                        
+    1 UNWEIGHTED STATIONS NOT PRINTED.
+ *** CANT FIX HYPOCENTER BECAUSE WE WERNT GIVEN   A LOCATION: 1998 11  1  0 47
+ ####################################################################################
+   1 NOV 1998,  0:47  SEQUENCE NO.    4, ID NO.  40081944
+                                                        ADJUSTMENTS (KM)
+  I ORIGIN   LAT N     LON W     Z   NWR  RMS    DT    DLAT   DLON    DZ    RR NF MOD
+  1  4.04  37 36.86  118 52.71  5.00   8 0.60  0.636  1.060 -1.955  0.000 2.224 3 MAM
+ FREE DEPTH
+  2  4.68  37 37.43  118 51.38  5.00   8 0.11 -0.177  0.688  0.424  2.804 2.918 4 MAM
+  3  4.50  37 37.80  118 51.67  7.80   8 0.08 -0.180  0.489  0.333  1.130 1.276 4 MAM
+ BEGIN DISTANCE WEIGHTING
+ BEGIN RESIDUAL WEIGHTING
+  4  4.32  37 38.07  118 51.89  8.93   8 0.03 -0.071  0.192  0.104  0.447 0.498 4 MAM
+  5  4.25  37 38.17  118 51.96  9.38   8 0.02 -0.013  0.038  0.043  0.056 0.080 4 MAM
+  6  4.23  37 38.19  118 51.99  9.44   8 0.02  0.010 -0.043  0.014 -0.066 0.080 4 MAM
+ ERROR ELLIPSE: <SERR AZ DIP>-<   1.96 316 66>-<   0.66 117 22>-<   0.38 211  6>
+ ------------------------------------------------------------------------------------
+ YEAR MO DA  --ORIGIN--  --LAT N-  --LON W--  DEPTH   RMS   ERH   ERZ  XMAG  FMAG  PMAG
+ 1998-11-01  0047  4.23  37 38.19  118 51.99   9.44  0.02  0.78  1.79        0.80  0.80D
+                                                                                          SOURCE
+ NSTA NPHS  DMIN MODEL GAP ITR NFM NWR NWS NVR REMRKS-AVH  N.XMG-XMMAD-T   N.FMG-FMMAD-T  L F X
+    8    8   2.7  MAM  103   6   8   8   0   8 SMO          0.00  0.00 X    5.00  0.20 D  W W  
+
+ XMAG2-N.XMG2-XMMAD-T-S  FMAG2-N.FMG2-FMMAD-T-S  PREF.MAG-N.PMAG-PRMAD-T
+                                                     0.80   5.00  0.20 D
+ REGION= South Moat (LVC)           MODELS USED:  MAM=1.00
+
+ STA NET COM CR DIST AZM  AN P/S WT   SEC (TOBS -TCAL -DLY  =RES)  WT   SR  INFO  CAL DUR-W-FMAG-T AMP-PER-W-XMAG-T
+ MDR  NC VHZ VM  2.7  86 162  PU 1   6.22  1.99  1.89 0.09  0.01  1.11  W  0.753 2.80   7   1.03 D                        
+ MCM  NC VHZ VM  3.1 192 159  PU 2   6.04  1.81  1.91-0.14  0.04  0.44  W  0.124 2.80   7   0.79 D                        
+ MGP  NC VHZ VM  3.4 251 157  PU 1   6.13  1.90  1.93 0.00 -0.03  1.11  W  0.433 2.80   5 2 0.13 D                        
+ MCS  NC VHZ VM  4.0 301 154  PU 1   6.26  2.03  1.97 0.04  0.02  1.11  W  0.596 2.80   5 2 0.47 D                        
+ MLC  NC VHZ VM  5.1 238 147  PD 2   6.25  2.02  2.06-0.13  0.09  0.44  W  0.074 1.40   5 2 0.93 D                        
+ MLH  NC VHZ VM  6.5  44 140  PU     6.78  2.55  2.19 0.35  0.01  2.22  W  0.959 1.40   5 2 1.03 D                        
+ MRS  NN VHZ VM 14.0 186 115  PD 1   7.41  3.18  3.18 0.00  0.00  1.11  W  0.867 0.00   5 2 0.63 D                        
+ HTC  NN VHZ VU 14.5 144 115  PU 2   7.49  3.26  3.26-0.02  0.02  0.44  W  0.190 5.58   7 2 0.81 D                        
