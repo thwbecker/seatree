@@ -1,20 +1,22 @@
-USC GEODYNAMICS 
-EARTH SCIENCE COMPUTING ENVIRONMENT
+UNIFIED GEODYNAMICS EARTH SCIENCE COMPUTING ENVIRONMENT
 
 John Yu, Thorsten W Becker
-University of Southern California
-Los Angeles CA
-March 2012
+University of Southern California, Los Angeles CA
+UTIG, JSG, UT Austin
+(c) 2012, 2015, 2016
 
 --- Abstract ---
 
 This customized Linux virtual machine is intended to provide easy
-access to a range of freely available Earth science software to
-illustrate the capabilities of such open source tools, and assist in
-teaching map making and solid Earth research.
+access to a range of freely available Earth science software and data
+to illustrate the capabilities of such open source tools, and assist
+in teaching map making, data analysis, and modeling. It is focused on
+geodynamics and seismology, but can be used for any Earth science
+application.
 
 The package is provided in the hope that it will be useful, but
-without any warranties. Copyright lies with the original authors.
+without any warranties. Copyright for the software and data lies with
+the original authors whose work should be cited as appropriate.
 
 --- Technical details ---
 
@@ -23,64 +25,108 @@ straightforward to install on any Linux or OS-X platform, but the
 devil is in the details. We therefore provide a platform-independent
 way of using the Linux tools we like; this involves downloading a huge
 file (because you'll be running a second operating system, it's like a
-second hard drive), but we think that the benefits outweigh the
-drawbacks (such as reduced speed).  
+second hard drive), but we think that the benefits of having one
+consistent installation outweigh the drawbacks.
 
 Depending on your application, you might actually do your work
 entirely within the virtual machine, or you might eventually want to
 install the software you like the most on your own OS.
 
 We chose to run Fedora 14 Linux, with yum-installed packages, for the
-most part, and our own GMT 4.5.7 compile. Software security updates
-are current as of March 2012. 
+most part, and our own GMT 4.5.7. For a complete list of currently
+included software, see 
+
+http://www-udc.ig.utexas.edu/external/becker/ugesce.html
+
+the main UGESCE page
 
 
---- Requirements ---
+--- REQUIREMENTS ---
 
-- A VirtualBox install, which is freely available for Windows, OS-X,
-  and Linux at
+- A 64BIT MACHINE. Sorry, VirtualBox won't work with 32bit hardware. 
+
+
+- A VirtualBox software install, which is freely available for
+  Windows, OS-X, and Linux at
 
   https://www.virtualbox.org/wiki/Downloads
 
 - A copy of our Computing Environment virtual box "hard drive"
 
-  Available at 
+  Available as (version 0.3, May 2015)
 
-  http://geodynamics.usc.edu/~becker/ftp/SEATREE64-2012.vdi
 
-  (This file is 9GB large.)
+  * gzipped  (might cause problems on Windows)
 
-  
+    http://www-udc.ig.utexas.edu/external/becker/ugesce/SEATREE64-2015.vdi.tgz
+
+    (This file is 5.2 GB large.)
+
+  * bzipped  (might cause problems on Windows)
+
+    http://www-udc.ig.utexas.edu/external/becker/ugesce/SEATREE64-2015.vdi.bz2
+
+    (This file is 4.4 GB large.)
+
+  * zipped (for Windows)
+
+    http://www-udc.ig.utexas.edu/external/becker/ugesce/SEATREE64-2015.zip
+
+    (This file is 5.2 GB large.)
 
 - Enough disk space, and enough memory (shouldn't be a problem on
-  modern machines, including laptops). 
+  modern machines, including laptops).
 
+--- Downloading the virtual machine ---
 
---- Installing our virtual Linux machine ---
+Given the large size of the file, download via a browser might be a
+problem and timeouts might occur depending on your connection. You
+therefore might want to use a download tool such as "curl" or "wget"
+(obtain the latter from http://gnuwin32.sourceforge.net/packages/wget.htm if not
+installed). 
+
+This will allow restarting from interrupted downloads. From a terminal
+(on Mac OS-X Applications-Utilities-Terminal) type something akin to
+
+curl -C -L -O http://www-udc.ig.utexas.edu/external/becker/ugesce/SEATREE64-2015.zip
+
+or 
+
+wget -c http://www-udc.ig.utexas.edu/external/becker/ugesce/SEATREE64-2015.zip
+
+--- Installing our virtual Linux machine within VirtualBox ---
+
+- start VirtualBox
 
 - select "new" from menu
 
-- choose Linux-Fedora (64bit) and use something like "SEATREE-2012" as
-  a name
+- choose Linux-Fedora (64bit) as operating system, and use something
+  like "SEATREE-2015" as a name
 
 - choose some memory that leaves enough for your other operating
   system, depending on hardware. 2GB should be enough. Use defaults if
   at any stage you're not sure. 
 
 - select "use existing disk" and pick the .vdi file you downloaded
-  (best to put it close to whereever your VirtualBox install likes to
-   put those "hard drives"
+  (best to put it close to wherever your VirtualBox install likes to
+   put those "hard drives")
 
 - if this step is successful, your new Linux virtual machine should
-  show within VirtualBox as "SEATRRE-2012".
+  show within VirtualBox as "SEATREE-2015".
 
+--- Troubleshooting if your image will not boot ---
+
+- Make sure the visualization setting for you CPU is enable in your BIOS.
+- Make sure PAE/NX is enabled in VirtualBox 
+  [SEATREE IMAGE > SETTINGS > SYSTEM PROCESSOR
 
 ********************************************************************************
-- IMPORTANT
+- IMPORTANT - Making your VirtualBox install access the network and
+  regular files
 ********************************************************************************
 
-  If you want your virtual box linux to use your machine's
-  internet access (very useful to download data, for example), you'll
+  If you want your virtual box Linux to use your machine's
+  Internet access (very useful to download data, for example), you'll
   need to go into virtual box settings (by selecting your Linux
   drive), then select "network", go to adapter 1 (which should be
   enabled and be attached to "NAT"), then select the "advanced" tab
@@ -88,11 +134,19 @@ are current as of March 2012.
   
   08002701FCBD
 
-- Now, try to start up the virtual machine by clicking on the green
-  arrow. (Whenever you need to make changes to settings such as
-  virtual box' network access, the machine needs to be shut down). 
+  There is a way to setup your install to access all local files
+  (e.g. UGESCE will be able to read your Mac OS-X files), or use
+  shared folders. Instructions to follow.
 
---- Using the Linux machine ---
+  To enable the image to access your local (Mac or Windows) files,
+  highlight the SEATREE VM in VirtualBox, [SETTINGS > SHARED FOLDERS]
+
+- Now, try to start up the virtual machine by clicking on the green
+  arrow within VirtualBox. (Whenever you need to make changes to
+  settings such as virtual box' network access, the machine needs to
+  be shut down).
+
+--- Using the Linux machine (LOGIN) ---
 
 - If the machine is running, you should see a Fedora/Linux login
   screen with one user, the "Seatree User". Click on the user icon,
@@ -108,21 +162,46 @@ Password: seatree
   with your user desktop. There are several program icons, on which
   you can click, including some of our own stuff
 
+  If, at some point, you need to be root (superuser) to change
+  administrative settings within UGESCE, the password for root is the
+  same, seatree.
+
+
+--- General instructions on using UNIX, LINUX, and the like ---
+
+Can be found on the web. My lecture notes at
+
+    http://www-udc.ig.utexas.edu/external/becker/unix_rome.html
+
+might also be of use
+
+--- Some comments on installed software ---
+
+For an up to date list with version numbers, see the main UGESCE page
+at 
+
+   http://www-udc.ig.utexas.edu/external/becker/ugesce.html
+
+- GMT - The Generic Mapping Tools
+
+  http://gmt.soest.hawaii.edu/
+
 - iGMT - a graphical user interface for mapping using GMT
 
-  http://geodynamics.usc.edu/~becker/projects.i.html
+  http://www-udc.ig.utexas.edu/external/becker/projects.i.html
 
 - SEATREE - The Solid Earth Research and Teaching Environment
 
   http://geosys.usc.edu/projects/seatree/
 
 
-And some example for nice free software, including
+And some example for other nice free software, including
 
 - Octave - a free matlab alternative
 - g3data - a plot digitizer
 - gnuplot - a simple x-y plotter
-
+- Paraview - a 3D visualization tool, e.g. for VTK files
+- GRASS - a free GIS system
 
 The machine also comes preloaded with a range of earth science
 datasets, which you can access via the folders that are on the
@@ -136,21 +215,21 @@ You are now running a full Linux installation which has been
 customized to do some Earth science mapping and modeling. You can
 customize your copy of the software as you like. 
 
-Should you need to do some more (or less) hard core systems
-administration, the root (superuser) password is also "seatree". For
-example, if we missed out on a popular package, chances are you might
-be able to install it (as root) using 
+-- Installing additional software --
+
+For example, if we missed out on a popular package, chances are you
+might be able to install it (as root) using
 
 yum install my_favorite_software
 
-
-
-
+assuming you have network access set up. 
 
 
 --- Feedback, comments, requests, bug reports ---
 
-Please direct any comments to twb@usc.edu.
+Please direct any comments to twb@usc.edu. In particular, please let
+us know if you like us to install additional software or data.
+
 
 
 
