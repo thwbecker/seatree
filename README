@@ -1,3 +1,53 @@
+Solid Earth Teaching and Research Environment
+
+Thorsten Becker - thwbecker@post.harvard.edu - 10/2017
+
+SEATREE is a modular and user-friendly software to facilitate using
+solid Earth research tools in the classroom and for interdisciplinary,
+scientific collaboration.
+
+We use python wrappers and make use of modern software design
+concepts, while remaining compatible with traditional scientific
+coding. Our goals are to provide a fully contained, yet transparent
+package that lets users operate in an easy, graphically supported
+"black box" mode, while also allowing to look under the hood. In the
+long run, we envision SEATREE to contribute to new ways of sharing
+scientific research, and making (numerical) experiments truly
+reproducible again.
+
+Reference:
+
+Milner, K., Becker, T. W., Boschi, L., Sain, J., Schorlemmer, D. and
+H. Waterhouse: The Solid Earth Research and Teaching Environment: a
+new software framework to share research tools in the classroom and
+across disciplines. Eos Trans. AGU, 90, 12, 2009. ​
+http://www-udc.ig.utexas.edu/external/becker/preprints/mbbssw08.pdf
+
+
+For download of a complete SEATREE install using VirtualBox, see
+
+https://geosys.usc.edu/projects/seatree/wiki/download
+
+SEATREE is module based, and the current version includes tools for
+computing 2-D mantle (thermal) convection, 3-D body wave mantle
+seismic tomography, 3-D spherical mantle flow (a driver for the HC
+tool), for inverting for Earth structure by means of surface wave,
+phase velocity tomography, and a two-dimensional synthetic tomography
+teaching module.
+
+A rudimentary module for earthquake location inversions is also
+available. The main software design consists of transparent python
+wrappers that drive the modules, including a GMT plotting tool, a
+VTK/Paraview 3-D visualization interface, and a graphical user
+interface.
+
+SEATREE is freely available under the GNU license.
+
+If you want to use SEATREE in a classroom setting, we might be able to
+offer you some installation support and always welcome your
+feedback. Also, if you like to add your own module to SEATREE, please
+let us know; we might be able to provide some assistance.
+
 This directory contains source codes and scripts for a range of solid
 Earth research tools within the SEATREE framework whose web site can
 be found at
@@ -13,3 +63,7 @@ For user documentation, see:
 	 http://geosys.usc.edu/projects/seatree/wiki/UserDocs
 
 See the file COPYRIGHT for license.
+
+
+
+Partial support was provides through NSF-CAREER.

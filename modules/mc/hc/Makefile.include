@@ -1,14 +1,17 @@
-ARCH=x86_64
-HC_HOME=/home/becker/progs/src/seatree/modules/mc/hc
-GMTHOME=/usr/local/src/gmt-4.5.14/
-NETCDFHOME=/usr/local/src/netcdf-4.3.0/
 
-GGRD_INC_FLAGS = -I$(GMTHOME)/include -I$(NETCDFHOME)/include  
-GGRD_LIBS_LINKLINE = -L$(GMTHOME)/lib/ -lggrd -lgmt -lpsl -lnetcdf 
+# for GMT3.4.5, use the next two lines
+#GGRD_INC_FLAGS = -I$(GMTHOME)/include -I$(NETCDFHOME)/include  -DUSE_GMT3
+#GGRD_LIBS_LINKLINE = -lggrd -lgmt -lnetcdf 
+# 
+#
+#
+# quad precision
+ADD_FLAGS = -DHC_PRECISION=32 
+#
+# double precision
+#ADD_FLAGS = 
 
-LDFLAGS = -lm
 
-CC = gcc
-
-ADD_FLAGS = -DHC_PRECISION=32 -O2
-CFLAGS = -frounding-math -fsignaling-nans  -Werror
+GGRD_INC_FLAGS = -I$(GMTHOME)/include -I$(NETCDFDIR)/include 
+GGRD_LIBS_LINKLINE = -lggrd -lgmt -lpsl -lnetcdf 
+LDFLAGS = -L$(NETCDFDIR)/lib -lnetcdf
