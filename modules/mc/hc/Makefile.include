@@ -1,20 +1,10 @@
-#
-HC_HOME=$(HOME)/progs/src/seatree/modules/mc/hc/
-#
-#
-# for GMT3.4.5, use the next two lines
-#GGRD_INC_FLAGS = -I$(GMTHOME)/include -I$(NETCDFHOME)/include  -DUSE_GMT3
-#GGRD_LIBS_LINKLINE = -lggrd -lgmt -lnetcdf 
-# 
-#
-#
-# quad precision
-ADD_FLAGS = -DHC_PRECISION=32 
-#
-# double precision
-#ADD_FLAGS = 
+ARCH=x86_64
+GMTHOME=/home/twb/progs/src/gmt-4.5.18/
+NETCDFHOME=/usr
 
+ADD_FLAGS = -DHC_PRECISION=32
 
-GGRD_INC_FLAGS = -I$(GMTHOME)/include -I$(NETCDFDIR)/include 
+GGRD_INC_FLAGS = -I$(GMTHOME)/include -I$(NETCDFHOME)/include  
 GGRD_LIBS_LINKLINE = -lggrd -lgmt -lpsl -lnetcdf 
-LDFLAGS = -L$(NETCDFDIR)/lib -lnetcdf
+
+LDFLAGS = -lgfortran -lm 
