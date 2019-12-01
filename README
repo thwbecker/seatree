@@ -1,6 +1,6 @@
 Solid Earth Teaching and Research Environment
 
-Thorsten Becker - thwbecker@post.harvard.edu - 10/2017
+Thorsten Becker - thwbecker@post.harvard.edu - 12/2019
 
 SEATREE is a modular and user-friendly software to facilitate using
 solid Earth research tools in the classroom and for interdisciplinary,
@@ -26,7 +26,7 @@ http://www-udc.ig.utexas.edu/external/becker/preprints/mbbssw08.pdf
 
 For download of a complete SEATREE install using VirtualBox, see
 
-https://geosys.usc.edu/projects/seatree/wiki/download
+http://www-udc.ig.utexas.edu/external/becker/seatree/wiki/download
 
 SEATREE is module based, and the current version includes tools for
 computing 2-D mantle (thermal) convection, 3-D body wave mantle
@@ -52,18 +52,17 @@ This directory contains source codes and scripts for a range of solid
 Earth research tools within the SEATREE framework whose web site can
 be found at
 
-	       http://geosys.usc.edu/projects/seatree/
+	       http://www-udc.ig.utexas.edu/external/becker/seatree/
 
 For installation, see:
 
-	 http://geosys.usc.edu/projects/seatree/wiki/download
+	 http://www-udc.ig.utexas.edu/external/becker/seatree/wiki/download
 
 For user documentation, see:
 
-	 http://geosys.usc.edu/projects/seatree/wiki/UserDocs
+	 http://www-udc.ig.utexas.edu/external/becker/seatree/wiki/UserDocs
 
 See the file COPYRIGHT for license.
 
 
-
-Partial support was provides through NSF-CAREER.
+Partial support was provided through NSF-CAREER.
