@@ -9,7 +9,7 @@
 BINDIR=../bin/
 
 INCLUDE_DIR=./
-CCFLAGS = $(CFLAGS)
+CCFLAGS = $(CFLAGS) -fgnu89-inline
 #CCFLAGS=-O3 -Wall
 #CCFLAGS=-O3 -pg -Wall
 #CCFLAGS=-g  -Wall
@@ -21,7 +21,7 @@ TIME3D_CCFLAGS=
 CUSTOM=
 #CUSTOM=ETH
 
-GRID_LIB_OBJS=GridLib.o util.o geo.o octtree.o nrutil.o nrmatrix.o ran1.o map_project.o
+GRID_LIB_OBJS= util.o geo.o octtree.o nrutil.o nrmatrix.o map_project.o GridLib.o ran1.o 
 
 all : ${BINDIR}/NLLoc ${BINDIR}/Vel2Grid ${BINDIR}/Grid2Time ${BINDIR}/Grid2GMT ${BINDIR}/LocSum \
 	${BINDIR}/Time2EQ ${BINDIR}/PhsAssoc ${BINDIR}/hypoe2hyp ${BINDIR}/fpfit2hyp ${BINDIR}/oct2grid \
@@ -33,7 +33,7 @@ distrib : NLLoc Vel2Grid Grid2Time Grid2GMT LocSum Time2EQ PhsAssoc hypoe2hyp fp
 # --------------------------------------------------------------------------
 # NLLoc
 #
-OBJS0=NLLocLib.o ${GRID_LIB_OBJS} calc_crust_corr.o velmod.o GridMemLib.o phaselist.o loclist.o
+OBJS0=NLLocLib.o  calc_crust_corr.o velmod.o GridMemLib.o phaselist.o loclist.o ${GRID_LIB_OBJS}
 OPTIONS0=
 # Custom builds
 ifeq ($(CUSTOM), ETH)
