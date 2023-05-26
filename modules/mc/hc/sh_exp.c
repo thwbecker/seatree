@@ -247,7 +247,7 @@ kindof RMS^2
 */
 HC_CPREC 
 sh_total_power (exp)
-struct sh_lms *exp;
+     struct sh_lms *exp;
 {
   HC_PREC *power;
   double sum;
@@ -259,6 +259,24 @@ struct sh_lms *exp;
   free(power);
   return (HC_CPREC)sum;
 }
+
+HC_CPREC sh_total_rms (exp)
+     struct sh_lms *exp;
+{
+  HC_PREC *power;
+  HC_PREC sum;
+  int l;
+  hc_vecalloc(&power,exp->lmaxp1,"sh_total_power");
+  sh_compute_power_per_degree(exp,power);
+  for(sum=0.0,l=1;l<=exp->lmax;l++){
+    //fprintf(stderr,"%g\n",(double)power[l]);
+    sum += (double)(2.0*(HC_CPREC)l+1.0) * (double)power[l];
+  }
+  free(power);
+  return sqrt(sum);
+}
+
+
 /* 
 
 compute the power (sigma^2) per degree and unit area

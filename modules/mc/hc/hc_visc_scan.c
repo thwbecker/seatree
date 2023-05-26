@@ -10,10 +10,11 @@
    Steinberger. this version by Thorsten Becker (twb@ig.utexas.edu) for
    additional comments, see hc.c
 
-   scan through viscosities and compute correlation with the geoid
-
+   this binary scans through viscosities and computes correlation with
+   the geoid
 
    output viscosities are log10(eta/1e21), top to bottom
+   and three correlations: r_20, r_4-9, r_2-4 
    
 */
 
@@ -35,6 +36,7 @@ int main(int argc, char **argv)
   hc_boolean solved = FALSE; /* init with FALSE! */
   hc_boolean vary_umlm = FALSE;
   HC_PREC dv_use,vl[HC_VSCAN_NLAYER_MAX][3],v[HC_VSCAN_NLAYER_MAX];			/*  for viscosity scans */
+  strncpy(p->main_program_name,argv[0],HC_CHAR_LENGTH);
   /* 
      
   
@@ -158,13 +160,13 @@ int main(int argc, char **argv)
 
      */
     /* uniform "priors" */
-    vl[0][IVMIN]=  -HC_VSCAN_VMAX;vl[0][IVMAX]=HC_VSCAN_VMAX+1e-5;vl[0][IDV]=dv_use; /*   0..100
+    vl[0][IVMIN]=  -p->vscan_em;vl[0][IVMAX]=p->vscan_em+1e-5;vl[0][IDV]=dv_use; /*   0..100
 											  layer
 											  log
 											  bounds
 											  and
 											  spacing */
-    vl[1][IVMIN]=  -HC_VSCAN_VMAX;vl[1][IVMAX]=HC_VSCAN_VMAX+1e-5;vl[1][IDV]=dv_use; /* 100..410 */
+    vl[1][IVMIN]=  -p->vscan_em;vl[1][IVMAX]=p->vscan_em+1e-5;vl[1][IDV]=dv_use; /* 100..410 */
     if(p->free_slip){
       vl[2][IVMIN]=  0;vl[2][IVMAX]=0+1e-5;vl[2][IDV]=dv_use; /* for free
 								      slip, only relative
@@ -172,10 +174,10 @@ int main(int argc, char **argv)
 								      for correlation */
       fprintf(stderr,"%s: for free slip, we set upper mantle (layer 2) to unity (only relative viscosities matter)\n",argv[0]);
     }else{
-      vl[2][IVMIN]=  -HC_VSCAN_VMAX;vl[2][IVMAX]=HC_VSCAN_VMAX+1e-5;vl[2][IDV]=dv_use; /* need to actually
+      vl[2][IVMIN]=  -p->vscan_em;vl[2][IVMAX]=p->vscan_em+1e-5;vl[2][IDV]=dv_use; /* need to actually
 											       loop 410 .660 */
     }
-    vl[3][IVMIN]=  -HC_VSCAN_VMAX;vl[3][IVMAX]=HC_VSCAN_VMAX+1e-5;vl[3][IDV]=dv_use; /* 660 ... 2871 */
+    vl[3][IVMIN]=  -p->vscan_em;vl[3][IVMAX]=p->vscan_em+1e-5;vl[3][IDV]=dv_use; /* 660 ... 2871 */
 
     /* loop */
     for(v[0]=vl[0][IVMIN];v[0] <= vl[0][IVMAX];v[0] += vl[0][IDV])
@@ -191,7 +193,7 @@ int main(int argc, char **argv)
        three layer case
 
     */
-    vl[0][IVMIN]=  -HC_VSCAN_VMAX;vl[0][IVMAX]=HC_VSCAN_VMAX+1e-5;vl[0][IDV]=dv_use; /*   0..100
+    vl[0][IVMIN]=  -p->vscan_em;vl[0][IVMAX]=p->vscan_em+1e-5;vl[0][IDV]=dv_use; /*   0..100
 											       layer
 											       log
 											       bounds
@@ -205,10 +207,10 @@ int main(int argc, char **argv)
 								      for correlation */
       fprintf(stderr,"%s: for free slip, we set upper mantle (layer 2) to unity (only relative viscosities matter)\n",argv[0]);
     }else{
-      vl[2][IVMIN]=  -HC_VSCAN_VMAX;vl[2][IVMAX]=HC_VSCAN_VMAX+1e-5;vl[2][IDV]=dv_use; /* need to actually
+      vl[2][IVMIN]=  -p->vscan_em;vl[2][IVMAX]=p->vscan_em+1e-5;vl[2][IDV]=dv_use; /* need to actually
 											       loop 410 .660 */
     }
-    vl[3][IVMIN]=  -HC_VSCAN_VMAX;vl[3][IVMAX]=HC_VSCAN_VMAX+1e-5;vl[3][IDV]=dv_use; /* 660 ... 2871 */
+    vl[3][IVMIN]=  -p->vscan_em;vl[3][IVMAX]=p->vscan_em+1e-5;vl[3][IDV]=dv_use; /* 660 ... 2871 */
     /* loop */
     for(v[0]=vl[0][IVMIN];v[0] <= vl[0][IVMAX];v[0] += vl[0][IDV])
       for(v[2]=vl[2][IVMIN];v[2] <= vl[2][IVMAX];v[2] += vl[2][IDV]){
@@ -237,10 +239,10 @@ int main(int argc, char **argv)
 								      correlation */
       fprintf(stderr,"%s: for free slip, we set upper mantle (layer 2) to unity (only relative viscosities matter)\n",argv[0]);
     }else{
-      vl[2][IVMIN]=  -HC_VSCAN_VMAX;vl[2][IVMAX]=HC_VSCAN_VMAX+1e-5;vl[2][IDV]=dv_use; /* need to actually
+      vl[2][IVMIN]=  -p->vscan_em;vl[2][IVMAX]=p->vscan_em+1e-5;vl[2][IDV]=dv_use; /* need to actually
 											       loop 410 .660 */
     }
-    vl[3][IVMIN]=  -HC_VSCAN_VMAX;vl[3][IVMAX]=HC_VSCAN_VMAX+1e-5;vl[3][IDV]=dv_use; /* 660 ... 2871 */
+    vl[3][IVMIN]=  -p->vscan_em;vl[3][IVMAX]=p->vscan_em+1e-5;vl[3][IDV]=dv_use; /* 660 ... 2871 */
     /* loop */
     for(v[2]=vl[2][IVMIN];v[2] <= vl[2][IVMAX];v[2] += vl[2][IDV]){
       v[0] = v[1] = v[2];
@@ -275,18 +277,17 @@ int main(int argc, char **argv)
    print out a four layer viscosity structure geoid correlation suite,
    or additionally scan through the upper/lower mantle depths
  */
-void 
-visc_scan_out (v, geoid, sol_spectral, pvel, p, model, solved, vary_umlm)
-HC_PREC *v;
-struct sh_lms *geoid;
-struct sh_lms *sol_spectral;
-struct sh_lms *pvel;
-struct hc_parameters *p;
-struct hcs *model;
-hc_boolean *solved;
-hc_boolean vary_umlm;
+void visc_scan_out (v, geoid, sol_spectral, pvel, p, model, solved, vary_umlm)
+     HC_PREC *v;
+     struct sh_lms *geoid;
+     struct sh_lms *sol_spectral;
+     struct sh_lms *pvel;
+     struct hc_parameters *p;
+     struct hcs *model;
+     hc_boolean *solved;
+     hc_boolean vary_umlm;
 {
-  HC_PREC corr[3],r660=660;
+  HC_PREC corr[3],r660=660,rms;
   const HC_PREC rtop = 300.1, rbot = 1800+1e-5, dr = 25;
   if(p->vscan_rlv){
     if((v[0] < v[1])||(v[0] < v[2]))		/* lithosphere should be > asth or upper mantle */
@@ -304,16 +305,17 @@ hc_boolean vary_umlm;
 	 660...2871 layer in log space */ 
       fprintf(stdout,"%14.7e %14.7e %14.7e %14.7e\t",
 	      (double)v[0],(double)v[1],(double)v[2],(double)v[3]);
-      hc_calc_geoid_corr_four_layer(v,geoid,sol_spectral,pvel,p,model,solved,corr);
-      fprintf(stdout,"%10.7f %10.7f %10.7f\t%8.3f\n",(double)corr[0],(double)corr[1],
-	      (double)corr[2],(double)r660);
+      hc_calc_geoid_corr_four_layer(v,geoid,sol_spectral,pvel,p,model,solved,corr,&rms);
+      fprintf(stdout,"%10.7f %10.7f %10.7f\t%8.3f\t%.4e\n",
+	      (double)corr[0],(double)corr[1],(double)corr[2],(double)r660,(double)rms);
     }
   }else{
     /* no radius scan */
     fprintf(stdout,"%14.7e %14.7e %14.7e %14.7e\t",
 	    (double)v[0],(double)v[1],(double)v[2],(double)v[3]);
-    hc_calc_geoid_corr_four_layer(v,geoid,sol_spectral,pvel,p,model,solved,corr);
-    fprintf(stdout,"%10.7f %10.7f %10.7f\n",(double)corr[0],(double)corr[1],(double)corr[2]);
+    hc_calc_geoid_corr_four_layer(v,geoid,sol_spectral,pvel,p,model,solved,corr,&rms);
+    fprintf(stdout,"%10.7f %10.7f %10.7f\tNaN\t%.4e\n",
+	    (double)corr[0],(double)corr[1],(double)corr[2],(double)rms);
   }
 
 }

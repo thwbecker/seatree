@@ -57,9 +57,9 @@ char *message;
 /* general floating point vector allocation */
 void 
 hc_vecalloc (x, n, message)
-HC_PREC **x;
-int n;
-char *message;
+     HC_PREC **x;
+     int n;
+     char *message;
 {
   *x = (HC_PREC *)malloc(sizeof(HC_PREC)*(size_t)n);
   if(! (*x))
@@ -68,9 +68,9 @@ char *message;
 /* single prec complex vector allocation */
 void 
 hc_scmplx_vecalloc (x, n, message)
-struct hc_scmplx **x;
-int n;
-char *message;
+     struct hc_scmplx **x;
+     int n;
+     char *message;
 {
   *x = (struct hc_scmplx *)malloc(sizeof(struct hc_scmplx)*(size_t)n);
   if(! (*x))
@@ -79,9 +79,9 @@ char *message;
 /* single vector reallocation */
 void 
 hc_svecrealloc (x, n, message)
-float **x;
-int n;
-char *message;
+     float **x;
+     int n;
+     char *message;
 {
   *x = (float *)realloc(*x,sizeof(float)*(size_t)n);
   if(!(*x))
@@ -101,9 +101,9 @@ char *message;
 /* general version */
 void 
 hc_vecrealloc (x, n, message)
-HC_PREC **x;
-int n;
-char *message;
+     HC_PREC **x;
+     int n;
+     char *message;
 {
   *x = (HC_PREC *)realloc(*x,sizeof(HC_PREC)*(size_t)n);
   if(!(*x))
@@ -186,20 +186,18 @@ int n;
 }
 
 /* zero a HC_HIGH_PREC precision vector */
-void 
-hc_zero_dvector (x, n)
-HC_HIGH_PREC *x;
-int n;
+void hc_zero_dvector (x, n)
+     HC_HIGH_PREC *x;
+     int n;
 {
   int i;
   for(i=0;i<n;i++)
     x[i] = 0.0;
 }
 /* zero a vector of type logical */
-void 
-hc_zero_lvector (x, n)
-hc_boolean *x;
-int n;
+void hc_zero_lvector (x, n)
+     hc_boolean *x;
+     int n;
 {
   int i;
   for(i=0;i<n;i++)
@@ -214,14 +212,14 @@ if append is TRUE, will add a format string, else will create
 anew 
 
 */
-void 
-hc_get_flt_frmt_string (string, n, append)
-char *string;
-int n;
-hc_boolean append;
+void hc_get_flt_frmt_string (string, n, append)
+     char *string;
+     int n;
+     hc_boolean append;
 {
   static hc_boolean init=FALSE;	/* that's OK, multiple instances calling are fine */
   static char type_s[3];
+  char buffer[HC_CHAR_LENGTH+1];
   int i;
   if(!init){
     if(sizeof(HC_PREC) == sizeof(float)){
@@ -238,14 +236,21 @@ hc_boolean append;
   }
   if(!append)
     sprintf(string,"%%%s",type_s);
-  for(i=1;i<n;i++)
-    sprintf(string,"%s %%%s",string,type_s);
+  for(i=1;i<n;i++){
+    if((int)strlen(string)+4 < HC_CHAR_LENGTH){
+      strncpy(buffer,string,HC_CHAR_LENGTH);
+      sprintf(string,"%s %%%s",buffer,type_s);
+    }else{
+      fprintf(stderr,"hc_get_flt_frmt_string: error: out of string length at %i\n",
+	      (int)strlen(string));
+      exit(-1);
+    }
+  }
 }
 //
 // deal with boolean values/switches
-char *
-hc_name_boolean (value)
-hc_boolean value;
+char *hc_name_boolean (value)
+     hc_boolean value;
 {
   if(value)
     return("ON");
@@ -253,9 +258,8 @@ hc_boolean value;
     return("OFF");
 }
 
-hc_boolean 
-hc_toggle_boolean (variable)
-hc_boolean *variable;
+hc_boolean hc_toggle_boolean (variable)
+     hc_boolean *variable;
 {
   if(*variable){
     *variable=FALSE;

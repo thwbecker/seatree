@@ -175,11 +175,11 @@ struct hc_ps{
 /* 
 
 
-parameter structure to allow for settings that are specific to the
-implementation and higher level than the calls to the subroutines
-
-
- */
+   parameter structure to allow for settings that are specific to the
+   implementation and higher level than the calls to the subroutines
+   
+   
+*/
 struct hc_parameters{
   hc_boolean compressible;	/* compressibility following Panasyuk
 				   & Steinberger */
@@ -213,7 +213,7 @@ struct hc_parameters{
 			   something "reasonable" in
 			   terms of relative layer
 			   strength */
-
+  HC_PREC vscan_em;		/* range for scan */
   HC_PREC vscan_dv;		/* spacing for viscosity scan */
   int vscan_n;		/* how many layers to use */
 
@@ -241,14 +241,14 @@ struct hc_parameters{
   hc_boolean print_pt_sol;	/* output of p[6] and t[2] vectors */
   hc_boolean print_kernel_only;
 
-  
-  char visc_filename[HC_CHAR_LENGTH];	/* name of viscosity profile file */
-  char pvel_filename[HC_CHAR_LENGTH];	/* name of plate velocities file */
-  char dens_filename[HC_CHAR_LENGTH];	/* name of density model file */
-  char prem_model_filename[HC_CHAR_LENGTH];	/* PREM model filename */
-  char dens_scaling_filename[HC_CHAR_LENGTH];	/*  */
-  char ref_geoid_file[HC_CHAR_LENGTH]; /* reference geoid */
-  char ref_dtopo_file[HC_CHAR_LENGTH]; /* reference dynamic topography */
+  char main_program_name[HC_CHAR_LENGTH+1];
+  char visc_filename[HC_CHAR_LENGTH+1];	/* name of viscosity profile file */
+  char pvel_filename[HC_CHAR_LENGTH+1];	/* name of plate velocities file */
+  char dens_filename[HC_CHAR_LENGTH+1];	/* name of density model file */
+  char prem_model_filename[HC_CHAR_LENGTH+1];	/* PREM model filename */
+  char dens_scaling_filename[HC_CHAR_LENGTH+1];	/*  */
+  char ref_geoid_file[HC_CHAR_LENGTH+1]; /* reference geoid */
+  char ref_dtopo_file[HC_CHAR_LENGTH+1]; /* reference dynamic topography */
 };
 
 /* plate velocity structure */

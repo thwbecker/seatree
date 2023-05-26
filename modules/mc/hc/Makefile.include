@@ -1,10 +1,17 @@
-ARCH=x86_64
-GMTHOME=/home/walter/twb/progs/src/gmt-4.5.18/
-NETCDFHOME=/home/walter/twb/progs/src/netcdf-c-4.6.3/
-
-GGRD_INC_FLAGS = -I$(GMTHOME)/include -I$(NETCDFHOME)/include  
-GGRD_LIBS_LINKLINE = -lggrd -lgmt -lpsl -lnetcdf 
-
-LDFLAGS = -lgfortran 
+#
+# for GMT3.4.5, use the next two lines
+#GGRD_INC_FLAGS = -I$(GMTHOME)/include -I$(NETCDFHOME)/include  -DUSE_GMT3
+#GGRD_LIBS_LINKLINE = -lggrd -lgmt -lnetcdf 
+# 
+#
+#
 # quad precision
-ADD_FLAGS = -DHC_PRECISION=32
+ADD_FLAGS = -DHC_PRECISION=32 
+#
+# double precision
+#ADD_FLAGS = 
+
+# GMT4 
+GGRD_INC_FLAGS = -I$(GMT4HOME)/include -I$(NETCDFDIR)/include 
+GGRD_LIBS_LINKLINE = -lggrd -L$(GMT4HOME)/lib/ -lgmt -lpsl -lnetcdf 
+LDFLAGS = -L$(NETCDFDIR)/lib -lnetcdf

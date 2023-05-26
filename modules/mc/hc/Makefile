@@ -133,7 +133,7 @@ DEFINES = $(RICK_DEFINES) $(HEAL_DEFINES)
 LIBS = $(HC_LIBS)  $(HEAL_LIBS) $(RICK_LIB)
 
 
-all: all_no_gmt sh_tools hc_tools
+all: all_no_gmt sh_tools hc_tools gmt_tools
 
 all_no_gmt: $(ODIR) $(BDIR) libs hc_tools 
 
@@ -143,6 +143,9 @@ sh_tools: 	$(BDIR)/sh_syn $(BDIR)/sh_corr $(BDIR)/sh_ana $(BDIR)/sh_power \
 hc_tools: $(BDIR)/hc  $(BDIR)/hc_visc_scan $(BDIR)/hc_invert_dtopo \
 	$(BDIR)/hc_extract_sh_layer  $(BDIR)/hc_extract_spatial \
 	$(BDIR)/rotvec2vel $(BDIR)/print_gauss_lat
+
+gmt_tools: $(BDIR)/grdgrd2correlation
+
 
 weird_tools: $(BDIR)/convert_bernhard_dens
 
@@ -154,9 +157,9 @@ ggrd_lib: ggrd_proto $(GGRD_LIBS)
 
 debug_libs: $(HC_LIBS_DEBUG)
 
-really_all: proto all debug_libs $(BDIR)/hc.dbg \
+really_all: proto all debug_libs weird_tools $(BDIR)/hc.dbg \
 	hcplates $(BDIR)/ggrd_test $(BDIR)/grdinttester \
-	$(BDIR)/prem2dsm $(BDIR)/prem2r
+	$(BDIR)/prem2dsm $(BDIR)/prem2r  
 
 
 
@@ -205,7 +208,7 @@ $(BDIR)/print_gauss_lat: print_gauss_lat.c $(PREM_OBJS)
 	$(LIB_FLAGS)   -lrick -lhc $(LDFLAGS) -lm
 
 $(BDIR)/convert_bernhard_dens: convert_bernhard_dens.c
-	$(CC) $(CFLAGS) convert_bernhard_dens.c -o $(BDIR)/convert_bernhard_dens -lm $(INC_FLAGS) \
+	$(CC) $(CFLAGS) convert_bernhard_dens.c $(PREM_OBJS) -o $(BDIR)/convert_bernhard_dens -lm $(INC_FLAGS) \
 	$(LIB_FLAGS)   -lrick -lhc $(LDFLAGS)
 
 $(BDIR)/rotvec2vel: rotvec2vel.c $(PREM_OBJS) 
@@ -250,6 +253,10 @@ $(BDIR)/grdinttester: $(GGRD_INCS) $(LIBS) $(GGRD_LIBS) $(INCS) grdinttester.c
 	$(CC) $(LIB_FLAGS) grdinttester.c $(GGRD_DEFINES) -o $(BDIR)/grdinttester \
 		$(GGRD_LIBS_LINKLINE) -lhc -lrick -lm $(LDFLAGS) 
 
+$(BDIR)/grdgrd2correlation: $(GGRD_INCS) $(LIBS) $(GGRD_LIBS) $(INCS) grdgrd2correlation.c fitxyee_util.c
+	$(CC) $(LIB_FLAGS) grdgrd2correlation.c  fitxyee_util.c $(GGRD_DEFINES) -o $(BDIR)/grdgrd2correlation \
+		$(GGRD_LIBS_LINKLINE) -lhc -lrick -lm $(LDFLAGS) 
+
 $(BDIR)/hc_extract_sh_layer: $(LIBS) $(INCS) $(PREM_OBJS)  $(ODIR)/hc_extract_sh_layer.o
 	$(CC) $(LIB_FLAGS) $(ODIR)/hc_extract_sh_layer.o  \
 		-o $(BDIR)/hc_extract_sh_layer $(PREM_OBJS) \
@@ -281,8 +288,10 @@ $(BDIR):
 	mkdir -p $(BDIR);
 
 clean:
-	rm -f hc_auto_proto.h hc_ggrd_auto_proto.h $(ODIR)/*.o  $(ODIR)/*.a $(BDIR)/*
+	rm -f $(ODIR)/*.o  $(ODIR)/*.a $(BDIR)/*
 
+super_clean:
+	rm -f hc_auto_proto.h hc_ggrd_auto_proto.h $(ODIR)/*.o  $(ODIR)/*.a $(BDIR)/*	
 #
 # library
 #

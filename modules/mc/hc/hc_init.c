@@ -80,6 +80,7 @@ void hc_init_parameters(struct hc_parameters *p)
   */
   p->vscan_n  = 2; /* between 2 and HC_VSCAN_NLAYER_MAX */
   p->vscan_dv =  HC_VSCAN_DV0;
+  p->vscan_em = HC_VSCAN_VMAX;
   p->vscan_rlv = FALSE;
   /* 
 
@@ -149,11 +150,10 @@ INPUT: hc_parameters: holds all the settings
 
 OUTPUT: hc structure, gets modified
 */
-void 
-hc_init_main (hc, sh_type, p)
-struct hcs *hc;
-int sh_type;
-struct hc_parameters *p;
+void hc_init_main (hc, sh_type, p)
+     struct hcs *hc;
+     int sh_type;
+     struct hc_parameters *p;
 {
   int dummy=0;
   HC_PREC dd_dummy[4]={1,1,1,1};
@@ -220,12 +220,9 @@ struct hc_parameters *p;
     /* 
        read in the densities first to determine L from the density expansion
     */
-    hc_assign_density(hc,p->compressible,HC_INIT_D_FROM_FILE,
-		      p->dens_filename,-1,FALSE,FALSE,p->scale_dens_anom_with_prem,
-		      p->verbose,p->read_short_dens_sh,
-		      p->dd_dens_scale,p->ndf,p->rdf,p->sdf,
-		      (p->solver_mode == HC_SOLVER_MODE_VISC_SCAN)?(TRUE):(FALSE),
-		      p->print_kernel_only);
+    hc_assign_density(hc,p,HC_INIT_D_FROM_FILE,
+		      p->dens_filename,-1,FALSE,FALSE,
+		      (p->solver_mode == HC_SOLVER_MODE_VISC_SCAN)?(TRUE):(FALSE));
     /* 
        assign all zeroes up to the lmax of the density expansion 
     */
@@ -247,11 +244,9 @@ struct hc_parameters *p;
     hc_assign_plate_velocities(hc,HC_INIT_P_FROM_FILE,p->pvel_filename,FALSE,dummy,FALSE,
 			       p->read_short_pvel_sh,p->remove_nr,p->verbose);
     /* then read in the density anomalies */
-    hc_assign_density(hc,p->compressible,HC_INIT_D_FROM_FILE,p->dens_filename,hc->pvel.p[0].lmax,
-		      FALSE,FALSE,p->scale_dens_anom_with_prem,
-		      p->verbose,p->read_short_dens_sh, p->dd_dens_scale,p->ndf,p->rdf,p->sdf,
-		      (p->solver_mode == HC_SOLVER_MODE_VISC_SCAN)?(TRUE):(FALSE),
-		      p->print_kernel_only);
+    hc_assign_density(hc,p,HC_INIT_D_FROM_FILE,p->dens_filename,hc->pvel.p[0].lmax,
+		      FALSE,FALSE,
+		      (p->solver_mode == HC_SOLVER_MODE_VISC_SCAN)?(TRUE):(FALSE));
   }else if(p->free_slip){
     /* 
        
@@ -263,11 +258,8 @@ struct hc_parameters *p;
     if(p->verbose)
       fprintf(stderr,"hc_init: initializing for free-slip\n");
     /* read in the density fields */
-    hc_assign_density(hc,p->compressible,HC_INIT_D_FROM_FILE,p->dens_filename,-1,FALSE,FALSE,
-		      p->scale_dens_anom_with_prem,
-		      p->verbose,p->read_short_dens_sh,p->dd_dens_scale,p->ndf,p->rdf,p->sdf,
-		      (p->solver_mode == HC_SOLVER_MODE_VISC_SCAN)?(TRUE):(FALSE),
-		      p->print_kernel_only);
+    hc_assign_density(hc,p,HC_INIT_D_FROM_FILE,p->dens_filename,-1,FALSE,FALSE,
+		      (p->solver_mode == HC_SOLVER_MODE_VISC_SCAN)?(TRUE):(FALSE));
   }else{
     HC_ERROR("hc_init","boundary condition logic error");
   }
@@ -384,12 +376,12 @@ hc_boolean verbose;
  */
 void 
 hc_handle_command_line (argc, argv, start_from_i, p)
-int argc;
-char **argv;
-int start_from_i;
-struct hc_parameters *p;
+     int argc;
+     char **argv;
+     int start_from_i;
+     struct hc_parameters *p;
 {
-  int i;
+  int i,itmp;
   hc_boolean used_parameter;
   HC_PREC tmp;
   
@@ -483,6 +475,9 @@ struct hc_parameters *p;
 		HC_VSCAN_NLAYER_MAX,p->vscan_rlv);
 	fprintf(stderr,"-vs_dv\tval\tuse val spacing in log space for viscosity scan (%g)\n",
 		(double)p->vscan_dv);
+	fprintf(stderr,"-vs_em\tval\tuse 10^{+/-vs_em} as bounds for scan (%g)\n",
+		(double)p->vscan_em);
+	
 	fprintf(stderr,"-vs_zlm\tdepth\tuse depth[km] for the upper/lower mantle boundary (%g)\n",
 		(double)HC_Z_DEPTH(p->rlayer[0]));
 	fprintf(stderr,"-vs_zau\tdepth\tuse depth[km] for the asthenosphere/upper mantle boundary (%g)\n",
@@ -540,8 +535,12 @@ struct hc_parameters *p;
       used_parameter = TRUE;
     }else if(strcmp(argv[i],"-vs_n")==0){	
       hc_advance_argument(&i,argc,argv);
-      sscanf(argv[i],"%i",&p->vscan_n);
-      if((p->vscan_n < 2) || (p->vscan_n >  HC_VSCAN_NLAYER_MAX)){
+      sscanf(argv[i],"%i",&p->vscan_n); /* allow for negative values
+					   to scan upper/lower mantle
+					   boundary */
+      /*  */
+      itmp = abs(p->vscan_n);
+      if((itmp < 2) || (itmp >  HC_VSCAN_NLAYER_MAX)){
 	fprintf(stderr,"hc_init: error, vscan layer %i out of bounds, max is %i\n",
 		p->vscan_n,HC_VSCAN_NLAYER_MAX);
 	exit(-1);
@@ -555,6 +554,10 @@ struct hc_parameters *p;
       hc_advance_argument(&i,argc,argv);
       sscanf(argv[i],HC_FLT_FORMAT,&tmp);
       p->rlayer[0] = HC_ND_RADIUS(tmp);
+      used_parameter = TRUE;
+    }else if(strcmp(argv[i],"-vs_em")==0){	
+      hc_advance_argument(&i,argc,argv);
+      sscanf(argv[i],HC_FLT_FORMAT,&p->vscan_em);
       used_parameter = TRUE;
     }else if(strcmp(argv[i],"-vs_r")==0){	
       hc_toggle_boolean(&p->vscan_rlv);
@@ -712,14 +715,14 @@ ascending
 */
 void 
 hc_assign_viscosity (hc, mode, elayer, p)
-struct hcs *hc;
-int mode;
-HC_PREC elayer[4];
+     struct hcs *hc;
+     int mode;
+     HC_PREC elayer[4];
 struct hc_parameters *p;
 {
   FILE *in;
   int i;
-  char fstring[100];
+  char fstring[HC_CHAR_LENGTH+1];
   HC_PREC mean,mweight,rold,mws;
   switch(mode){
   case HC_INIT_E_FOUR_LAYERS:
@@ -763,7 +766,7 @@ struct hc_parameters *p;
 
        from bottom to top
     */
-    in = hc_fopen(p->visc_filename,"r","hc_assign_viscosity");
+    in = hc_fopen(p->visc_filename,"r","hc_assign_viscosity",p->main_program_name);
     hc_vecrealloc(&hc->rvisc,1,"hc_assign_viscosity");
     hc_vecrealloc(&hc->visc,1,"hc_assign_viscosity");
     hc->nvis = 0;mean = 0.0;mws = 0.0;
@@ -856,24 +859,19 @@ nominal_lmax: -1: the max order of the density expansion will either
               else: will zero out all entries > nominal_lmax
 
 */
-void 
-hc_assign_density (hc, compressible, mode, filename, nominal_lmax, layer_structure_changed, density_in_binary, scale_dens_anom_with_prem, verbose, use_short_format, dd_dens_scale, ndf, rdf, sdf, save_orig_danom, print_kernerl_only)
-struct hcs *hc;
-hc_boolean compressible;
-int mode;
-char *filename;
-int nominal_lmax;
-hc_boolean layer_structure_changed;
-hc_boolean density_in_binary;
-hc_boolean scale_dens_anom_with_prem;
-hc_boolean verbose;
-hc_boolean use_short_format;
-hc_boolean dd_dens_scale;
-int ndf;
-HC_PREC *rdf;
-HC_PREC *sdf;
-hc_boolean save_orig_danom;
-hc_boolean print_kernerl_only;
+void  hc_assign_density (hc, p, mode, filename,
+			 nominal_lmax,
+			 layer_structure_changed,
+			 density_in_binary,
+			 save_orig_danom)  
+     struct hcs *hc;
+     struct hc_parameters *p;
+     int mode;
+     char *filename;
+     int nominal_lmax;
+     hc_boolean layer_structure_changed;
+     hc_boolean density_in_binary;
+     hc_boolean save_orig_danom;
 {
   FILE *in;
   int type,lmax,shps,ilayer,nset,ivec,i,j;
@@ -881,7 +879,7 @@ hc_boolean print_kernerl_only;
   double rho0;
   hc_boolean reported = FALSE,read_on;
   HC_PREC dtmp[3];
-  hc->compressible = compressible;
+  hc->compressible = p->compressible;
   hc->inho = 0;
   if(hc->dens_init)			/* clear old expansions, if 
 					   already initialized */
@@ -911,8 +909,8 @@ hc_boolean print_kernerl_only;
     
     */
 
-    in = hc_fopen(filename,"r","hc_assign_density");
-    if(verbose)
+    in = hc_fopen(filename,"r","hc_assign_density",p->main_program_name);
+    if(p->verbose)
       fprintf(stderr,"hc_assign_density: reading density anomalies in [%g%%] from %s\n",
 	      100*HC_DENSITY_SCALING,filename);
     hc->inho = 0;		/* counter for density layers */
@@ -924,20 +922,20 @@ hc_boolean print_kernerl_only;
        Tromp (physical) normalization, short format
 
     */
-    if(use_short_format){
-      if(verbose)
+    if(p->read_short_dens_sh){
+      if(p->verbose)
 	fprintf(stderr,"hc_assign_density: using short format for density SH\n");
       if(fscanf(in,"%i",&nset) != 1)
 	HC_ERROR("hc_assign_density","code read error");
       ilayer = -1;
     }else{
-      if(verbose)
+      if(p->verbose)
 	fprintf(stderr,"hc_assign_density: using default SH format for density\n");
     }
     
     read_on = TRUE;
     while(read_on){
-      if(use_short_format){
+      if(p->read_short_dens_sh){
 	/* short format I/O */
 	i  = fscanf(in,HC_FLT_FORMAT,dtmp);zlabel = (HC_PREC)dtmp[0];
 	i += fscanf(in,"%i",&lmax);
@@ -947,10 +945,10 @@ hc_boolean print_kernerl_only;
       }else{
 	read_on = sh_read_parameters_from_stream(&type,&lmax,&shps,&ilayer, &nset,
 						 &zlabel,&ivec,in,FALSE,density_in_binary,
-						 verbose);
+						 p->verbose);
       }
       if(read_on){
-	if((verbose)&&(!reported)){
+	if((p->verbose)&&(!reported)){
 	  if(nominal_lmax > lmax)
 	    fprintf(stderr,"hc_assign_density: density lmax: %3i filling up to nominal lmax: %3i with zeroes\n",
 		    lmax,nominal_lmax);
@@ -962,7 +960,7 @@ hc_boolean print_kernerl_only;
 		    lmax);
 	  }
 	  reported = TRUE;
-	  if(verbose >= 2)
+	  if(p->verbose >= 2)
 	    fprintf(stderr,"hc_assign_density: non_dim radius                 %% factor    PREM \\rho/mean_rho          layer #             depth[km]  rho[kg/m^3]\n");
 	}
 
@@ -980,7 +978,7 @@ hc_boolean print_kernerl_only;
 	   assign depth, this assumes that we are reading in depths [km]
 	*/
 	hc->rden[hc->inho] = HC_ND_RADIUS((HC_PREC)zlabel);
-	if(scale_dens_anom_with_prem){
+	if(p->scale_dens_anom_with_prem){
 	  /* 
 	     
 	     get reference density at this level
@@ -1004,10 +1002,11 @@ hc_boolean print_kernerl_only;
 	*/
 	/* scaling factor without depth dependence */
 	dens_scale[0] = HC_DENSITY_SCALING  * (HC_PREC)rho0;
-	if(verbose >= 2){
+	if(p->verbose >= 2){
 	  fprintf(stderr,"hc_assign_density: r: %11g anom scales: %11g x %11g = %11g\t%5i out of %i, z: %11g  %6.1f\n",
 		  (double)hc->rden[hc->inho],
-		  HC_DENSITY_SCALING,rho0/ (double)hc->avg_den_mantle,(double)dens_scale[0],hc->inho+1,nset,(double)zlabel,rho0*1000);
+		  HC_DENSITY_SCALING,rho0/ (double)hc->avg_den_mantle,
+		  (double)dens_scale[0],hc->inho+1,nset,(double)zlabel,rho0*1000);
 	}
 	if(hc->inho){	
 	  /* 
@@ -1033,7 +1032,7 @@ hc_boolean print_kernerl_only;
 	*/
 	sh_init_expansion((hc->dens_anom+hc->inho),
 			  (nominal_lmax > lmax) ? (nominal_lmax):(lmax),
-			  hc->sh_type,0,verbose,FALSE);
+			  hc->sh_type,0,p->verbose,FALSE);
 	/* 
 	   
 	read parameters and scale (put possible depth dependence of
@@ -1043,7 +1042,7 @@ hc_boolean print_kernerl_only;
 	
 	*/
 	sh_read_coefficients_from_stream((hc->dens_anom+hc->inho),1,lmax,in,density_in_binary,
-					 dens_scale,verbose);
+					 dens_scale,p->verbose);
 	hc->inho++;
       }	/* end actualy read on */
     } /* end while */
@@ -1082,12 +1081,12 @@ hc_boolean print_kernerl_only;
     /* 
        depth dependent factor? 
     */
-    local_scale = hc_find_dens_scale(hc->rden[i],hc->dens_scale,dd_dens_scale,rdf,sdf,ndf);
+    local_scale = hc_find_dens_scale(hc->rden[i],hc->dens_scale,p->dd_dens_scale,p->rdf,p->sdf,p->ndf);
     sh_scale_expansion((hc->dens_anom+i),local_scale);
-    if(verbose >= 2){
+    if(p->verbose >= 2){
       fprintf(stderr,"hc_assign_density: r: %11g additional %s d\\rho/dinput: %11g \tlayer %5i out of %i\n",
 	      (double)hc->rden[i],
-	      (dd_dens_scale == HC_DD_READ_FROM_FILE)?("depth-dependent"):((dd_dens_scale==HC_DD_CONSTANT)?("constant"):("polynomial")),(double)local_scale,i,hc->inho);
+	      (p->dd_dens_scale == HC_DD_READ_FROM_FILE)?("depth-dependent"):((p->dd_dens_scale==HC_DD_CONSTANT)?("constant"):("polynomial")),(double)local_scale,i,hc->inho);
     }
   }
 
@@ -1155,7 +1154,7 @@ hc_boolean print_kernerl_only;
       hc->dfact[i] = 1.0/hc->rden[i] *(dbot[i] - dtop[i]);
 	
     }
-    if(verbose)
+    if(p->verbose)
       for(i=0;i < hc->nrad;i++)
 	fprintf(stderr,"hc_assign_density: dens %3i: r: %8.6f df: %8.6f |rho|: %8.4f dtop: %8.3f\n",
 		i+1,(double)hc->rden[i],(double)hc->dfact[i],
@@ -1335,7 +1334,7 @@ void  hc_init_single_plate_exp (filename, hc, pvel_in_binary, pvel, check_for_nr
   /* scale to go from cm/yr to internal scale */
   vfac[0] = vfac[1] = 1.0/hc->vel_scale;
   
-  in = hc_fopen(filename,"r","hc_init_single_plate_exp");
+  in = hc_fopen(filename,"r","hc_init_single_plate_exp","hc-program");
   if(read_short_pvel_sh){
     ivec = 1;shps = 2;type = HC_DEFAULT_INTERNAL_FORMAT;ilayer=0;zlabel=0;nset=1;
     if(fscanf(in,"%i",&lmax) != 1)
@@ -1521,7 +1520,7 @@ HC_PREC rcmb;
 	  fprintf(stderr,"hc_assign_dd_scaling: reading depth dependent  dln\\rho/dln density scaling from %s\n",
 		  p->dens_scaling_filename);
 	p->ndf=0;smean = 0.0;
-	in = hc_fopen(p->dens_scaling_filename,"r","hc_assign_dd_scaling");
+	in = hc_fopen(p->dens_scaling_filename,"r","hc_assign_dd_scaling",p->main_program_name);
 	while(fscanf(in,HC_TWO_FLT_FORMAT,dtmp,(dtmp+1)) == 2){
 	  hc_vecrealloc(&p->rdf,(1+p->ndf),"hc_assign_dd_scaling");
 	  hc_vecrealloc(&p->sdf,(1+p->ndf),"hc_assign_dd_scaling");
@@ -1649,16 +1648,15 @@ hc_boolean verbose;
    open a file safely and give an error message if there was
    a problem
 */
-FILE *
-hc_fopen (name, mode, program)
-char *name;
-char *mode;
-char *program;
+FILE *hc_fopen (name, mode, program,main_program)
+  char *name,*mode,*main_program,*program;
 {
   FILE *in;
   if((in=fopen(name,mode)) == NULL){
-    fprintf(stderr,"%s: error: can not open file %s for mode %s access\n",
+    fprintf(stderr,"%s: error: cannot open file %s for mode %s access\n",
 	    program,name,mode);
+    fprintf(stderr,"%s: use\n\t%s -h\nfor help as to which file was to be read.\n",
+	    program,main_program);
     exit(-1);
   }
   return in;
