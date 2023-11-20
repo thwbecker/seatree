@@ -13,8 +13,6 @@
 include Makefile.include
 #
 #
-#
-#
 ifdef ARCH
 suffix=/$(ARCH)
 endif

@@ -1,3 +1,5 @@
+HC_HOME=$(HOME)/progs/src/seatree/modules/mc/hc/
+
 #
 # for GMT3.4.5, use the next two lines
 #GGRD_INC_FLAGS = -I$(GMTHOME)/include -I$(NETCDFHOME)/include  -DUSE_GMT3
