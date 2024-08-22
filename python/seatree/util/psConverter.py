@@ -4,7 +4,7 @@ import subprocess, os
 
 class PSConverter:
 	
-	def __init__(self, verb=0, convertPath="", psfile="", outfile="", maxWidth=650, maxHeight=400, density=90):
+	def __init__(self, verb=0, convertPath="", psfile="", outfile="", maxWidth=650, maxHeight=400, density=150):
 		self.convertPath = convertPath
 		self.verb = verb
 		self.maxWidth = maxWidth
@@ -108,14 +108,18 @@ class PSConverter:
 			use_ps = self.psfile
 
 		cmd = ""
-		if (self.convertPath):
-			cmd += self.convertPath + os.sep
-		cmd += "convert -density " + str(self.density) + " "
-		if (self.antialias):
-			cmd += "-antialias "
-		else:
-			cmd += "+antialias "
-		cmd += use_ps + " " + pngfile
+#		if (self.convertPath):
+#			cmd += self.convertPath + os.sep
+                #cmd += "convert -density " + str(self.density) + " "
+                cmd = "psconvert -Tg -A"
+#		if (self.antialias):
+#			cmd += "-antialias "
+#		else:
+#			cmd += "+antialias "
+#		cmd += use_ps + " " + pngfile
+		cmd +=   " -I+S0.3 " + use_ps 
+#		cmd += use_ps 
+                print(cmd)
 		self.command(cmd)
 		
 		return pngfile

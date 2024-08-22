@@ -12,9 +12,8 @@ from nonLinLocGUI import NonLinLocGUI
 
 import struct
 
-#import numpy
-
-import Numeric as N
+import numpy
+#import Numeric as N
 
 import array
 
@@ -185,9 +184,9 @@ class NonLinLoc(Module):
 		binValues.read(rdBinFile, self.xModelDim * self.yModelDim * self.zModelDim)
 		
 		#converting into a numeric array and reshaping
-		data = N.array(binValues, typecode= N.Float)
+		data = numpy.array(binValues, typecode= numpydtype(float))
 		
-		self.modelGridMatrix = N.reshape(data,(self.xModelDim, self.yModelDim, self.zModelDim))
+		self.modelGridMatrix = numpy.reshape(data,(self.xModelDim, self.yModelDim, self.zModelDim))
 		
 		return True
 	
@@ -259,9 +258,9 @@ class NonLinLoc(Module):
 		
 		binTimeValues.read(rdBinTimeFile, self.xTimeDim * self.yTimeDim * self.zTimeDim)
 		
-		data = N.array(binTimeValues, typecode= N.Float)
+		data = numpy.array(binTimeValues, typecode= numpy.dtype(float))
 		
-		self.timeGridMatrix = N.reshape(data,(self.xTimeDim, self.yTimeDim, self.zTimeDim))
+		self.timeGridMatrix = numpy.reshape(data,(self.xTimeDim, self.yTimeDim, self.zTimeDim))
 		
 		return True
 		
@@ -305,9 +304,9 @@ class NonLinLoc(Module):
 			lineSplit = line.split()
 			dips.append(float(line.split()[1]))
 			
-		data2 = N.array(dips, typecode=N.Float)
+		data2 = numpy.array(dips, typecode=numpy.dcode(float))
 		
-		self.angleGridMatrix = N.reshape(data2,(self.xAngleDim, self.yAngleDim, self.zAngleDim))
+		self.angleGridMatrix = numpy.reshape(data2,(self.xAngleDim, self.yAngleDim, self.zAngleDim))
 		
 		return True
 	

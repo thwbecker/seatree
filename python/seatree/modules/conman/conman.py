@@ -158,7 +158,7 @@ class ConMan(Module):
 		print "heating: " + str(heating)
 		print "activationE: " + str(activationE)
 		
-		version = 1
+		version = 1     # conman type: 1 old default
 		verbose = 0
 		
 		temp_ic = 0

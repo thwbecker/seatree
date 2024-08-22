@@ -4,7 +4,7 @@ import gtk, os, sys
 
 # import PyLab/MatPlotLib
 import matplotlib
-
+import numpy
 from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
 import math, copy
 
@@ -269,7 +269,8 @@ class MatPlotLibPlotter(Plotter):
 		Load data from a file and call plotXYZData
 
 		"""
-		a = matplotlib.mlab.load(xyzFile)
+		#a = matplotlib.mlab.load(xyzFile)
+                a = numpy.loadtxt(xyzFile)
 		n = numX # determine square size
 		m = numY
 		# determine geometry
@@ -290,7 +291,8 @@ class MatPlotLibPlotter(Plotter):
 		an n by n "square" set of points and call plotXYZData
 
 		"""
-		a = matplotlib.mlab.load(xyzFile)
+		#a = matplotlib.mlab.load(xyzFile)
+                a = numpy.loadtxt(xyzFile)
 		n = int(math.sqrt(a.shape[0])) # determine square size
 		m = n
 		# determine geometry
@@ -311,12 +313,12 @@ class MatPlotLibPlotter(Plotter):
 		as [xmin, xmax,ymin,ymax]
 		"""
 		if self.contourFills:
-			self.image = self.axis.contourf(x, y, z, cmap=self.colorMap, shading='flat', extend='both')
+			self.image = self.axis.contourf(x, y, z, cmap=self.colorMap, extend='both')
 		else:
-			self.image = self.axis.pcolor(x, y, z, cmap=self.colorMap, shading='flat')
+			self.image = self.axis.pcolor(x, y, z, cmap=self.colorMap)
 		
 		if self.contourLines:
-			self.axis.contour(x, y, z, colors='black', linewidths=1, shading='flat', extend='both')
+			self.axis.contour(x, y, z, colors='black', linewidths=1,  extend='both')
 			
 		if range != None:
 			self.limitAxis(range[0],range[1],range[2],range[3]);
@@ -337,7 +339,7 @@ class MatPlotLibPlotter(Plotter):
 		self.image = self.axis.imshow(data, cmap=self.colorMap)
 		
 		if self.contourLines:
-			self.axis.contour(x, y, z, colors='black', linewidths=1, shading='flat', extend='both')
+			self.axis.contour(x, y, z, colors='black', linewidths=1, extend='both')
 		
 		if (colorBar):
 			self.figure.colorbar(self.image, orientation=self.colorBarOrientation)

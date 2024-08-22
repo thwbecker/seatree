@@ -269,9 +269,9 @@ class ManipulateXYData:
             y=[-z,-z];
             self.axis.text(self.xmin+xoff,-z+10.,str(z)+' km',fontstyle='italic')
             if uselogx:
-                self.axis.semilogx(x,y,linewidth=2,color='black',linestyle='--')
+                self.axis.semilogx(x,y,linewidth=2,color='black',linestyle='dashed')
             else:
-                self.axis.plot(x,y,linewidth=2,color='black',linestyle='--')
+                self.axis.plot(x,y,linewidth=2,color='black',linestyle='dashed')
         # add some best fit models?
         if self.use_sh_bg:
             if not self.bg_init:
