@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
     <Larry3dConfiguration>
-     <larry3dPath>
-      /home/walter/becker/progs/src/seatree/modules/seismo/larry3d/x86_64
-     </larry3dPath>
+     <larry3dPath>/home/dliu/seatree.dev/modules/seismo/larry3d/x86_64</larry3dPath>
     </Larry3dConfiguration>

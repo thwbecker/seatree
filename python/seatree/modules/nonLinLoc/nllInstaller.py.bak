@@ -7,7 +7,7 @@ class NonLinLocInstaller:
 	
 	def install(self, main):
 		# set up module and build any dependant programs here
-		print("Installing NonLinLoc")
+		print "Installing NonLinLoc"
 		
 		self.main = main
 		if (main):
@@ -24,7 +24,7 @@ class NonLinLocInstaller:
 		# setup makefile
 		if (self.checkBuildNLL()):
 			if not self.buildNLL():
-				print("NonLinLoc was not installed!")
+				print "NonLinLoc was not installed!"
 				return		
 		# create config file
 		self.createConfFile()
@@ -44,19 +44,19 @@ class NonLinLocInstaller:
 		if (binPath and os.path.isdir(binPath)):
 			myXml.addText(binPathNode, binPath)
 		else:
-			print("WARNING: The path to NonLinLoc could not be determined...if you haven't built NonLinLoc using this installer then NonLinLoc binaries must already be in your system path!")
+			print "WARNING: The path to NonLinLoc could not be determined...if you haven't built NonLinLoc using this installer then NonLinLoc binaries must already be in your system path!"
 		
 		myXml.writeToXml()
 	
 	
 	def checkBuildNLL(self):
 		if (not os.path.exists(self.nllBase)):
-			print("Error: " + self.nllBase + " doesn't exist!")
+			print "Error: " + self.nllBase + " doesn't exist!"
 			self.getNLLPath()
 		
 		self.binPath = self.nllBase + "bin"
 		
-		response = input("Build NonLinLoc Binaries (note: you must do this once) (y/n default: y)? ")
+		response = raw_input("Build NonLinLoc Binaries (note: you must do this once) (y/n default: y)? ")
 		
 		if (not (response.find("n") >= 0) and not (response.find("N") >= 0)):
 			return True
@@ -64,19 +64,19 @@ class NonLinLocInstaller:
 	
 	def getNLLPath(self):
 		while True:
-			response = input("Please specify path to NonLinLoc: ")
+			response = raw_input("Please specify path to NonLinLoc: ")
 			
 			path = os.path.abspath(response)
 			
 			if not (os.path.exists(path) and os.path.isdir(path)):
-				print(path + " doesn't exist or isn't a directory...try again!")
+				print path + " doesn't exist or isn't a directory...try again!"
 				continue
 			
 			if not path.endswith(os.sep):
 				path += os.sep
 			
 			if not (os.path.exists(path + "src" + os.sep + "Makefile")):
-				print("NonLinLoc files not found in " + path)
+				print "NonLinLoc files not found in " + path
 				continue
 			self.nllBase = path
 			return self.nllBase
@@ -88,18 +88,18 @@ class NonLinLocInstaller:
 		
 		runner = ScriptRunner()
 		
-		print("Building NonLinLoc...")
+		print "Building NonLinLoc..."
 		command = "cd " + self.nllBase + "src" + "; "
 		command += "make clean"
 		
-		print("COMMAND: " + command)
+		print "COMMAND: " + command
 		
 		runner.runScript(command)
 		
 		command = "cd " + self.nllBase + "src" + "; "
 		command += "make"
 		
-		print("COMMAND: " + command)
+		print "COMMAND: " + command
 		
 		result = runner.runScript(command)
 		
@@ -107,10 +107,10 @@ class NonLinLocInstaller:
 		if (ret > 0):
 			outFile = self.nllBase + "make.out"
 			errFile = self.nllBase + "make.err"
-			print("Error building NonLinLoc...STDOUT/STDERR written to " + outFile + "/.err")
-			print("Possible causes:")
-			print("  * You don't have build programs installed such as make and gcc")
-			print("  * The CC evnironmental variable is not setup to point to a C++ compiler (such as gcc)")
+			print "Error building NonLinLoc...STDOUT/STDERR written to " + outFile + "/.err"
+			print "Possible causes:"
+			print "  * You don't have build programs installed such as make and gcc"
+			print "  * The CC evnironmental variable is not setup to point to a C++ compiler (such as gcc)"
 			f = open(outFile, 'w')
 			f.write(result.getStandardOutput())
 			f.close()
@@ -120,7 +120,7 @@ class NonLinLocInstaller:
 			return False
 		else:
 			self.binPath = self.nllBase + "bin"
-			print("Success!")
+			print "Success!"
 			return True
 
 if (__name__ == '__main__'): # is being run from commmand line

@@ -27,11 +27,11 @@ def isResponseNo(response):
 def svnCheckout(repository, path, svn="svn"):
 	while not testCommand("svn help"):
 		if svn == "svn":
-			print("SVN could not be found in your system path.")
-		svn = input("Path to SVN: (ex: /usr/bin/svn)? ")
+			print "SVN could not be found in your system path."
+		svn = raw_input("Path to SVN: (ex: /usr/bin/svn)? ")
 		try:
 			if not os.path.exists(svn):
-				print("'" + svn + "' doesn't exist!")
+				print "'" + svn + "' doesn't exist!"
 				svn = "svn"
 				continue
 		except:

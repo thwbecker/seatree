@@ -5,7 +5,7 @@ class Larry3dInstaller:
 	
 	def install(self, main):
 		# set up larry3d and module config here
-		print("Installing Larry3d-Invert")
+		print "Installing Larry3d-Invert"
 		
 		self.main = main
 		self.path = main.getPythonRootDir()
@@ -23,10 +23,10 @@ class Larry3dInstaller:
 	def checkBuildLarry3d(self):
 		self.larry3dDir = os.path.abspath(self.path + os.sep + ".." + os.sep + "modules" + os.sep + "seismo" + os.sep + "larry3d" )
 		if (not os.path.exists(self.larry3dDir)):
-			print("Error: " + self.larry3dDir + " doesn't exist!")
+			print "Error: " + self.larry3dDir + " doesn't exist!"
 			self.getLarry3dPath()
 		
-		response = input("Build Larry3d (note: you must do this once) (y/n default: y)? ")
+		response = raw_input("Build Larry3d (note: you must do this once) (y/n default: y)? ")
 		
 		if (not (response.find("n") >= 0) and not (response.find("N") >= 0)):
 			return True
@@ -34,17 +34,17 @@ class Larry3dInstaller:
 	
 	def getLarry3dPath(self):
 		while True:
-			response = input("Please specify path to Larry3d: ")
+			response = raw_input("Please specify path to Larry3d: ")
 			
 			path = os.path.abspath(response)
 			InvPath = "src" + os.sep + "Inv" + os.sep + "main.f90"
 			
 			if not (os.path.exists(path) and os.path.isdir(path)):
-				print(path + " doesn't exist or isn't a directory...try again!")
+				print path + " doesn't exist or isn't a directory...try again!"
 				continue
 			
 			if not (os.path.exists(path + os.sep + InvPath)):
-				print("Larry3d src files not found in " + path)
+				print "Larry3d src files not found in " + path
 				continue
 			self.larry3dDir = path
 			return self.larry3dDir
@@ -53,9 +53,9 @@ class Larry3dInstaller:
 	
 	def setupMakefile(self):
 		if (not os.path.exists(self.larry3dDir)):
-			print("Error: " + self.larry3dDir + " doesn't exist!")
+			print "Error: " + self.larry3dDir + " doesn't exist!"
 			return False
-		print("Larry3d Directory: " + self.larry3dDir)
+		print "Larry3d Directory: " + self.larry3dDir
 		
 		if (not self.arch):
 			var = self.sys_var("ARCH")
@@ -69,7 +69,7 @@ class Larry3dInstaller:
 			if (not self.arch):
 				self.arch = "x86_64"
 			
-			newArch = input("CPU Architecture (default: " + self.arch + "): ")
+			newArch = raw_input("CPU Architecture (default: " + self.arch + "): ")
 			
 			if (newArch):
 				self.arch = newArch
@@ -95,11 +95,11 @@ class Larry3dInstaller:
 		return True
 	
 	def buildLarry3d(self):
-		print("Building Larry3d...")
+		print "Building Larry3d..."
 		command = "cd " + self.larry3dDir + "; "
 		command += "make clean"
 		
-		print("COMMAND: " + command)
+		print "COMMAND: " + command
 		
 		proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		output = proc.communicate()
@@ -107,7 +107,7 @@ class Larry3dInstaller:
 		command = "cd " + self.larry3dDir + "; "
 		command += "make"
 		
-		print("COMMAND: " + command)
+		print "COMMAND: " + command
 		
 		proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		
@@ -115,21 +115,21 @@ class Larry3dInstaller:
 		ret = proc.returncode
 		if (ret > 0):
 			errorFile = self.larry3dDir + os.sep + "error.log"
-			print("Error building Larry3d...output written to " + errorFile)
-			print("Possible causes:")
-			print("  * You don't have build programs installed such as make and gcc")
+			print "Error building Larry3d...output written to " + errorFile
+			print "Possible causes:"
+			print "  * You don't have build programs installed such as make and gcc"
 			f = open(errorFile, 'w')
-			f.write(str(output[1]))
+			f.write(output[1])
 			f.close()
 			return False
 		else:
 			# create config file
 			self.createConfFile()
-			print("Success!")
+			print "Success!"
 #			return True
 		
 		# convert necessary model data to binary
-		print("Converting model data to binary...")
+		print "Converting model data to binary..."
 		datapath = self.path + os.sep + "data" + os.sep + "larry3d" + os.sep
 		for f in os.listdir(datapath):
 #			print f + "\n"
@@ -141,11 +141,11 @@ class Larry3dInstaller:
 			sbindata = d + "data.S.bin"
 			# convert P data
 			if os.path.exists(pdata) == True and os.path.exists(pbindata) == False:
-				print(pdata + "\n")
+				print pdata + "\n"
 				cmd = "cd " + d + "\n"
 				cmd += "cat <<EOF | " + self.larry3dDir + os.sep + self.arch + os.sep + \
 							"data_a2b > conv.log \n" + "P" + "\nEOF"
-				print("COMMAND: " + cmd)
+				print "COMMAND: " + cmd
 				
 				proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 				
@@ -153,21 +153,21 @@ class Larry3dInstaller:
 				ret = proc.returncode
 				if (ret > 0):
 					errorFile = d + "error.log"
-					print("Error converting " + pdata + " to binary " + errorFile)
+					print "Error converting " + pdata + " to binary " + errorFile
 					f = open(errorFile, 'w')
 					f.write(output[1])
 					f.close()
 #						return False
 				else:
-					print(pdata + " converted to binary.\n")
+					print pdata + " converted to binary.\n"
 #						return True
 			# convert S data
 			if os.path.exists(sdata) == True and os.path.exists(sbindata) == False:
-				print(sdata + "\n")
+				print sdata + "\n"
 				cmd = "cd " + d + "\n"
 				cmd += "cat <<EOF | " + self.larry3dDir + os.sep + self.arch + os.sep + \
 							"data_a2b > conv.log \n" + "S" + "\nEOF"
-				print("COMMAND: " + cmd)
+				print "COMMAND: " + cmd
 				
 				proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 				
@@ -175,15 +175,15 @@ class Larry3dInstaller:
 				ret = proc.returncode
 				if (ret > 0):
 					errorFile = d + "error.log"
-					print("Error converting " + sdata + " to binary " + errorFile)
+					print "Error converting " + sdata + " to binary " + errorFile
 					f = open(errorFile, 'w')
 					f.write(output[1])
 					f.close()
 #						return False
 				else:
-					print(sdata + " converted to binary\n")
+					print sdata + " converted to binary\n"
 #						return True
-		print("\nSuccess!\n")
+		print "\nSuccess!\n"
 
 	def createConfFile(self):
 		confDir = os.path.abspath(self.path + os.sep + "conf" + os.sep + "larry3d")
@@ -199,7 +199,7 @@ class Larry3dInstaller:
 		if (larry3dPath and os.path.isdir(larry3dPath)):
 			myXml.addText(lr, larry3dPath)
 		else:
-			print("WARNING: The path to Larry3d could not be determined...if you haven't built Larry3d using this installer then Larry3d must already be in your system path!")
+			print "WARNING: The path to Larry3d could not be determined...if you haven't built Larry3d using this installer then Larry3d must already be in your system path!"
 		
 		myXml.writeToXml()
 	

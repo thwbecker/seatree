@@ -2,12 +2,12 @@ import gi
 gi.require_version('Gtk', '4.0')
 from gi.repository import Gtk, Gdk
 import os, sys
-import writeXml
+from .writeXml import *
 
 class ConfMaker:
     
     def __init__(self, mods, file="conf.xml", gmtPath="", convertPath=""):
-        myXml = writeXml.WriteXml(name="SEATREEConfiguration")
+        myXml = WriteXml(name="SEATREEConfiguration")
         myXml.setFileName(file)
         modules = myXml.addNode("modules")
         
