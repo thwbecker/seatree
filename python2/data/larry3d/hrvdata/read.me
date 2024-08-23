@@ -1,0 +1,15 @@
+P wave data from Antolik et al. (2001), kindly provided by Antolik et al. 
+If you use this data, please cite the included 2001 PAGEOPH paper.
+
+
+*.ascii are ascii files. the first string of each filename (data, quakes or receiv) tells you whether the file contains the actual delay times ("data"), source information ("quakes": respectively Longitude, Latitude in degrees, Depth in km), station information ("receiv", Longitude followed by Latitude). Notice that Longitude is before Latitude in my convention. 
+
+*.smm are the same files, in binary format created on a linux PC. To be on the safe side, generate binary files from the ascii ones on your own machine, using the included program data_a2b.f. 
+
+The suffix .smm means that these are SUMMARY data: the data were binned with 2degX2deg equal-area cells.
+
+For each phase, the three files have the same number of lines, ordered in the same way. So For example if you read the 100th record of *.df.smm.ascii, you will read the source location, station location and travel time measurement for the 100th PKPdf observation in the database.
+
+The delay time is absolute delay time, in seconds, with respect to prem plus the crust and ellipticity corrections: T_observed-T_prem-T_crust-T_ellipticity.
+
+See Antolik, Ekstrom, Dziewonski (Pageoph, 2001) for reference on how the data were processed w/r/t the original ISC database.

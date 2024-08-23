@@ -1,370 +1,313 @@
-import pygtk
-pygtk.require('2.0')
-import gtk
+import gi
+gi.require_version('Gtk', '4.0')
+from gi.repository import Gtk, Gdk
+
 import seatree.gui.util.guiUtils as guiUtils
 from seatree.gmt.gmtWrapper import *
 from seatree.gui.util.rangeDialog import RangeDialog
 
 class GMTSettingsPanel:
-	
-	def __init__(self, gmtPlotterWidget, gmtWrapper, width=200):
+    
+    def __init__(self, gmtPlotterWidget, gmtWrapper, width=200):
+        self.width = width
+        self.gmtPlotterWidget = gmtPlotterWidget
 
+        self.eb = Gtk.EventBox()
+        self.eb.set_size_request(self.width, 200)
+        self.eb.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(0.5, 0.5, 0.5, 1))
 
-		self.tooltips = gtk.Tooltips()
+        self.vBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
+        self.row1 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
+        
+        # Colormap Type
+        self.colormapCombo = Gtk.ComboBoxText()
+        self.colormapCombo.append_text("haxby")
+        self.colormapCombo.append_text("gray")
+        self.colormapCombo.append_text("wysiwyg")
+        self.colormapCombo.append_text("polar")
+        self.colormapCombo.append_text("seis")
+        self.colormapCombo.append_text("spectral")
+        self.colormapCombo.append_text("other...")
+        self.colormapCombo.set_active(0)
 
+        self.colormapCombo.connect("changed", self.checkColormap)
 
+        self.colormapEntry = Gtk.Entry()
+        self.colormapEntry.set_width_chars(5)
+        self.colormapEntry.set_sensitive(False)
 
-		self.width = width
-		
-		self.gmtPlotterWidget = gmtPlotterWidget
-		self.eb = gtk.EventBox()
-		self.eb.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("gray"))
-		self.eb.set_size_request(self.width, 200)
+        self.colormapLabel = Gtk.Label(label="Colormap Type:")
+        self.colormapBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+        self.colormapBox.pack_start(self.colormapLabel, False, False, 0)
+        
+        self.invertCheck = Gtk.CheckButton(label="Invert")
+        self.invertCheckBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+        self.invertCheckBox.pack_start(self.invertCheck, False, False, 0)
 
-		self.vBox = gtk.VBox(homogeneous=True, spacing=1)	
-		self.row1 = gtk.HBox(homogeneous=False, spacing=1)
-		
-		# Colormap Type
-		self.colormapCombo = gtk.combo_box_new_text()
-		self.colormapCombo.append_text("haxby")
-		self.colormapCombo.append_text("gray")
-		self.colormapCombo.append_text("wysiwyg")
-		self.colormapCombo.append_text("polar")
-		self.colormapCombo.append_text("seis")
-		self.colormapCombo.append_text("spectral")
-		self.colormapCombo.append_text("other...")
-		self.colormapCombo.set_active(0)
+        self.adjustCheck = Gtk.CheckButton(label="Auto scale")
+        self.adjustCheck.set_active(True)
+        self.adjustCheckBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+        self.adjustCheckBox.pack_start(self.adjustCheck, False, False, 0)
 
+        self.labelCheck = Gtk.CheckButton(label="Labels")
+        self.labelCheck.set_active(True)
+        self.labelCheckBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+        self.labelCheckBox.pack_start(self.labelCheck, False, False, 0)
 
-		self.colormapCombo.connect("changed", self.checkColormap)
-		self.tooltips.set_tip(self.colormapCombo, 'select some of the GMT colormaps, or type your preferred colormap in the text field', tip_private=None)
+        self.plateBoundaryCheck = Gtk.CheckButton(label="Pbound")
+        self.plateBoundaryCheckBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+        self.plateBoundaryCheckBox.pack_start(self.plateBoundaryCheck, False, False, 0)
+        
+        self.coastCheck = Gtk.CheckButton(label="Coastlines")
+        self.coastCheckBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+        self.coastCheckBox.pack_start(self.coastCheck, False, False, 0)
+        
+        self.coastMaskCombo = Gtk.ComboBoxText()
+        self.coastMaskCombo.append_text("No Mask")
+        self.coastMaskCombo.append_text("Mask Sea")
+        self.coastMaskCombo.append_text("Mask Land")
+        self.coastMaskCombo.set_active(0)
 
+        self.plotGridLines = Gtk.CheckButton(label="Grid lines")
+        self.plotGridLinesBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+        self.plotGridLinesBox.pack_start(self.plotGridLines, False, False, 0)
 
-		self.colormapEntry = gtk.Entry()
-		self.colormapEntry.set_width_chars(5)
-		self.colormapEntry.set_sensitive(False)
+        self.colorSymLabel = Gtk.Label(label="Colors:")
 
-		self.colormapLabel = gtk.Label("Colormap Type:")
-		self.colormapBox = gtk.HBox(homogeneous=False, spacing=5)
-		self.colormapBox.pack_start(self.colormapLabel)
-		
-		self.invertCheck = gtk.CheckButton(label="Invert")
-		self.tooltips.set_tip(self.invertCheck, 'flip the colormap around, e.g. from red->blue to blue->red', tip_private=None)
-		self.invertCheckBox = gtk.HBox(homogeneous=False, spacing=0)
-		self.invertCheckBox.pack_start(self.invertCheck)
+        self.coastColorButton = Gtk.Button(label="Coast")
+        self.coastColorButton.connect("clicked", self.setCoastColor)
+        
+        self.coastMaskColorButton = Gtk.Button(label="Mask")
+        self.coastMaskColorButton.connect("clicked", self.setCoastMaskColor)
 
-		self.adjustCheck = gtk.CheckButton(label="Auto scale")
-		self.tooltips.set_tip(self.adjustCheck, 'adjust the colormap automatically to range of scalars plotted in background, else will used fixed range', tip_private=None)
-		self.adjustCheck.set_active(True)
-		self.adjustCheckBox = gtk.HBox(homogeneous = False, spacing = 0)
-		self.adjustCheckBox.pack_start(self.adjustCheck)
+        self.pbcolButton = Gtk.Button(label="Pbound")
+        self.pbcolButton.connect("clicked", self.setPbcol)
 
-		self.labelCheck = gtk.CheckButton(label="Labels")
-		self.labelCheck.set_active(True)
-		self.tooltips.set_tip(self.labelCheck, 'Add a colorbar and labels to the maps.', tip_private=None)
-		self.labelCheckBox = gtk.HBox(homogeneous = False, spacing = 0)
-		self.labelCheckBox.pack_start(self.labelCheck)
+        self.vecColButton = Gtk.Button(label="Vectors")
+        self.vecColButton.connect("clicked", self.setVectColor)
+        
+        # grid resolution
+        self.gridres = Gtk.Entry()
+        self.gridres.set_width_chars(4)
+        self.gridres.set_max_length(4)
+        self.gridres.set_text("1.0")
+        self.gridresLabel = Gtk.Label(label="resolution")
 
-		self.plateBoundaryCheck = gtk.CheckButton(label="Pbound")
-		self.tooltips.set_tip(self.plateBoundaryCheck, 'plot NUVEL1 major tectonic plate boundaries', tip_private=None)
-		self.plateBoundaryCheckBox = gtk.HBox(homogeneous = False, spacing = 0)
-		self.plateBoundaryCheckBox.pack_start(self.plateBoundaryCheck)
-		
-		self.coastCheck = gtk.CheckButton(label="Coastlines")
-		self.tooltips.set_tip(self.coastCheck, 'Plot coastlines', tip_private=None)
-		self.coastCheckBox = gtk.HBox(homogeneous = False, spacing = 0)
-		self.coastCheckBox.pack_start(self.coastCheck)
-		
-		self.coastMaskCombo = gtk.combo_box_new_text()
-		self.coastMaskCombo.append_text("No Mask")
-		self.coastMaskCombo.append_text("Mask Sea")
-		self.coastMaskCombo.append_text("Mask Land")
-		self.coastMaskCombo.set_active(0)
+        # Range Settings
+        self.rangeButton = Gtk.Button(label="Update Lat/Lon Range")
+        self.rangeButton.connect("clicked", self.openRangeWindow)
 
-		self.plotGridLines =    gtk.CheckButton(label="Grid lines")
-		self.tooltips.set_tip(self.plotGridLines, 'plot grid lines on top of map', tip_private=None)
-		self.plotGridLinesBox = gtk.HBox(homogeneous = False, spacing = 0)
-		self.plotGridLinesBox.pack_start(self.plotGridLines)
+        self.row1.pack_start(self.colormapBox, False, False, 0)
+        self.row1.pack_start(self.colormapCombo, False, False, 0)
+        self.row1.pack_start(self.colormapEntry, False, False, 0)
+        self.row1.pack_start(self.invertCheckBox, False, False, 0)
+        self.row1.pack_start(self.adjustCheckBox, False, False, 0)
+        self.row1.pack_start(self.labelCheckBox, False, False, 0)
+        self.row1.pack_start(self.rangeButton, False, False, 0)
 
-		self.colorSymLabel = gtk.Label("Colors:")
+        self.row2 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
 
-		self.coastColorButton = gtk.Button("Coast")
-		self.coastColorButton.connect("clicked", self.setCoastColor)
-		self.tooltips.set_tip(self.coastColorButton, 'change color for coast lines', tip_private=None)
-		
-		self.coastMaskColorButton = gtk.Button("Mask")
-		self.coastMaskColorButton.connect("clicked", self.setCoastMaskColor)
-		self.tooltips.set_tip(self.coastMaskColorButton, 'change color for coast mask', tip_private=None)
+        self.applyChangesButton = Gtk.Button(label="Apply Changes")
+        self.applyChangesButton.connect("clicked", self.applyChanges)
 
-		self.pbcolButton = gtk.Button("Pbound")
-		self.pbcolButton.connect("clicked", self.setPbcol)
-		self.tooltips.set_tip(self.pbcolButton, 'change color for plate boundaries', tip_private=None)
+        self.row2.pack_start(self.plotGridLinesBox, False, False, 0)
+        self.row2.pack_start(self.coastCheckBox, False, False, 0)
+        self.row2.pack_start(self.coastMaskCombo, False, False, 0)
+        self.row2.pack_start(self.plateBoundaryCheckBox, False, False, 0)
+        self.row2.pack_start(self.colorSymLabel, False, False, 0)
+        self.row2.pack_start(self.pbcolButton, False, False, 0)
+        self.row2.pack_start(self.coastColorButton, False, False, 0)
+        self.row2.pack_start(self.vecColButton, False, False, 0)
+        self.row2.pack_start(self.gridres, False, False, 0)
+        self.row2.pack_start(self.gridresLabel, False, False, 0)
 
-		self.vecColButton = gtk.Button("Vectors")
-		self.vecColButton.connect("clicked", self.setVectColor)
-		self.tooltips.set_tip(self.vecColButton, 'change color for vectors', tip_private=None)
-		
+        self.row3 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
 
+        # Projection
+        self.projectionLabel = Gtk.Label(label="Projection:")
+        self.projectionEntry = guiUtils.RangeSelectionBox(initial=170, min=0, max=359, digits=0, buttons=True)
+        self.projectionEntryEnd = Gtk.Entry()
+        self.projectionEntryEnd.set_width_chars(2)
+        self.projectionEntryEnd.set_max_length(2)
+        self.projectionEntryEnd.set_text("7")
+        self.projectionLabel2 = Gtk.Label(label="PS width (inches)")
 
-         	# grid resolution
-		self.gridres = gtk.Entry()
-		self.gridres.set_width_chars(4)
-		self.gridres.set_max_length(4)
-		self.gridres.set_text("1.0")
-		self.gridresLabel = gtk.Label("resolution")
-		self.tooltips.set_tip(self.gridres, 'set the resolution (in degrees) of the background grid (if applicable). 0.25...2 are useful for global plots', tip_private=None)
+        self.projectionBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
 
+        # projection type
+        self.projectCombo = Gtk.ComboBoxText()
+        self.projections = ['W Mollweide', 'H Hammer', 'N Robinson', 'Q Equi-Cyl', 'J Miller', 'M Mercator', 'Kf Eckert-IV', 'X Linear']
 
-		#Range Settings
-#		self.rangeLabel = gtk.Label("Lat/Lon Range:")
-#		self.range1Box = gtk.HBox(homogeneous = False, spacing = 0)
-#		self.range1Box.pack_start(self.rangeLabel)
-		
-		self.rangeButton = gtk.Button("Update Lat/Lon Range")
-		self.tooltips.set_tip(self.rangeButton, 
-				      'change the geographic region to be mapped (not that useful for global plots)', tip_private=None)
-		self.rangeButton.connect("clicked", self.openRangeWindow)
+        for pt in self.projections:
+            self.projectCombo.append_text(pt)
+        self.projectCombo.set_active(0)
 
+        self.projectionBox.pack_start(self.projectionLabel, False, False, 0)
+        self.projectionBox.pack_start(self.projectCombo, False, False, 0)
+        self.projectionBox.pack_start(self.projectionEntry, True, True, 0)
+        self.projectionBox.pack_start(self.projectionEntryEnd, False, False, 0)
+        self.projectionBox.pack_start(self.projectionLabel2, False, False, 0)
+        self.row3.pack_start(self.projectionBox, False, False, 0)
 
-		self.row1.pack_start(self.colormapBox, expand=False)
-		self.row1.pack_start(self.colormapCombo, expand=False)
-		self.row1.pack_start(self.colormapEntry, expand=False)
-		self.row1.pack_start(self.invertCheckBox, expand=False)
-		self.row1.pack_start(self.adjustCheckBox,expand=False)
-		self.row1.pack_start(self.labelCheckBox,expand=False)
-		self.row1.pack_start(self.rangeButton, expand = False)
-		
+        self.row4 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
 
-		self.row2 = gtk.HBox(homogeneous=False, spacing=5)
+        self.applyChangesButton = Gtk.Button(label="Apply Changes")
+        self.applyChangesButton.connect("clicked", self.applyChanges)
+        self.defaultsButton = Gtk.Button(label="Reset")
+        self.defaultsButton.connect("clicked", self.resetToDefault)
+        self.row4.append(self.applyChangesButton)
+        self.row4.append(self.defaultsButton)
 
-		self.applyChangesButton = gtk.Button("Apply Changes")
-		self.applyChangesButton.connect("clicked", self.applyChanges)
-		
-#		self.row2.pack_start(self.range1Box, expand = False)
-		self.row2.pack_start(self.plotGridLinesBox, expand = False)
-		self.row2.pack_start(self.coastCheckBox, expand=False)
-		self.row2.pack_start(self.coastMaskCombo, expand=False)
-		self.row2.pack_start(self.plateBoundaryCheckBox, expand=False)
-		self.row2.pack_start(self.colorSymLabel,expand=False)
-		self.row2.pack_start(self.pbcolButton,expand=False)
-		self.row2.pack_start(self.coastColorButton,expand=False)
-#		self.row2.pack_start(self.coastMaskColorButton,expand=False)
-		self.row2.pack_start(self.vecColButton,expand=False)
-		
-		self.row2.pack_start(self.gridres,expand=False)
-		self.row2.pack_start(self.gridresLabel,expand=False)
-		
-		self.row3 = gtk.HBox(homogeneous=True, spacing=5)
-		
-		# Projection
+        self.vBox.append(self.row1)
+        self.vBox.append(self.row2)
+        self.vBox.append(self.row3)
+        self.vBox.append(self.row4)
 
-		self.projectionLabel = gtk.Label("Projection:")
-		self.projectionEntry = guiUtils.RangeSelectionBox(initial=170, min = 0, max = 359, digits = 0, buttons = True)
-		# width of projection
-		self.projectionEntryEnd = gtk.Entry()
-		self.projectionEntryEnd.set_width_chars(2)
-		self.projectionEntryEnd.set_max_length(2)
-		self.projectionEntryEnd.set_text("7")
-		self.projectionLabel2 = gtk.Label("PS width (inches)")
+        self.eb.set_child(self.vBox)
+        #
+        # init with none, gets set in gmt plotter widget
+        self.gmtPlotter = gmtWrapper
+        self.loadDefaults()
 
-		self.projectionBox = gtk.HBox(homogeneous=False, spacing=50)
+    def setGMTPlotter(self, plotter):
+        self.gmtPlotter = plotter
 
-		# projection type
-		self.projectCombo = gtk.combo_box_new_text()
-		self.projections = [ 'W Mollweide',  'H Hammer', 'N Robinson' ,\
-						'Q Equi-Cyl' , 'J Miller', 'M Mercator', 'Kf Eckert-IV', 'X Linear' ]
+    def setPbcol(self, widget):
+        rgb = self.get_color(self.gmtPlotter.pbColor, tlabel='plate boundaries')
+        if rgb is not None:
+            self.gmtPlotter.pbColor = rgb
 
-		for pt in self.projections:
-			self.projectCombo.append_text(pt)
-		self.projectCombo.set_active(0)
+    def setCoastColor(self, widget):
+        rgb = self.get_color(self.gmtPlotter.pbColor, tlabel='coastlines')
+        if rgb is not None:
+            self.gmtPlotter.coastLineColor = rgb
 
-		self.projectionBox.pack_start(self.projectionLabel,expand = False)
-		self.projectionBox.pack_start(self.projectCombo,expand = False)
-		self.projectionBox.pack_start(self.projectionEntry,expand = True)
-		self.projectionBox.pack_start(self.projectionEntryEnd,expand = False)
-		self.projectionBox.pack_start(self.projectionLabel2,expand = False)
-		self.row3.pack_start(self.projectionBox, expand=False)
+    def setCoastMaskColor(self, widget):
+        rgb = self.get_color(self.gmtPlotter.pbColor, tlabel='coastlines')
+        if rgb is not None:
+            self.gmtPlotter.coastLandColor = rgb
+            self.gmtPlotter.coastSeaColor = rgb
 
-	
-		self.row4 = gtk.HBox(homogeneous = False, spacing = 5)
+    def setVectColor(self, widget):
+        rgb = self.get_color(self.gmtPlotter.vectColor, tlabel='vectors')
+        if rgb is not None:
+            self.gmtPlotter.vectColor = rgb
 
-		self.applyChangesButton = gtk.Button("Apply Changes")
-		self.applyChangesButton.connect("clicked", self.applyChanges)
-		self.defaultsButton = gtk.Button("Reset")
-		self.defaultsButton.connect("clicked", self.resetToDefault)
-		self.row4.pack_start(self.applyChangesButton, expand = False)
-		self.row4.pack_start(self.defaultsButton, expand = False)
+    def get_color(self, rgb, tlabel=None):
+        """ color selection dialog """
+        def rgb_to_gdk_color(rgb):
+            r, g, b = rgb
+            return Gdk.RGBA(r, g, b, 1.0)
 
-		self.vBox.pack_start(self.row1, expand=False, fill=False)
-		self.vBox.pack_start(self.row2, expand=False, fill=False)
-		self.vBox.pack_start(self.row3, expand=True, fill=False)
-		self.vBox.pack_start(self.row4, expand=False, fill=False)
-		
-		self.eb.add(self.vBox)
-		#
-		# init with none, gets set in gmt plotter widget
-		self.gmtPlotter = gmtWrapper
-		self.loadDefaults()
+        def gdk_color_to_rgb(color):
+            return int(color.red * 255), int(color.green * 255), int(color.blue * 255)
 
-	def setGMTPlotter(self, plotter):
-		self.gmtPlotter = plotter
+        title = 'Choose color'
+        if tlabel:
+            title += f' for {tlabel}'
+        
+        dialog = Gtk.ColorChooserDialog(title=title)
+        dialog.set_rgba(rgb_to_gdk_color(rgb))
+        response = dialog.run()
+        if response == Gtk.ResponseType.OK:
+            rgb = gdk_color_to_rgb(dialog.get_rgba())
+        else:
+            rgb = None
+        dialog.destroy()
+        return rgb
 
-	def setPbcol(self,widget):
-		rgb = self.get_color(self.gmtPlotter.pbColor,tlabel = 'plate boundaries')
-		if rgb != None:
-			self.gmtPlotter.pbColor = rgb
-		return
-	
-	def setCoastColor(self,widget):
-		rgb = self.get_color(self.gmtPlotter.pbColor,tlabel = 'coastlines')
-		if rgb != None:
-			self.gmtPlotter.coastLineColor = rgb
-		return
-	
-	def setCoastMaskColor(self,widget):
-		rgb = self.get_color(self.gmtPlotter.pbColor,tlabel = 'coastlines')
-		if rgb != None:
-			self.gmtPlotter.coastLandColor = rgb
-			self.gmtPlotter.coastSeaColor = rgb
-		return
+    def getPanel(self):
+        return self.eb
 
-	def setVectColor(self,widgt):
-		rgb = self.get_color(self.gmtPlotter.vectColor,tlabel = 'vectors')
-		if rgb != None:
-			self.gmtPlotter.vectColor = rgb
-		return
+    def checkColormap(self, widget):
+        if self.colormapCombo.get_active_text() == "other...":
+            self.colormapEntry.set_sensitive(True)
+        else:
+            self.colormapEntry.set_sensitive(False)
 
-	def get_color(self,rgb,tlabel = None):
-		""" color selection dialog """
-		def rgb_to_gdk_color(rgb):
-			r,g,b = rgb
-			color = gtk.gdk.Color(int(r*256), int(g*256), int(b*256))
-			return color
-		def gdk_color_to_rgb(color): # return ints
-			return int(color.red/256.0), int(color.green/256.0), int(color.blue/256.0)
-		title = 'Choose color'
-		if tlabel != None:
-			title += ' for ' + tlabel
-		dialog = gtk.ColorSelectionDialog('Choose color')
+    def openRangeWindow(self, widget):
+        plotter = self.gmtPlotter
+        self.rangeWindow = RangeDialog(self, self.gmtPlotter.plotXmin, self.gmtPlotter.plotXmax, 
+                                       self.gmtPlotter.plotYmin, self.gmtPlotter.plotYmax, self.gmtPlotterWidget)
+        self.rangeWindow.show()
+        self.rangeWindow.hide()
 
-		colorsel = dialog.colorsel
-		color = rgb_to_gdk_color(rgb)
-		colorsel.set_previous_color(color)
-		colorsel.set_current_color(color)
-		colorsel.set_has_palette(True)
-		response = dialog.run()
-		if response == gtk.RESPONSE_OK:
-			rgb = gdk_color_to_rgb(colorsel.get_current_color())
-		else:
-			rgb = None
-		dialog.destroy()
-		return rgb
+    def applyChanges(self, widget):
+        cptType = str(self.colormapCombo.get_active_text())
+        if cptType == "other...":
+            cptType = self.colormapEntry.get_text()
 
-	def getPanel(self):
-		return self.eb
+        self.myPlotter = self.gmtPlotterWidget.getGMTPlotter()
+        self.myPlotter.setColormapType(cptType)
+        self.myPlotter.setColormapInvert(self.invertCheck.get_active())
+        self.myPlotter.setDrawPlateBoundaries(self.plateBoundaryCheck.get_active())
+        self.myPlotter.setDrawCoastlines(self.coastCheck.get_active())
+        self.myPlotter.setMaskSea(self.coastMaskCombo.get_active() == 1)
+        self.myPlotter.setMaskLand(self.coastMaskCombo.get_active() == 2)
+        self.myPlotter.setAdjust(self.adjustCheck.get_active())
+        self.myPlotter.setAddLabel(self.labelCheck.get_active())
+        self.myPlotter.setGridLines(self.plotGridLines.get_active())
+        
+        projection_clon = str(self.projectionEntry.getValue())
 
-	def checkColormap(self, widget):
-		if(self.colormapCombo.get_active_text() == "other..."):
-			self.colormapEntry.set_sensitive(True)
-		else:
-			self.colormapEntry.set_sensitive(False)
+        # plot width 
+        pwidth = float(self.projectionEntryEnd.get_text())
+        myprojection = GMTProjection(self.projectCombo.get_active_text()[0], projection_clon, "", pwidth, "")
+        self.myPlotter.setMapProjection(myprojection)  # set the new projection
+        
+        # grid resolution
+        gridres = float(self.gridres.get_text())
+        self.myPlotter.setGridRes(gridres)
 
-	def openRangeWindow(self, widget):
-		plotter = self.gmtPlotter
-		self.rangeWindow = RangeDialog(self, self.gmtPlotter.plotXmin, self.gmtPlotter.plotXmax, \
-						self.gmtPlotter.plotYmin, self.gmtPlotter.plotYmax, self.gmtPlotterWidget)
-		self.rangeWindow.show()
-		self.rangeWindow.hide()
+        # adjust the text projection to map width 
+        myprojection = GMTProjection("X", "", "", pwidth, pwidth / 2.)
+        self.myPlotter.setTextProjection(myprojection)  # set the new projection
+        self.myPlotter.setColorbarPos(pwidth / 2, -pwidth * 0.042)
+        self.myPlotter.setColorbarSize(pwidth / 2., pwidth * 0.036)
 
-	def applyChanges(self, widget):
-		
-		cptType = str(self.colormapCombo.get_active_text())
-		if(cptType == "other..."):
-			cptType = self.colormapEntry.get_text()
+        self.gmtPlotterWidget.setGMTPlotter(self.myPlotter)
+        self.gmtPlotterWidget.updatePlot()
 
-		self.myPlotter = self.gmtPlotterWidget.getGMTPlotter()
-		self.myPlotter.setColormapType(cptType)
-		self.myPlotter.setColormapInvert(self.invertCheck.get_active())
-		self.myPlotter.setDrawPlateBoundaries(self.plateBoundaryCheck.get_active())
-		self.myPlotter.setDrawCoastlines(self.coastCheck.get_active())
-		self.myPlotter.setMaskSea(self.coastMaskCombo.get_active() == 1)
-		self.myPlotter.setMaskLand(self.coastMaskCombo.get_active() == 2)
-		self.myPlotter.setAdjust(self.adjustCheck.get_active())
-		self.myPlotter.setAddLabel(self.labelCheck.get_active())
-		self.myPlotter.setGridLines(self.plotGridLines.get_active())
-		
-		projection_clon = str(self.projectionEntry.getValue())
+    def resetToDefault(self, b):
+        self.loadDefaults()
+        self.gmtPlotter.plotXmin = 0
+        self.gmtPlotter.plotYmin = -90
+        self.gmtPlotter.plotXmax = 360
+        self.gmtPlotter.plotYmax = 90
 
-		# plot width 
-		pwidth = float(self.projectionEntryEnd.get_text())
-		myprojection = GMTProjection(self.projectCombo.get_active_text()[0],projection_clon,"",pwidth,"")
-		self.myPlotter.setMapProjection(myprojection) # set the new projection
-		
-		# grid resolution
-		gridres = float(self.gridres.get_text())
-		self.myPlotter.setGridRes(gridres)
-
-		# adjust the text projection to map width 
-		myprojection = GMTProjection("X","","",pwidth,pwidth/2.)
-		self.myPlotter.setTextProjection(myprojection) # set the new projection
-		self.myPlotter.setColorbarPos(pwidth/2, -pwidth*0.042)
-		self.myPlotter.setColorbarSize(pwidth/2., pwidth*0.036)
-
-		self.gmtPlotterWidget.setGMTPlotter(self.myPlotter)
-		self.gmtPlotterWidget.updatePlot()
-
-	def resetToDefault(self, b):
-		self.loadDefaults()
-		self.gmtPlotter.plotXmin = 0
-		self.gmtPlotter.plotYmin = -90
-		self.gmtPlotter.plotXmax = 360
-		self.gmtPlotter.plotYmax = 90
-
-	def loadDefaults(self):
-		if not self.gmtPlotter:
-			print 'error, no plotter instance'
-			return
-			
-		self.invertCheck.set_active(self.gmtPlotter.colorbarInvert)
-		self.projectionEntryEnd.set_text(str(self.gmtPlotter.projection.pwidth))
-		self.plateBoundaryCheck.set_active(self.gmtPlotter.drawPlateBounds)
-		self.coastCheck.set_active(self.gmtPlotter.drawCoastLines)
-		if self.gmtPlotter.maskLand:
-			self.coastMaskCombo.set_active(2)
-		elif self.gmtPlotter.maskSea:
-			self.coastMaskCombo.set_active(1)
-		else:
-			self.coastMaskCombo.set_active(0)
-		self.adjustCheck.set_active(self.gmtPlotter.adjust)
-		self.labelCheck.set_active(self.gmtPlotter.addLabel)
-		
-		if(self.gmtPlotter.cptType == "haxby"):
-			self.colormapCombo.set_active(0)
-		elif(self.gmtPlotter.cptType == "gray"):
-			self.colormapCombo.set_active(1)
-		elif(self.gmtPlotter.cptType == "wysiwyg"):
-			self.colormapCombo.set_active(2)
-		elif(self.gmtPlotter.cptType == "polar"):
-			self.colormapCombo.set_active(3)
-		elif(self.gmtPlotter.cptType == "seis"):
-			self.colormapCombo.set_active(4)
-		for i in xrange(len(self.projections)):
-			proj = self.projections[i]
-			if self.gmtPlotter.projection.type == proj[0]:
-				self.projectCombo.set_active(i)
-				break
-#		if(self.gmtPlotter.projection.type == "H"):
-#			self.projectCombo.set_active(0)
-#		elif(self.gmtPlotter.projection.type == "N"):
-#			self.projectCombo.set_active(1)
-#		elif(self.gmtPlotter.projection.type == "Q"):
-#			self.projectCombo.set_active(2)
-#		elif(self.gmtPlotter.projection.type == "R"):
-#			self.projectCombo.set_active(3)
-#		elif(self.gmtPlotter.projection.type == "J"):
-#			self.projectCombo.set_active(4)
-#		elif(self.gmtPlotter.projection.type == "X"):
-#			self.projectCombo.set_active(7)
-		
-		if (self.projectCombo.get_active() != 7):
-			self.projectionEntry.setValue(float(self.gmtPlotter.projection.clon))
+    def loadDefaults(self):
+        if not self.gmtPlotter:
+            print('error, no plotter instance')
+            return
+            
+        self.invertCheck.set_active(self.gmtPlotter.colorbarInvert)
+        self.projectionEntryEnd.set_text(str(self.gmtPlotter.projection.pwidth))
+        self.plateBoundaryCheck.set_active(self.gmtPlotter.drawPlateBounds)
+        self.coastCheck.set_active(self.gmtPlotter.drawCoastLines)
+        if self.gmtPlotter.maskLand:
+            self.coastMaskCombo.set_active(2)
+        elif self.gmtPlotter.maskSea:
+            self.coastMaskCombo.set_active(1)
+        else:
+            self.coastMaskCombo.set_active(0)
+        self.adjustCheck.set_active(self.gmtPlotter.adjust)
+        self.labelCheck.set_active(self.gmtPlotter.addLabel)
+        
+        if self.gmtPlotter.cptType == "haxby":
+            self.colormapCombo.set_active(0)
+        elif self.gmtPlotter.cptType == "gray":
+            self.colormapCombo.set_active(1)
+        elif self.gmtPlotter.cptType == "wysiwyg":
+            self.colormapCombo.set_active(2)
+        elif self.gmtPlotter.cptType == "polar":
+            self.colormapCombo.set_active(3)
+        elif self.gmtPlotter.cptType == "seis":
+            self.colormapCombo.set_active(4)
+        for i in range(len(self.projections)):
+            proj = self.projections[i]
+            if self.gmtPlotter.projection.type == proj[0]:
+                self.projectCombo.set_active(i)
+                break
+        
+        if self.projectCombo.get_active() != 7:
+            self.projectionEntry.setValue(float(self.gmtPlotter.projection.clon))

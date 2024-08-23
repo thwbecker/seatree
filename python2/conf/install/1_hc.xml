@@ -1,0 +1,11 @@
+<SEATREEConfiguration>
+  <modules>
+    <module>
+      <importName>seatree.modules.hc.flowCalc</importName>
+      <className>FlowCalc</className>
+      <directory>hc</directory>
+      <installImportName>installFlow</installImportName>
+      <installClassName>FlowInstaller</installClassName>
+    </module>
+  </modules>
+</SEATREEConfiguration>

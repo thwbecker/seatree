@@ -1,96 +1,88 @@
-#!/usr/bin/env python
-import pygtk
-pygtk.require('2.0')
-import gtk
+#!/usr/bin/env python3
+import gi
+gi.require_version('Gtk', '4.0')
+from gi.repository import Gtk
 from util.saveDialog import SaveDialog
 
 class ScriptDialog:
-	def __init__(self, mainWindow, title = "Save", text = ""):
-		
-		self.mainWindow = mainWindow
+    def __init__(self, mainWindow, title="Save", text=""):
+        self.mainWindow = mainWindow
 
-		self.scrolled_window = gtk.ScrolledWindow(hadjustment=None, vadjustment=None)
+        self.scrolled_window = Gtk.ScrolledWindow()
 
-		self.saveFile = "none"
-		self.text = text
+        self.saveFile = "none"
+        self.text = text
 
-		# Create a new dialog window for the scrolled window to be
-	        # packed into. 
-	        self.window = gtk.Dialog()
-	        self.window.connect("destroy", self.destroy)
-	        self.window.set_title(title)
-	      	self. window.set_border_width(0)
-	        self.window.set_size_request(600, 400)
+        # Create a new dialog window for the scrolled window to be packed into.
+        self.window = Gtk.Dialog()
+        self.window.connect("destroy", self.destroy)
+        self.window.set_title(title)
+        self.window.set_border_width(0)
+        self.window.set_default_size(600, 400)
 
-	        # create a new scrolled window.
-	        scrolled_window = gtk.ScrolledWindow()
-	        scrolled_window.set_border_width(10)
+        # Create a new scrolled window.
+        scrolled_window = Gtk.ScrolledWindow()
+        scrolled_window.set_border_width(10)
 
-	        # the policy is one of POLICY AUTOMATIC, or POLICY_ALWAYS.
-	        # POLICY_AUTOMATIC will automatically decide whether you need
-	        # scrollbars, whereas POLICY_ALWAYS will always leave the scrollbars
-	        # there. The first one is the horizontal scrollbar, the second, the
-	        # vertical.
-	        scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        # Set the policy for the scrollbars.
+        scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
-		textview = gtk.TextView()
-		textbuffer = textview.get_buffer()
-		textbuffer.set_text(text)
-		scrolled_window.add(textview)
-		textview.show()
+        textview = Gtk.TextView()
+        textbuffer = textview.get_buffer()
+        textbuffer.set_text(text)
+        scrolled_window.set_child(textview)
+        textview.show()
 
-	        # The dialog window is created with a vbox packed into it.
-	        self.window.vbox.pack_start(scrolled_window, True, True, 0)
-	        scrolled_window.show()
+        # The dialog window is created with a vbox packed into it.
+        self.window.get_content_area().append(scrolled_window)
+        scrolled_window.show()
 
-	        # Add a "close" button to the bottom of the dialog
-	        button = gtk.Button("close")
-	        button.connect_object("clicked", self.destroy, self.window)
+        # Add a "close" button to the bottom of the dialog
+        button = Gtk.Button(label="close")
+        button.connect("clicked", self.destroy)
 
-		saveButton = gtk.Button("save")
-		saveButton.connect_object("clicked", self.save, self.window)
+        saveButton = Gtk.Button(label="save")
+        saveButton.connect("clicked", self.save)
 
-	        # this makes it so the button is the default.
-		saveButton.set_flags(gtk.CAN_DEFAULT)
-	        button.set_flags(gtk.CAN_DEFAULT)
-		self.window.action_area.pack_start( saveButton, True, True, 0)
-	        self.window.action_area.pack_start( button, True, True, 0)
+        # This makes it so the button is the default.
+        saveButton.set_can_default(True)
+        button.set_can_default(True)
+        self.window.get_action_area().append(saveButton)
+        self.window.get_action_area().append(button)
 
-	        # This grabs this button to be the default button. Simply hitting
-	        # the "Enter" key will cause this button to activate.
-		saveButton.grab_default()
-		saveButton.show()
-	        button.show()
-	        self.window.show()
+        # This grabs this button to be the default button. Simply hitting
+        # the "Enter" key will cause this button to activate.
+        saveButton.grab_default()
+        saveButton.show()
+        button.show()
+        self.window.show()
 
-	def save(self, w):
-		saveBox = SaveDialog(self, title="Save Script")
-		if(self.saveFile == "none"):
-			print "Not saving"
-		else:
-			file_object = open(self.saveFile, "w")
+    def save(self, w):
+        saveBox = SaveDialog(self, title="Save Script")
+        if self.saveFile == "none":
+            print("Not saving")
+        else:
+            with open(self.saveFile, "w") as file_object:
+                dirString = self.mainWindow.tmpn
+                if "/tmp" in self.mainWindow.tmpn:
+                    partition = self.mainWindow.tmpn.rpartition("/tmp")
+                    dirString = partition[0]
 
-			dirString = self.mainWindow.tmpn
-			if (self.mainWindow.tmpn.find("/tmp") >= 0):
-				partition = self.mainWindow.tmpn.rpartition("/tmp")
-				dirString = partition[0]
+                fileString = "#!/bin/bash\n"
+                fileString += f"if [ ! -s .{dirString} ]; then\n"
+                fileString += f"    mkdir {dirString}\n"
+                fileString += "fi\n"
+                file_object.write(fileString)
+                file_object.write(self.text)
 
-			fileString = "#!/bin/bash\n"
-			fileString += "if [ ! -s ."+dirString+" ]; then\n"
-			fileString += "    mkdir " + dirString + "\n"
-			fileString += "fi\n"
-			file_object.write(fileString)
-			file_object.write(self.text)
-			file_object.close()
-		
-	def getFileName(self, fileName):
-		self.saveFile = fileName
+    def getFileName(self, fileName):
+        self.saveFile = fileName
 
-	def show(self):
-		return self.window.run()
+    def show(self):
+        return self.window.run()
 
-	def hide(self):
-		self.window.hide()
-	
-	def destroy(self, widget):
-		self.window.hide()
+    def hide(self):
+        self.window.hide()
+
+    def destroy(self, widget):
+        self.window.hide()

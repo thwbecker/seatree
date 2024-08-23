@@ -1,0 +1,11 @@
+<SEATREEConfiguration>
+  <modules>
+    <module>
+      <importName>seatree.modules.conman.conman</importName>
+      <className>ConMan</className>
+      <directory>conman</directory>
+      <installImportName>conmanInstaller</installImportName>
+      <installClassName>ConManInstaller</installClassName>
+    </module>
+  </modules>
+</SEATREEConfiguration>

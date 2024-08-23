@@ -1,0 +1,11 @@
+<SEATREEConfiguration>
+  <modules>
+    <module>
+      <importName>seatree.modules.larry3d.larry3d</importName>
+      <className>larry3d</className>
+      <directory>larry3d</directory>
+      <installImportName>installLarry3d</installImportName>
+      <installClassName>Larry3dInstaller</installClassName>
+    </module>
+  </modules>
+</SEATREEConfiguration>

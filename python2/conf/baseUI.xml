@@ -1,0 +1,15 @@
+<ui>
+	<menubar name="MenuBar">
+		<menu action="File">
+			<menuitem action="LoadMod"/>
+			<menuitem action="SaveSettings"/>
+			<menuitem action="LoadSettings"/>
+			<menuitem action="SavePlot"/>
+			<menuitem action="Quit"/>	
+		</menu>
+		<menu action="Script">
+			<menuitem action="ViewScript"/>
+			<menuitem action="ClearScript"/>
+		</menu>
+	</menubar>
+</ui>
