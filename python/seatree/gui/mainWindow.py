@@ -38,7 +38,7 @@ class MainWindow:
         self.window.set_default_size(800, 500)
         
         # catches when window closed
-        self.window.connect("delete-event", self.delete_event)
+        #self.window.connect("delete-event", self.delete_event)
         self.window.connect("destroy", self.destroy)
         
         self.uiManager = Gtk.UIManager()

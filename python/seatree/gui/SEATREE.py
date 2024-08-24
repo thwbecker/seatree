@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import sys, traceback
+import sys, traceback, importlib
 
 try:
     import gi
@@ -78,20 +78,27 @@ class SEATREE:
                 mod.importName = mod.importName.strip()
                 modCounter += 1
                 importAs = "seatree_module_" + str(modCounter)
-                newMod = None
+                print('SEATRE.loadModules '+importAs)
+                #newMod = None
+                local_vars = {}
                 try:
-                    execstr = "import " + mod.importName + " as " + importAs
-                    exec(execstr)
+                    moduleTmp = importlib.import_module(mod.importName)
+                    globals()[importAs] = moduleTmp
+                    #execstr = "import " + mod.importName + " as " + importAs
+                    #print(execstr)
+                    #exec(execstr)
                 except:
                     print(mod.importName + " doesn't exist in python path, adding " + mod.directory)
                     sys.path.append(mod.directory)
-                    execstr = "import " + mod.importName + " as " + importAs
-                    exec(execstr)
+                    moduleTmp = importlib.import_module(mod.importName)
+                    globals()[importAs] = moduleTmp
+                    #execstr = "import " + mod.importName + " as " + importAs
+                    #print(execstr)
+                    #exec(execstr)
                 execstr = "newMod = " + importAs + "." + mod.className + "()"
                 print(execstr)
-                exec(execstr)
-                print('newMod is', dir(newMod))
-                newMod = mod
+                exec(execstr, globals(), local_vars)
+                newMod = local_vars['newMod']
                 newMod.directory = mod.directory
                 newMod.importname = mod.importName
                 newMod.classname = mod.className
@@ -113,14 +120,17 @@ class SEATREE:
             return False
     
     def selectModule(self):
+        print('SEATREE.selectModule.modules are', self.modules)
         self.start = StartDialog(self.modules, self.path, not self.windowBuilt)
         choice = self.start.show()
         self.start.dialog.hide()
         
         if choice == Gtk.ResponseType.CLOSE:
+            print('AAA')
             cleanup()
             exit()
         elif choice == Gtk.ResponseType.OK:
+            print('BBB')
             index = self.start.getSelectedModuleIndex()
             print("Loading Module: " + self.modules[index].getLongName() + " " + str(self.modules[index].getVersion()))
             if not self.windowBuilt:
@@ -133,18 +143,48 @@ class SEATREE:
     def buildWindow(self):
         self.window = MainWindow(path=path, tmpn=tmpn, convertPath=self.convertPath, version=self.version)
         self.window.main = self
-    
+            
+            
     def cleanupModules(self):
         if self.windowBuilt:
             self.window.module.cleanup()
     
     def main(self):
-        Gtk.main()
+        #Gtk.main()
+        app = MyApplication(self)
+        app.run(None)
         self.cleanupModules()
         cleanup()
     
     def getPath(self):
         return self.path
+
+class MyApplication(Gtk.Application):
+    def __init__(self, seatree):
+        super().__init__(application_id='com.example.MyApp')
+        self.seatree = seatree
+        self.window = None
+
+    def do_activate(self):
+        if not self.window:
+            self.window = Gtk.ApplicationWindow(application=self)
+            self.window.set_title("My Application")
+            #self.window.set_default_size(400, 300)
+            
+            #programs = ["A","B","C","D"]
+            #combo = Gtk.ComboBoxText()
+            #for module in self.seatree.modules:
+            #    combo.append_text(module.getLongName())
+            #combo.set_active(0)
+            #self.window.set_child(combo)
+            
+            start_dialog = StartDialog(self.seatree.modules, None, False)
+            start_dialog.show()
+
+        #self.window.present()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
 
 def exit():
     sys.exit()
