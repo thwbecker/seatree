@@ -142,6 +142,8 @@ class SEATREE:
     
     def buildWindow(self):
         self.window = MainWindow(path=path, tmpn=tmpn, convertPath=self.convertPath, version=self.version)
+        #self.window.main()
+        #self.window = MainWindow()
         self.window.main = self
             
             
@@ -169,15 +171,6 @@ class MyApplication(Gtk.Application):
         if not self.window:
             self.window = Gtk.ApplicationWindow(application=self)
             self.window.set_title("My Application")
-            #self.window.set_default_size(400, 300)
-            
-            #programs = ["A","B","C","D"]
-            #combo = Gtk.ComboBoxText()
-            #for module in self.seatree.modules:
-            #    combo.append_text(module.getLongName())
-            #combo.set_active(0)
-            #self.window.set_child(combo)
-            
             start_dialog = StartDialog(self.seatree.modules, None, False)
             start_dialog.show()
 
