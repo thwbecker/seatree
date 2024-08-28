@@ -1,84 +1,88 @@
 import gi
 gi.require_version('Gtk', '4.0')
-from gi.repository import Gtk, Gdk
-import os, sys
-import shutil
+from gi.repository import Gtk
 
-from plotter import Plotter
-
-class ImagePlotter(Plotter):
+class Plotter:
+    """
+    This is the base class for all plotters. All SEATREE plotters should extend this class
+    and override its methods when appropriate (see descriptions).
+    """
     
-    def __init__(self, module, mainWindow, imageWidth, imageHeight, saveType=["png", "PNG Image"], bgColor="white"):
+    def __init__(self, module, mainWindow):
         """
-        Constructor for an Image Plotter. This type of plotter just displays simple image plots
+        Constructor for a generic plotter.
         
-        module - the module using this plotter
-        mainWindow - the MainWindow displaying this plotter
-        imageWidth - the minimum width of the image
-        imageHeight - the minimum height of the image
-        saveType - the save type for this image (all images that are shown with this plotter should
-                    be of this type). Default is a PNG image.
-        bgColor - the name of the background color for the image widget (default is "white")
+        module - The module using this plotter.
+        mainWindow - The MainWindow displaying this plotter.
+        """
+        self.module = module
+        self.mainWindow = mainWindow
+        
+        self.packed = False
+    
+    def getPackedWidget(self):
+        """
+        This method returns a GTK Widget that occupies the main portion of the screen. The default action
+        will call the getMainWidget and getBottomPanel methods and, if present, add them both to a Gtk.Paned,
+        but this can be overridden to customize the look of your plotter.
         """
         
-        # call the superclass constructor
-        Plotter.__init__(self, module, mainWindow)
+        if self.packed:
+            # we've already done this...
+            return self.widget
         
-        self.imageWidth = imageWidth
-        self.imageHeight = imageHeight
-        self.saveType = saveType
-        self.bgColor = bgColor
+        topWidget = self.getMainWidget()
+        bottomPanel = self.getBottomPanel()
         
-        if self.module.baseimage:
-            self.imageFile = os.path.join(self.module.directory, self.module.baseimage)
+        if bottomPanel:
+            self.widget = Gtk.Paned.new(Gtk.Orientation.VERTICAL)
+            self.widget.set_start_child(topWidget)
+            self.widget.set_end_child(bottomPanel)
         else:
-            self.imageFile = os.path.join(self.module.seatreePath, "img", "seatree.jpg")
+            self.widget = topWidget
         
+        self.widget.show()
+        
+        self.packed = True
+        
+        return self.widget
+    
     def getMainWidget(self):
-        # return the Image Event Box for this image plotter
+        """
+        This method returns a GTK Widget that contains the actual plots, and will occupy a greater portion
+        of the plotter's GUI space by default. This must be overridden by inheriting classes.
+        """
         
-        self.image = Gtk.Image()
-        self.image.show()
-        
-        self.imageBuffer = 7
-        self.imageEB = Gtk.EventBox()
-        self.imageEB.add(self.image)
-        self.imageEB.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(1, 1, 1, 1))
-        self.imageEB.set_size_request(self.imageWidth + self.imageBuffer, self.imageHeight + self.imageBuffer)
-        
-        self.baseImage = self.imageFile
-        
-        self.displayImage(self.imageFile, default=True)
-        
-        self.imageEB.show_all()
-        
-        return self.imageEB
+        return None
     
     def getBottomPanel(self):
-        # no bottom panel for default image plotter
+        """
+        This method returns a GTK Widget that, in the default plotter configuration, returns its bottom
+        panel of adjustable settings. This will be called within the plotter's "getPackedWidget" method, and should
+        be overridden to return a GTK Widget, or None for no bottom panel.
+        """
+        
         return None
     
     def getSaveTypes(self):
+        """
+        Returns a list of lists that contain save type information in the form [extension, description].
+        Must be overridden by inheriting classes.
+        For example:
+                saveTypes = []
+                saveTypes.append(["png", "PNG Image"])
+                saveTypes.append(["ps", "PostScript Plot"])
+        """
         saveTypes = []
-        saveTypes.append(self.saveType)
-        return saveTypes
+        
+        return None
     
     def savePlot(self, typeExtension, fileName):
-        # don't check for save types since we only have 1
-        if self.imageFile:
-            shutil.copyfile(self.imageFile, fileName)
-            return True
-        else:
-            return False
-    
-    def displayImage(self, imageFile, default=False):
         """
-        This method will display an image file
+        Will be called when the user chooses to save a plot with one of the specified formats.
         
-        imageFile - the file name of the image to be displayed
+        typeExtension - the extension part of the selected save type (from getSaveTypes).
+        fileName - the fileName to save the plot to.
         """
-        self.imageFile = imageFile
-        self.image.set_from_file(self.imageFile)
         
-        if not default:
-            self.mainWindow.setSaveActive(True)
+        return False
