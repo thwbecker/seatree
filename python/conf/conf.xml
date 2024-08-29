@@ -4,32 +4,32 @@
       <module>
        <importName>seatree.modules.hc.flowCalc</importName>
        <className>FlowCalc</className>
-       <directory>/home/dliu/seatree.dev/python/seatree/modules/hc</directory>
+       <directory>/home/st/seatree.dev/python/seatree/modules/hc</directory>
       </module>
       <module>
        <importName>seatree.modules.syn2d.syn2d</importName>
        <className>Syn2D</className>
-       <directory>/home/dliu/seatree.dev/python/seatree/modules/syn2d</directory>
+       <directory>/home/st/seatree.dev/python/seatree/modules/syn2d</directory>
       </module>
       <module>
        <importName>seatree.modules.conman.conman</importName>
        <className>ConMan</className>
-       <directory>/home/dliu/seatree.dev/python/seatree/modules/conman</directory>
+       <directory>/home/st/seatree.dev/python/seatree/modules/conman</directory>
       </module>
       <module>
        <importName>seatree.modules.larry.invert</importName>
        <className>Invert</className>
-       <directory>/home/dliu/seatree.dev/python/seatree/modules/larry</directory>
+       <directory>/home/st/seatree.dev/python/seatree/modules/larry</directory>
       </module>
       <module>
        <importName>seatree.modules.nonLinLoc.NonLinLoc</importName>
        <className>NonLinLoc</className>
-       <directory>/home/dliu/seatree.dev/python/seatree/modules/nonLinLoc</directory>
+       <directory>/home/st/seatree.dev/python/seatree/modules/nonLinLoc</directory>
       </module>
       <module>
        <importName>seatree.modules.larry3d.larry3d</importName>
        <className>larry3d</className>
-       <directory>/home/dliu/seatree.dev/python/seatree/modules/larry3d</directory>
+       <directory>/home/st/seatree.dev/python/seatree/modules/larry3d</directory>
       </module>
      </modules>
      <gmtPath>/usr/lib/gmt/bin</gmtPath>
