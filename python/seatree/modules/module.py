@@ -44,8 +44,8 @@ class Module:
         mainWindow -- main GUI window
         """
         return False
-    
-    def getPanel(self, mainWindow, accelGroup):
+    def getPanel(self):
+    #def getPanel(self, mainWindow, accelGroup):
         """
         This method should be overridden by each inheriting module to return
         a GTK Widget containing all controls for the left panel.

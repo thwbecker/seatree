@@ -3,7 +3,7 @@ gi.require_version('Gtk', '4.0')
 from gi.repository import Gtk, Gdk
 import os, sys
 import shutil
-sys.path.append('/home/st/seatree.dev/python/seatree/plotter')
+
 from plotter import Plotter
 
 class ImagePlotter(Plotter):

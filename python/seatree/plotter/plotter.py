@@ -10,14 +10,13 @@ class Plotter:
     
     def __init__(self, module, mainWindow):
         """
-        Constructor for a generic plotter.
+        Constructor for a generic plotter
         
-        module - The module using this plotter.
-        mainWindow - The MainWindow displaying this plotter.
+        module - The module using this plotter
+        mainWindow - the MainWindow displaying this plotter
         """
         self.module = module
         self.mainWindow = mainWindow
-        
         self.packed = False
     
     def getPackedWidget(self):
@@ -41,7 +40,7 @@ class Plotter:
         else:
             self.widget = topWidget
         
-        self.widget.show()
+        self.widget.show_all()
         
         self.packed = True
         
@@ -75,14 +74,14 @@ class Plotter:
         """
         saveTypes = []
         
-        return None
+        return saveTypes
     
     def savePlot(self, typeExtension, fileName):
         """
         Will be called when the user chooses to save a plot with one of the specified formats.
         
-        typeExtension - the extension part of the selected save type (from getSaveTypes).
-        fileName - the fileName to save the plot to.
+        typeExtension - the extension part of the selected save type (from getSaveTypes)
+        fileName - the fileName to save the plot to
         """
         
         return False

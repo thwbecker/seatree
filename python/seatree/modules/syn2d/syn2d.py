@@ -103,7 +103,7 @@ class Syn2D(Module):
         gmtPath -- path to gmt binaries that should be given to the module's GMTPlotter
         mainWindow -- main GUI window
         '''
-        
+        print('Entering sy2d setDefaults')
         # load configuration
         self.loadConfFile()
         
@@ -128,13 +128,15 @@ class Syn2D(Module):
         else:
             print("Using PyLab plotter!")
             self.gmtPlotterWidget = None
+            print(1)
             self.matPlotLibPlotter = MatPlotLibPlotter(self, self.mainWindow, 450, 450, startWithImage=False)
+            print(2)
             self.matPlotLibPlotter.setColorLimits(-1, 1)
             self.matPlotLibPlotter.setAspectRatioEven(True)
             cm = matplotlib.cm.Spectral
             cm = self.matPlotLibPlotter.reverseColormap(cm)
             self.matPlotLibPlotter.setColorMap(cm)
-        
+            print(3)
         self.sourcesFile = ""
         self.receiversFile = ""
         

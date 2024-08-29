@@ -44,17 +44,17 @@ class MatPlotLibPlotter(Plotter):
                         and switch to the matplotlib plotter when setBaseImageVisible(False) or
                         drawFigure() is called.
         """
-        
+        print('MatPlotLibPlotter 1')
         # call the superclass constructor
         Plotter.__init__(self, module, mainWindow)
-        
+        print('MatPlotLibPlotter 2')
         self.preferredWidth = preferredWidth
         self.preferredHeight = preferredHeight
-        
+        print('MatPlotLibPlotter 3')
         self.imageVisible = startWithImage
-        
+        print('MatPlotLibPlotter 4')
         path = mainWindow.getPath()
-        
+        print('MatPlotLibPlotter 5')
         if self.module.baseimage:
             self.imageFile = self.module.directory + os.sep + self.module.baseimage
         else:
@@ -63,7 +63,7 @@ class MatPlotLibPlotter(Plotter):
         self.figure = matplotlib.figure.Figure()
         self.axis = self.figure.add_subplot(111)
         self.canvas = FigureCanvas(self.figure)
-        
+        print('MatPlotLibPlotter 1')
         self.bgColor = "white"
         
         self.colorMap = matplotlib.cm.Spectral
