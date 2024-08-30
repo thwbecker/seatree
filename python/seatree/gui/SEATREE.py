@@ -106,7 +106,7 @@ class SEATREE(Gtk.Application):
                 print('SEATREE.selectModule: Module window created.')
                 #self.window.set_application(self)
                 print('SEATREE.selectModule: window.set_application')
-                self.window.present()
+                #self.window.present()
                 self.windowBuilt = True
             print('SEATREE.selectModule: Loading module into window.')
             self.window.loadModule(self.modules[index])
@@ -247,7 +247,7 @@ from seatree.gui.util.saveDialog import SaveDialog
 from seatree.gui.loadDialog import LoadDialog
 from seatree.gui.scriptDialog import ScriptDialog
 
-class MainWindow(Gtk.Window):
+class MainWindow(Gtk.ApplicationWindow):
     def __init__(self, app, path="..", tmpn="/tmp/SEATREE", convertPath="", version=0.1):
         super().__init__()
         self.main = app
@@ -269,14 +269,12 @@ class MainWindow(Gtk.Window):
         self.psConvert.width = 650
         
         self.window = Gtk.Window()
-        # Create UI elements
-        self.window.set_default_size(800, 500)
-        # Connect signals
+        self.window.set_default_size(1200, 800)
         self.window.connect("close-request", self.on_close_request)
         self.titleString = "SEATREE v" + str(self.version)
         self.window.set_title("SEATREE v" + str(self.version))
         self.mainBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        self.set_child(self.mainBox)
+        self.window.set_child(self.mainBox)
         
         self.setupUI()
         
@@ -288,8 +286,9 @@ class MainWindow(Gtk.Window):
         self.hPane.set_end_child(self.vPane)
         
         self.mainBox.append(self.hPane)
+        #self.window.set_child(self.mainBox)
         
-        #self.window.set_title(self.titleString)
+        self.window.set_title(self.titleString)
         self.window.show()
         
     def setupUI(self):
