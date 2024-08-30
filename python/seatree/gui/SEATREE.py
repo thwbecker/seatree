@@ -103,13 +103,14 @@ class SEATREE(Gtk.Application):
             print("Loading Module: " + self.modules[index].getLongName() + " " + str(self.modules[index].getVersion()))
             if (not self.windowBuilt):
                 self.window = MainWindow(app=self, path=path, tmpn=tmpn, convertPath=self.convertPath, version=self.version)
-                print('Module window created.')
-                self.window.set_application(self)
+                print('SEATREE.selectModule: Module window created.')
+                #self.window.set_application(self)
+                print('SEATREE.selectModule: window.set_application')
                 self.window.present()
                 self.windowBuilt = True
-            print('Loading module into window.')
+            print('SEATREE.selectModule: Loading module into window.')
             self.window.loadModule(self.modules[index])
-            print('Module loaded into window.')
+            print('SEATREE.selectModule: Module loaded into window.')
         del self.start
         
     def cleanupModules(self):
@@ -372,45 +373,55 @@ class MainWindow(Gtk.Window):
     def loadModule(self, module):
         self.module.cleanup()
         self.module = module
-        abc=" - " + self.module.longname + " v" + str(self.module.version)
+        titleStr=" - " + self.module.longname + " v" + str(self.module.version)
         self.set_title(self.titleString + " - " + self.module.longname + " v" + str(self.module.version))
-        print(abc)
+        print('MainWindow.loadModule: titleStr is', titleStr)
         self.module.setDefaults(self) #?? purpose?
         # Debug prints to check the state
-        print("Modules:", self.main.modules)
-        print("Current module:", self.module)
+        print("MainWindow.loadModule: Modules:", self.main.modules)
+        print("MainWindow.loadModule: Current module:", self.module)
         try:
             module_index = self.main.modules.index(self.module)
-            print("Module index:", module_index)
+            print("MainWindow.loadModule: Module index:", module_index)
             self.main.modulesLoaded[module_index] = True
         except ValueError as e:
             print("Error: Module not found in modules list.", e)
-        #self.main.modulesLoaded[self.main.modules.index(self.module)] = True
-        print(1)
+        self.main.modulesLoaded[self.main.modules.index(self.module)] = True
         self.mainBox.remove(self.hPane)
         del self.hPane
         self.hPane = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
-        print(2)
-        panel = False#self.module.getPanel(self)
-        if panel:
+        print('MainWindow.loadModule:Gtk.Paned.new')
+        panel = self.module.getPanel(self)
+        print('MainWindow.loadModule: panel value is ', panel)
+        if panel: 
+            print('del self.moduleBox and assign panel to self.moduleBox')
             del self.moduleBox
             self.moduleBox = panel
+            print(self.moduleBox.get_parent())
+            self.moduleBox.get_parent().remove(self.moduleBox)
             self.hPane.set_start_child(self.moduleBox)
         else:
+            print('del self.moduleBox and assign a new Gtk.Box')
             del self.moduleBox
             self.moduleBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
             self.hPane.set_start_child(self.moduleBox)
         
+        print('MainWindow.loadModule- self.module.getPloter')
         self.plotter = self.module.getPlotter()
-        self.plotterWidget = self.plotter.getPackedWiget()
+        self.plotterWidget = self.plotter.getPackedWidget()
         if self.plotterWidget:
             self.packPlotterWidget(self.plotterWidget)
         
         self.saveTypes = self.plotter.getSaveTypes()
         self.setSaveActive(False)
+        
+        self.mainBox.append(self.hPane)
+        self.window.show()
+        
     def packPlotterWidget(self, plotter):
-        self.hPane.pack2(plotter, resize=True, shrink=False)
-
+        #self.hPane.pack2(plotter, resize=True, shrink=False)
+        self.hPane.set_end_child(plotter)
+        
     def preLoadModule(self, module):
         module.setDefaults(self.tmpn, self.main.gmtPath, self)
         self.main.modulesLoaded[self.main.modules.index(module)] = True
@@ -433,9 +444,10 @@ class MainWindow(Gtk.Window):
         self.main.selectModule()
     
     def setSaveActive(self, active):
-        action = self.actionGroup.get_action("SavePlot")
-        action.set_sensitive(active)
-
+        action = self.actionGroup.lookup_action("SavePlot")
+        #action.set_sensitive(active)
+        if action:
+            action.set_enabled(active)
     def savePlot(self, b):
         saveBox = SaveDialog(self, self.plotter.getSaveTypes(), title="Save Plot", default_file = 'myplot')
         if(not self.saveFileName == "none"):

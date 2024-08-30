@@ -11,13 +11,13 @@ except ImportError:
     edit = False
 
 class Syn2DGUI:
-    
-    def __init__(self, mainWindow, accel_group, syn2d):
+    def __init__(self, mainWindow, syn2d):
+    #def __init__(self, mainWindow, accel_group, syn2d):
         self.xtot = 100
         self.dx = 1
         
         self.mainWindow = mainWindow
-        self.accel_group = accel_group
+        #self.accel_group = accel_group
         self.syn2d = syn2d
         
         self.vBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -75,8 +75,10 @@ class Syn2DGUI:
         
         # Panel for Checkerboard
         self.checkerboardSizeLabel = Gtk.Label(label="Checkerboard Box Size")
-        self.checkerboardSizeEntry = guiUtils.RangeSelectionBox(initial=20, min=1, max=100, incr=10, digits=0, buttons=True)
-        self.tooltips.set_tip(self.checkerboardSizeEntry, 'the length of each side of each checkerboard box')
+        self.checkerboardSizeEntry = guiUtils.RangeSelectionBox(initial=20, min1=1, max1=100, incr=10, digits=0, buttons=True)
+        #self.tooltips.set_tip(self.checkerboardSizeEntry, 'the length of each side of each checkerboard box')
+        self.checkerboardSizeEntry.set_tooltip_text('the length of each side of each checkerboard box')
+        
         self.checkerboardSizeBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         self.checkerboardSizeBox.append(self.checkerboardSizeLabel)
         self.checkerboardSizeBox.append(self.checkerboardSizeEntry)
@@ -88,10 +90,12 @@ class Syn2DGUI:
         self.imageFileFileSelect = guiUtils.FileSelectionBox(initial=self.syn2d.getDefaultImage(), chooseTitle="Select PGM (ASCII, P2) Image File", width=10, mainWindow=self.mainWindow)
         self.imageFileBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         self.imageFileBox.append(self.imageFileLabel)
-        self.tooltips.set_tip(self.imageFileLabel, 'read depth dependent density scaling from file')
+        #self.tooltips.set_tip(self.imageFileLabel, 'read depth dependent density scaling from file')
+        self.imageFileLabel.set_tooltip_text('read depth dependent density scaling from file')
+        
         self.imageFileBox.append(self.imageFileFileSelect)
         self.imageFileBox.show()
-        self.imageFileFileSelect.connect('changed', self.modelParamsChanged)
+        #self.imageFileFileSelect.connect('changed', self.modelParamsChanged)
         
         # set it up so that it switches what's shown based on image/checkerboard being selected
         self.inputModelSelect.connect("changed", self.populateModelSettings)
@@ -99,10 +103,10 @@ class Syn2DGUI:
         
         # model buttons
         self.modelButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
-        self.makeModelButton = Gtk.Button(label="Make Model")
-        self.plotModelButton = Gtk.Button(label="Plot Model")
-        self.makeModelButton.connect("clicked", self.makeModel)
-        self.plotModelButton.connect("clicked", self.plotModel)
+        self.makeModelButton = Gtk.ToggleButton(label="Make Model")
+        self.plotModelButton = Gtk.ToggleButton(label="Plot Model")
+        self.makeModelButton.connect("toggled", self.makeModel)
+        self.plotModelButton.connect("toggled", self.plotModel)
         self.modelButtonBox.append(self.makeModelButton)
         self.modelButtonBox.append(self.plotModelButton)
         self.plotModelButton.set_sensitive(False)
@@ -133,8 +137,10 @@ class Syn2DGUI:
         
         # Synthetic Generated Data Points (ndata) box
         self.ndataLabel = Gtk.Label(label="Synth Gen Data Pnts")
-        self.ndataEntry = guiUtils.RangeSelectionBox(initial=4000, min=1, max=20000, incr=1000, digits=0, buttons=True)
-        self.tooltips.set_tip(self.ndataEntry, 'the total number of synthetically generated data points, i.e. station-receiver pairs')
+        self.ndataEntry = guiUtils.RangeSelectionBox(initial=4000, min1=1, max1=20000, incr=1000, digits=0, buttons=True)
+        #self.tooltips.set_tip(self.ndataEntry, 'the total number of synthetically generated data points, i.e. station-receiver pairs')
+        self.ndataEntry.set_tooltip_text('the total number of synthetically generated data points, i.e. station-receiver pairs')
+        
         self.ndataBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         self.ndataBox.append(self.ndataLabel)
         self.ndataBox.append(self.ndataEntry)
@@ -143,8 +149,10 @@ class Syn2DGUI:
 
         # Recordings Per Event (ipick) box
         self.ipickLabel = Gtk.Label(label="Num Recordings per Event")
-        self.ipickEntry = guiUtils.RangeSelectionBox(initial=20, min=1, max=50, incr=10, digits=0, buttons=True)
-        self.tooltips.set_tip(self.ipickEntry, 'the number of recordings (at different stations) for each event')
+        self.ipickEntry = guiUtils.RangeSelectionBox(initial=20, min1=1, max1=50, incr=10, digits=0, buttons=True)
+        #self.tooltips.set_tip(self.ipickEntry, 'the number of recordings (at different stations) for each event')
+        self.ipickEntry.set_tooltip_text('the number of recordings (at different stations) for each event')
+        
         self.ipickBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         self.ipickBox.append(self.ipickLabel)
         self.ipickBox.append(self.ipickEntry)
@@ -153,8 +161,10 @@ class Syn2DGUI:
         
         # Noise box (sigma) box
         self.noiseLabel = Gtk.Label(label="Noise (sigma)")
-        self.noiseEntry = guiUtils.LogRangeSelectionBox(initial=0.25, min=0, max=10, incr=1, digits=4, buttons=True)
-        self.tooltips.set_tip(self.noiseEntry, 'sigma value for specifying noise')
+        self.noiseEntry = guiUtils.LogRangeSelectionBox(initial=0.25, min1=0, max1=10, incr=1, digits=4, buttons=True)
+        #self.tooltips.set_tip(self.noiseEntry, 'sigma value for specifying noise')
+        self.noiseEntry.set_tooltip_text('sigma value for specifying noise')
+        
         self.noiseBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         self.noiseBox.append(self.noiseLabel)
         self.noiseBox.append(self.noiseEntry)
@@ -163,12 +173,12 @@ class Syn2DGUI:
         
         # Data Buttons
         self.dataButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
-        self.makeDataButton = Gtk.Button(label="Generate Data")
-        self.editDataButton = Gtk.Button(label="Load/Edit Data")
-        self.plotDataButton = Gtk.Button(label="Plot Data")
-        self.makeDataButton.connect("clicked", self.makeData)
-        self.editDataButton.connect("clicked", self.editData)
-        self.plotDataButton.connect("clicked", self.plotData)
+        self.makeDataButton = Gtk.ToggleButton(label="Generate Data")
+        self.editDataButton = Gtk.ToggleButton(label="Load/Edit Data")
+        self.plotDataButton = Gtk.ToggleButton(label="Plot Data")
+        self.makeDataButton.connect("toggled", self.makeData)
+        self.editDataButton.connect("toggled", self.editData)
+        self.plotDataButton.connect("toggled", self.plotData)
         self.dataLeftButtonBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.dataLeftButtonBox.append(self.makeDataButton)
         if self.syn2d.canPlotMPL() and edit:
@@ -178,16 +188,16 @@ class Syn2DGUI:
         self.plotDataBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.plotSourcesCheck = Gtk.CheckButton(label="Sources")
         self.plotSourcesCheck.set_active(True)
-        self.plotSourcesCheck.connect("clicked", self.setDataChanged)
+        self.plotSourcesCheck.connect("toggled", self.setDataChanged)
         self.plotReceiversCheck = Gtk.CheckButton(label="Receivers")
         self.plotReceiversCheck.set_active(True)
-        self.plotReceiversCheck.connect("clicked", self.setDataChanged)
+        self.plotReceiversCheck.connect("toggled", self.setDataChanged)
         self.plotPathsCheck = Gtk.CheckButton(label="Paths")
         self.plotPathsCheck.set_active(False)
-        self.plotPathsCheck.connect("clicked", self.setDataChanged)
+        self.plotPathsCheck.connect("toggled", self.setDataChanged)
         self.plotModelWithDataCheck = Gtk.CheckButton(label="Model")
         self.plotModelWithDataCheck.set_active(False)
-        self.plotModelWithDataCheck.connect("clicked", self.setDataChanged)
+        self.plotModelWithDataCheck.connect("toggled", self.setDataChanged)
         self.plotDataBox.append(self.plotDataButton)
         self.plotDataMidBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self.plotDataMidBox.append(self.plotSourcesCheck)
@@ -220,8 +230,10 @@ class Syn2DGUI:
         
         # Damping Value
         self.dampLabel = Gtk.Label(label="Damping Value")
-        self.dampEntry = guiUtils.LogRangeSelectionBox(initial=1, min=0, max=100, incr=0.5, digits=3, buttons=True)
-        self.tooltips.set_tip(self.dampEntry, 'norm damping setting for the inversion step')
+        self.dampEntry = guiUtils.LogRangeSelectionBox(initial=1, min1=0, max1=100, incr=0.5, digits=3, buttons=True)
+        #self.tooltips.set_tip(self.dampEntry, 'norm damping setting for the inversion step')
+        self.dampEntry.set_tooltip_text('norm damping setting for the inversion step')
+
         self.dampBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         self.dampBox.append(self.dampLabel)
         self.dampBox.append(self.dampEntry)
@@ -230,15 +242,15 @@ class Syn2DGUI:
         
         # Invert Buttons
         self.inversionButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
-        self.invertButton = Gtk.Button(label="Invert Data")
+        self.invertButton = Gtk.ToggleButton(label="Invert Data")
         self.invertPlotBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.plotInversionButton = Gtk.Button(label="Plot Inversion")
+        self.plotInversionButton = Gtk.ToggleButton(label="Plot Inversion")
         self.diffBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self.absDiffCheck = Gtk.CheckButton(label="Absolute")
-        self.plotDifferenceButton = Gtk.Button(label="Plot Diff")
-        self.invertButton.connect("clicked", self.invertData)
-        self.plotDifferenceButton.connect("clicked", self.plotDifference)
-        self.plotInversionButton.connect("clicked", self.plotInversion)
+        self.plotDifferenceButton = Gtk.ToggleButton(label="Plot Diff")
+        self.invertButton.connect("toggled", self.invertData)
+        self.plotDifferenceButton.connect("toggled", self.plotDifference)
+        self.plotInversionButton.connect("toggled", self.plotInversion)
         self.inversionButtonBox.append(self.invertButton)
         self.invertPlotBox.append(self.plotInversionButton)
         self.diffBox.append(self.absDiffCheck)
@@ -253,13 +265,13 @@ class Syn2DGUI:
         self.inversionIncludeBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         self.inversionIncludeLabel = Gtk.Label(label="Show:")
         self.invSourcesCheck = Gtk.CheckButton(label="Sources")
-        self.invSourcesCheck.connect("clicked", self.setInversionChanged)
+        self.invSourcesCheck.connect("toggled", self.setInversionChanged)
         self.invSourcesCheck.set_active(False)
         self.invRecieversCheck = Gtk.CheckButton(label="Receivers")
-        self.invRecieversCheck.connect("clicked", self.setInversionChanged)
+        self.invRecieversCheck.connect("toggled", self.setInversionChanged)
         self.invRecieversCheck.set_active(False)
         self.invPathsCheck = Gtk.CheckButton(label="Paths")
-        self.invPathsCheck.connect("clicked", self.setInversionChanged)
+        self.invPathsCheck.connect("toggled", self.setInversionChanged)
         self.invPathsCheck.set_active(False)
         self.inversionIncludeBox.append(self.inversionIncludeLabel)
         self.inversionIncludeBox.append(self.invSourcesCheck)
@@ -345,8 +357,11 @@ class Syn2DGUI:
     
     def populateModelSettings(self, widget=None):
         # remove all
-        for widget in self.modelTypeSettingsBox.get_children():
-            self.modelTypeSettingsBox.remove(widget)
+        child = self.modelTypeSettingsBox.get_first_child()
+        while child:
+            child = child.get_next_sibling()
+            for widget in child:
+                self.modelTypeSettingsBox.remove(widget)
         
         # put the new one in
         selected = self.inputModelSelect.get_active()

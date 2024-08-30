@@ -77,7 +77,8 @@ class MatPlotLibPlotter(Plotter):
         
         self.colorBarOrientation = VERTICAL
         
-        self.gui = mplSettingsPanel.MPLSettingsPanel(self)
+        #self.gui = mplSettingsPanel.MPLSettingsPanel(self)
+        self.gui = MPLSettingsPanel(self)
     
     def tellModuleToReplot(self):
         self.module.updatePlot()
@@ -425,7 +426,7 @@ class MatPlotLibPlotter(Plotter):
             return self.imageEB
         else:
             self.plotBuffer = 10
-            self.canvas.show_all()
+            self.canvas.show()
             self.canvas.set_size_request(self.preferredWidth + self.plotBuffer, self.preferredHeight + self.plotBuffer)
             return self.canvas
 

@@ -40,8 +40,8 @@ class Plotter:
         else:
             self.widget = topWidget
         
-        self.widget.show_all()
-        
+        #self.widget.show_all()
+        self.widget.show()
         self.packed = True
         
         return self.widget

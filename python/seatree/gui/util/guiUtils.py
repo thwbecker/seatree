@@ -24,8 +24,10 @@ class FileSelectionBox(Gtk.Box):
         self.entry.set_text(initial)
         self.button = Gtk.Button.new_with_label("Open")
         self.button.connect("clicked", self.chooseFile)
-        self.pack_start(self.entry, True, True, 0)
-        self.pack_end(self.button, False, False, 0)
+        #self.pack_start(self.entry, True, True, 0)
+        self.append(self.entry)
+        #self.pack_end(self.button, False, False, 0)
+        self.append(self.button)
         self.setCursorEnd()
         self.entry.connect("changed", self.changed)
     
@@ -59,7 +61,7 @@ class FileSelectionBox(Gtk.Box):
 
 class RangeSelectionBox(Gtk.Box):
     
-    def __init__(self, initial=0, min=0, max=100, digits=0, incr=1, pageIncr=5, buttons=True, allowDrag=True):
+    def __init__(self, initial=0, min1=0, max1=100, digits=0, incr=1, pageIncr=5, buttons=True, allowDrag=True):
         """
         A Py-GTK Widget for user entry of a number value within a range
         
@@ -74,14 +76,14 @@ class RangeSelectionBox(Gtk.Box):
         """
         Gtk.Box.__init__(self, homogeneous=False, spacing=0)
         
-        self.min = min
-        self.max = max
+        self.min = min1
+        self.max = max1
         self.step_incr = incr
         self.page_incr = pageIncr
         self.digits = digits
         self.allowDrag = allowDrag
         
-        self.adjustment = Gtk.Adjustment(value=initial, lower=min, upper=max, step_increment=incr, page_increment=pageIncr, page_size=0)
+        self.adjustment = Gtk.Adjustment(value=initial, lower=min1, upper=max1, step_increment=incr, page_increment=pageIncr, page_size=0)
         
         self.scale = Gtk.Scale(orientation=Gtk.Orientation.HORIZONTAL, adjustment=self.adjustment)
         self.scale.set_digits(digits)
@@ -89,7 +91,7 @@ class RangeSelectionBox(Gtk.Box):
         
         self.entry = Gtk.Entry()
         
-        charWidth = self.getCharWidth(min, max, digits)
+        charWidth = self.getCharWidth(min1, max1, digits)
         self.entry.set_width_chars(charWidth)
         self.entry.set_max_length(charWidth)
         
@@ -102,28 +104,40 @@ class RangeSelectionBox(Gtk.Box):
             self.moreButton = Gtk.Button.new_with_label("+")
             self.moreButton.connect("clicked", self.increase)
             
-            self.pack_start(self.lessButton, False, False, 0)
-        
+            #self.pack_start(self.lessButton, False, False, 0)
+            self.append(self.lessButton)
+            
         if not self.allowDrag:
             self.scale.set_sensitive(False)
-        self.pack_start(self.scale, True, True, 0)
+        #self.pack_start(self.scale, True, True, 0)
+        self.append(self.scale)
         
         if buttons:
-            self.pack_start(self.moreButton, False, False, 0)
-        
-        self.pack_end(self.entry, False, False, 0)
+            #self.pack_start(self.moreButton, False, False, 0)
+            self.append(self.moreButton)
+            
+        #self.pack_end(self.entry, False, False, 0)
+        self.append(self.entry)
         
         self.scale.connect("value-changed", self.sliderChanged)
         self.entry.connect("changed", self.entryChanged)
     
-    def getCharWidth(self, min, max, digits):
-        min = int(math.floor(min))
-        max = int(math.ceil(max))
-        lenOfMax = len(self.internalValueToText(max))
-        lenOfMin = len(self.internalValueToText(min))
+    # def getCharWidth(self, min, max, digits):
+        # min = int(math.floor(min))
+        # max = int(math.ceil(max))
+        # lenOfMax = len(self.internalValueToText(max))
+        # lenOfMin = len(self.internalValueToText(min))
+        
+        # return max(lenOfMax, lenOfMin)
+        
+    def getCharWidth(self, min1, max1, digits):
+        min2 = int(math.floor(min1))
+        max2 = int(math.ceil(max1))
+        lenOfMax = len(self.internalValueToText(max2))
+        lenOfMin = len(self.internalValueToText(min2))
         
         return max(lenOfMax, lenOfMin)
-    
+        
     def sliderChanged(self, widget):
         self.setEntry()
     
@@ -170,9 +184,9 @@ class RangeSelectionBox(Gtk.Box):
     def setValue(self, newVal):
         self.setInternalValue(newVal)
     
-    def setRange(self, min, max):
-        self.min = min
-        self.max = max
+    def setRange(self, min1, max1):
+        self.min = min1
+        self.max = max1
         self.scale.set_range(self.min, self.max)
     
     def textToInternalValue(self, text):
@@ -186,7 +200,7 @@ class RangeSelectionBox(Gtk.Box):
 
 class LogRangeSelectionBox(RangeSelectionBox):
     
-    def __init__(self, initial=0, min=0, max=100, digits=0, incr=1, pageIncr=5, buttons=True,
+    def __init__(self, initial=0, min1=0, max1=100, digits=0, incr=1, pageIncr=5, buttons=True,
                  allowDrag=True, logBase=None, minLog=0.0001, setMinLogToZero=True, exp=False):
         """
         (see RangeSelectionBox for most parameters)
@@ -197,8 +211,8 @@ class LogRangeSelectionBox(RangeSelectionBox):
                 (default = True)
         """
         self.exp = exp
-        self.userMin = min
-        self.userMax = max
+        self.userMin = min1
+        self.userMax = max1
         self.logBase = logBase if logBase else math.e
         self.setMinLogToZero = setMinLogToZero
         
@@ -206,15 +220,15 @@ class LogRangeSelectionBox(RangeSelectionBox):
         self.minLog = max(minLog, 0.0001)
         self.GLOBAL_MIN_LOG = math.log(self.minLog, self.logBase)
         
-        min = max(min, self.minLog)
-        max = max(max, 100)
+        min2 = max(min1, self.minLog)
+        max2 = max(max1, 100)
         initial = max(initial, self.minLog)
         
-        self.logMin = math.log(min, self.logBase)
-        self.logMax = math.log(max, self.logBase)
+        self.logMin = math.log(min2, self.logBase)
+        self.logMax = math.log(max2, self.logBase)
         self.logValue = math.log(initial, self.logBase)
         
-        super().__init__(initial=self.logValue, min=self.logMin, max=self.logMax,
+        super().__init__(initial=self.logValue, min1=self.logMin, max1=self.logMax,
                          digits=digits, incr=incr, pageIncr=pageIncr, buttons=buttons,
                          allowDrag=allowDrag)
     
