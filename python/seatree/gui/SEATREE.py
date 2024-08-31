@@ -106,7 +106,7 @@ class SEATREE(Gtk.Application):
                 print('SEATREE.selectModule: Module window created.')
                 #self.window.set_application(self)
                 print('SEATREE.selectModule: window.set_application')
-                #self.window.present()
+                self.window.present()
                 self.windowBuilt = True
             print('SEATREE.selectModule: Loading module into window.')
             self.window.loadModule(self.modules[index])
@@ -287,87 +287,53 @@ class MainWindow(Gtk.ApplicationWindow):
         
         self.mainBox.append(self.hPane)
         #self.window.set_child(self.mainBox)
-        
+        self.mainBox.show()
+
         self.window.set_title(self.titleString)
         self.window.show()
         
     def setupUI(self):
-        # # Create a menu model
-        # menu_model = Gio.Menu()
-        # menu_model.append("Quit", "app.quit")
-
-        # # Create a menu button
-        # menu_button = Gtk.MenuButton.new()
-        # menu_button.set_icon_name("open-menu-symbolic")
-
-        # # Create a popover menu
-        # popover = Gtk.PopoverMenu.new_from_model(menu_model)
-        # menu_button.set_popover(popover)
-
-        # # Add the menu button to the main box
-        # self.mainBox.append(menu_button)
         self.actionGroup = Gio.SimpleActionGroup()
 
-        self.actionGroup.add_action(Gio.SimpleAction.new("file", None))
-        self.actionGroup.add_action(Gio.SimpleAction.new("script", None))
+        # Add actions
+        actions = {
+            "quit": self.quit,
+            "loadmod": self.loadNewModule,
+            "savesettings": self.saveSettings,
+            "loadsettings": self.loadSettings,
+            "saveplot": self.savePlot,
+            "viewscript": self.viewScript,
+            "clearscript": self.clearScript
+        }
 
-        quit_action = Gio.SimpleAction.new("quit", None)
-        quit_action.connect("activate", self.quit)
-        self.actionGroup.add_action(quit_action)
+        for action_name, callback in actions.items():
+            action = Gio.SimpleAction.new(action_name, None)
+            action.connect("activate", callback)
+            action.set_enabled(True)
+            self.actionGroup.add_action(action)
 
-        load_mod_action = Gio.SimpleAction.new("loadmod", None)
-        load_mod_action.connect("activate", self.loadNewModule)
-        self.actionGroup.add_action(load_mod_action)
+        self.insert_action_group("app", self.actionGroup)
 
-        save_settings_action = Gio.SimpleAction.new("savesettings", None)
-        save_settings_action.connect("activate", self.saveSettings)
-        self.actionGroup.add_action(save_settings_action)
+        # Debugging output to check action state
+        for action_name in actions.keys():
+            action = self.actionGroup.lookup_action(action_name)
+            print(f"Action '{action_name}' enabled: {action.get_enabled()}")
 
-        load_settings_action = Gio.SimpleAction.new("loadsettings", None)
-        load_settings_action.connect("activate", self.loadSettings)
-        self.actionGroup.add_action(load_settings_action)
-
-        save_plot_action = Gio.SimpleAction.new("saveplot", None)
-        save_plot_action.connect("activate", self.savePlot)
-        self.actionGroup.add_action(save_plot_action)
-
-        view_script_action = Gio.SimpleAction.new("viewscript", None)
-        view_script_action.connect("activate", self.viewScript)
-        self.actionGroup.add_action(view_script_action)
-
-        clear_script_action = Gio.SimpleAction.new("clearscript", None)
-        clear_script_action.connect("activate", self.clearScript)
-        self.actionGroup.add_action(clear_script_action)
-
-        self.insert_action_group("actions", self.actionGroup)
-    def on_close_request(self, window, event):
-        Gtk.main_quit()
-    def quit(self, widget):
-        Gtk.main_quit()
-
-    def packPlotterWidget(self, plotter):
-        self.hPane.set_end_child(plotter)
+        # Create the menu bar
+        builder = Gtk.Builder()
+        builder.add_from_file(self.path + os.sep + "conf" + os.sep + "baseUI.xml")
         
-    def quit(self, action, param):
-        Gtk.main_quit()
-    
-    def loadNewModule(self, action, param):
-        print("Load new module")
+        menu_model = builder.get_object('menubar')
+        popover_menu = Gtk.PopoverMenu()
+        popover_menu.set_menu_model(menu_model)
 
-    def saveSettings(self, action, param):
-        print("Save settings")
+        self.menubar = Gtk.MenuButton()
+        self.menubar.set_popover(popover_menu)
+        self.menubar.set_label("Menu")
 
-    def loadSettings(self, action, param):
-        print("Load settings")
-
-    def savePlot(self, action, param):
-        print("Save plot")
-
-    def viewScript(self, action, param):
-        print("View script")
-
-    def clearScript(self, action, param):
-        print("Clear script")
+        self.set_child(self.mainBox)
+        self.mainBox.append(self.menubar)
+        self.mainBox.show()
         
     def loadModule(self, module):
         self.module.cleanup()
@@ -416,80 +382,98 @@ class MainWindow(Gtk.ApplicationWindow):
         
         self.mainBox.append(self.hPane)
         self.window.show()
-        
+
     def packPlotterWidget(self, plotter):
-        #self.hPane.pack2(plotter, resize=True, shrink=False)
         self.hPane.set_end_child(plotter)
-        
+
     def preLoadModule(self, module):
         module.setDefaults(self.tmpn, self.main.gmtPath, self)
         self.main.modulesLoaded[self.main.modules.index(module)] = True
-        module.getPanel(self, self.accelGroup)
+        module.getPanel(self)
 
     def activate(self):
-        print("activating....activating")
-    
+        print("activating ... activating")
+
+    def on_close_request(self, window, event):
+        Gtk.main_quit()
+
     def delete_event(self, widget, event, data=None):
-        gtk.main_quit()
+        Gtk.main_quit()
         return False
-    
+	
     def destroy(self, widget, data=None):
-        gtk.main_quit()
-    
+        Gtk.main_quit()
+        
     def quit(self, b):
-        gtk.main_quit()
+        Gtk.main_quit()
     
     def loadNewModule(self, b):
         self.main.selectModule()
-    
+
     def setSaveActive(self, active):
         action = self.actionGroup.lookup_action("SavePlot")
         #action.set_sensitive(active)
         if action:
             action.set_enabled(active)
+
     def savePlot(self, b):
-        saveBox = SaveDialog(self, self.plotter.getSaveTypes(), title="Save Plot", default_file = 'myplot')
-        if(not self.saveFileName == "none"):
+        saveBox = SaveDialog(self, self.plotter.getSaveTypes(), title="Save Plot", default_file='myplot')
+        response = saveBox.run()
+        if response == Gtk.ResponseType.OK:
+            self.saveFileName = saveBox.get_filename()
+        saveBox.destroy()
+
+        if self.saveFileName != "none":
             ext = saveBox.getFilterExtension()
             extLower = ext.lower()
-            if (self.saveFileName.lower().find("." + extLower) < 0):
-                self.saveFileName += "." + extLower
-            print("Saving to  "+ os.path.abspath(os.path.dirname(sys.argv[0]) + os.sep+".."+os.sep+self.saveFileName))
+            if not self.saveFileName.lower().endswith(f".{extLower}"):
+                self.saveFileName += f".{extLower}"
+            print("Saving to " + os.path.abspath(os.path.dirname(sys.argv[0]) + os.sep + ".." + os.sep + self.saveFileName))
             self.plotter.savePlot(ext, self.saveFileName)
 
     def saveSettings(self, b):
-        saveBox = SaveDialog(self, title="Save Settings", default_file = 'mysettings.xml')
-        if(self.saveFileName == "none"):
+        saveBox = SaveDialog(self, title="Save Settings", default_file='mysettings.xml')
+        response = saveBox.run()
+        if response == Gtk.ResponseType.OK:
+            self.saveFileName = saveBox.get_filename()
+        saveBox.destroy()
+
+        if self.saveFileName == "none":
             print("Not saving")
         else:
             mods = self.main.modules
-            if (self.saveFileName.find(".xml") < 0):
+            if not self.saveFileName.endswith(".xml"):
                 self.saveFileName += ".xml"
-            print("Saving to  "+ os.path.abspath(os.path.dirname(sys.argv[0]) + os.sep+".."+os.sep+self.saveFileName))
+            print("Saving to " + os.path.abspath(os.path.dirname(sys.argv[0]) + os.sep + ".." + os.sep + self.saveFileName))
             saveDoc = WriteXml(fileLocation=self.saveFileName)
 
             for mod in mods:
-                if(self.main.modulesLoaded[self.main.modules.index(mod)] == True):
+                if self.main.modulesLoaded[self.main.modules.index(mod)]:
                     moduleTag = mod.getSettings()
                     saveDoc.addToRoot(moduleTag)
-        
+
             saveDoc.writeToXml()
             
     def loadSettings(self, b):
-        loadBox = LoadDialog(self, title = "Load Settings File")
-        if(self.saveFileName == "none"):
+        loadBox = LoadDialog(self, title="Load Settings File")
+        response = loadBox.run()
+        if response == Gtk.ResponseType.OK:
+            self.saveFileName = loadBox.get_filename()
+        loadBox.destroy()
+
+        if self.saveFileName == "none":
             print("Not loading")
         else:
-            if (self.saveFileName.find(".xml") < 0):
+            if not self.saveFileName.endswith(".xml"):
                 self.saveFileName += ".xml"
-            print("Loading from  "+ os.path.abspath(os.path.dirname(sys.argv[0]) + os.sep+".."+os.sep + self.saveFileName))
+            print("Loading from " + os.path.abspath(os.path.dirname(sys.argv[0]) + os.sep + ".." + os.sep + self.saveFileName))
             loadDoc = ReadXml(self.saveFileName)
             mods = self.main.modules
             for mod in mods:
-                if(not self.main.modulesLoaded[self.main.modules.index(mod)] == True):
+                if not self.main.modulesLoaded[self.main.modules.index(mod)]:
                     self.preLoadModule(mod)
-                for i in range(0, loadDoc.getNumElements()):
-                    if(loadDoc.getNodeLocalName(i) == mod.classname):
+                for i in range(loadDoc.getNumElements()):
+                    if loadDoc.getNodeLocalName(i) == mod.classname:
                         moduleTag = loadDoc.getNode(i)
                         mod.loadSettings(moduleTag)
 
@@ -527,7 +511,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.saveFileName = fName
 
     def main(self):
-        gtk.main()
+        Gtk.main()
     
     def setTempPrefix(self, tmpn):
         self.tmpn = tmpn

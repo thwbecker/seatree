@@ -4,7 +4,7 @@ from gi.repository import Gtk, Gdk
 import os, sys
 import shutil
 
-from plotter import Plotter
+from .plotter import *
 
 class ImagePlotter(Plotter):
     
