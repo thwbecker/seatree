@@ -10,9 +10,10 @@ try:
 except ImportError:
     edit = False
 
-class Syn2DGUI:
+class Syn2DGUI(Gtk.ApplicationWindow):
     def __init__(self, mainWindow, syn2d):
     #def __init__(self, mainWindow, accel_group, syn2d):
+        super().__init__(application=mainWindow.get_application())
         self.xtot = 100
         self.dx = 1
         
@@ -21,13 +22,14 @@ class Syn2DGUI:
         self.syn2d = syn2d
         
         self.vBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.vBox.set_sensitive(True)  # Make vBox sensitive
         self.tooltips = Gtk.Tooltip()
         
         # Main Label
         self.label = Gtk.Label(label="<b>" + syn2d.longname + "</b>")
         self.label.set_use_markup(True)
         self.vBox.append(self.label)
-        
+
         #######################
         # Plotter Section
         #######################
@@ -35,7 +37,7 @@ class Syn2DGUI:
         if self.syn2d.canPlotMPL():
             # Separator
             self.vBox.append(Gtk.Separator())
-            
+            print(1)
             # Plotter selector
             self.plotLabel = Gtk.Label(label="Plot Type")
             self.plotSelect = Gtk.ComboBoxText()
@@ -45,13 +47,14 @@ class Syn2DGUI:
                 self.plotSelect.set_active(1)
             else:
                 self.plotSelect.set_active(0)
+            self.plotSelect.set_sensitive(True)
             self.plotBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
             self.plotBox.append(self.plotLabel)
             self.plotBox.append(self.plotSelect)
             self.vBox.append(self.plotBox)
             
             self.plotSelect.connect("changed", self.changePlotter)
-        
+
         # Separator
         self.vBox.append(Gtk.Separator())
         
@@ -109,7 +112,7 @@ class Syn2DGUI:
         self.plotModelButton.connect("toggled", self.plotModel)
         self.modelButtonBox.append(self.makeModelButton)
         self.modelButtonBox.append(self.plotModelButton)
-        self.plotModelButton.set_sensitive(False)
+        self.plotModelButton.set_sensitive(True)
         self.vBox.append(self.modelButtonBox)
         
         # Separator
@@ -214,7 +217,7 @@ class Syn2DGUI:
         self.vBox.append(self.dataButtonBox)
         
         # Make it all disabled until ready
-        self.vBox.set_sensitive(False)
+        #self.vBox.set_sensitive(False)
         
         # Data Section Box
         self.vBox.append(self.vBox)
@@ -304,6 +307,12 @@ class Syn2DGUI:
         self.dataPSFile = ""
         self.inversionPSFile = ""
         self.differencePSFile = ""
+
+        #self.mainWindow.show()
+        #self.set_child(self.vBox)
+        # Check sensitivity of parent containers
+        print("vBox sensitivity:", self.vBox.get_sensitive())
+        print("mainWindow sensitivity:", self.mainWindow.get_sensitive())
 
     def setPlotSettingsChanged(self):
         self.modelChanged = True
@@ -482,3 +491,4 @@ class Syn2DGUI:
     
     def changePlotter(self, widget):
         self.syn2d.setPlotType(self.plotSelect.get_active_text())
+        self.show_all()

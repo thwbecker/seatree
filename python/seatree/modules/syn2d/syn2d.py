@@ -24,7 +24,7 @@ from .syn2dGUI import Syn2DGUI
 from .pgmImage import PGMImage
 import numpy
 
-class Syn2D(Module):
+class Syn2D(Gtk.ApplicationWindow, Module):
     
     PLOT_TYPE_GMT = "GMT"
     PLOT_TYPE_PYLAB = "MatPlotLib"
