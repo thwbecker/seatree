@@ -10,6 +10,7 @@ print("SEATREE path: " + path)
 sys.path.append(path)
 
 from seatree.xml.confLoader import ConfLoader
+os.environ['GSK_RENDERER'] = 'cairo'
 
 class SEATREE(Gtk.Application):
 
@@ -141,7 +142,7 @@ class SEATREE(Gtk.Application):
         if self.main_window:
             self.main_window.present()
 
-class StartDialog(Gtk.Window):
+class StartDialog(Gtk.ApplicationWindow):
     def __init__(self, modules, path, killOnClose=True, parent=None):
         super().__init__(title="SEATREE - Select Module")
         self.dialog = Gtk.Dialog(title="SEATREE - Select Module", transient_for=parent)
@@ -268,7 +269,10 @@ class MainWindow(Gtk.ApplicationWindow):
         self.psConvert = PSConverter(verb=self.verb, convertPath=convertPath)
         self.psConvert.width = 650
         
-        self.window = Gtk.Window()
+        #self.window = Gtk.Window()
+        self.window = self #Gtk.ApplicationWindow(application=app)
+        # There is no need to create a new Gtk.Application. It is already inherited from the class MainWindow.
+        # This fixed the greyed out button issue in Menu
         self.window.set_default_size(1200, 800)
         self.window.connect("close-request", self.on_close_request)
         self.titleString = "SEATREE v" + str(self.version)
@@ -286,10 +290,12 @@ class MainWindow(Gtk.ApplicationWindow):
         self.hPane.set_end_child(self.vPane)
         
         self.mainBox.append(self.hPane)
-        #self.window.set_child(self.mainBox)
-        self.mainBox.show()
 
-        self.window.set_title(self.titleString)
+        self.mainBox.set_sensitive(True)
+        self.hPane.set_sensitive(True)
+        self.vPane.set_sensitive(True)
+        self.moduleBox.set_sensitive(True)
+        
         self.window.show()
         
     def setupUI(self):
@@ -311,13 +317,24 @@ class MainWindow(Gtk.ApplicationWindow):
             action.connect("activate", callback)
             action.set_enabled(True)
             self.actionGroup.add_action(action)
+            print('Adding actions', action_name)
 
         self.insert_action_group("app", self.actionGroup)
+        print('inserted action group to app')
 
         # Debugging output to check action state
         for action_name in actions.keys():
             action = self.actionGroup.lookup_action(action_name)
-            print(f"Action '{action_name}' enabled: {action.get_enabled()}")
+            if action:
+                print(f"Action '{action_name}' enabled: {action.get_enabled()}")
+            else:
+                print('Error')
+        #menu_model = Gio.Menu()
+        #file_menu = Gio.Menu()
+        #file_menu.append("Quit", "app.quit")
+
+        #menu_model.append_submenu("File", file_menu)
+
 
         # Create the menu bar
         builder = Gtk.Builder()
@@ -331,10 +348,10 @@ class MainWindow(Gtk.ApplicationWindow):
         self.menubar.set_popover(popover_menu)
         self.menubar.set_label("Menu")
 
-        self.set_child(self.mainBox)
+        #self.set_child(self.mainBox)
         self.mainBox.append(self.menubar)
-        self.mainBox.show()
-        
+        self.window.show()
+
     def loadModule(self, module):
         self.module.cleanup()
         self.module = module
@@ -404,10 +421,11 @@ class MainWindow(Gtk.ApplicationWindow):
     def destroy(self, widget, data=None):
         Gtk.main_quit()
         
-    def quit(self, b):
-        Gtk.main_quit()
+    def quit(self, widget, data=None):
+        #Gtk.main_quit()
+        exit()
     
-    def loadNewModule(self, b):
+    def loadNewModule(self, widget, data=None):
         self.main.selectModule()
 
     def setSaveActive(self, active):
