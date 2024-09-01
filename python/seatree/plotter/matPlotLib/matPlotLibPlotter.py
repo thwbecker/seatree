@@ -14,6 +14,7 @@ from seatree.plotter.plotter import Plotter
 import shutil
 
 from .mplSettingsPanel import *
+import numpy as np
 
 # symbol types
 SQUARE = 's'

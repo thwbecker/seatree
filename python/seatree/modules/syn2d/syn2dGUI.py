@@ -27,7 +27,7 @@ class Syn2DGUI:
         self.label = Gtk.Label(label="<b>" + syn2d.longname + "</b>")
         self.label.set_use_markup(True)
         self.vBox.append(self.label)
-
+        
         #######################
         # Plotter Section
         #######################
@@ -35,7 +35,7 @@ class Syn2DGUI:
         if self.syn2d.canPlotMPL():
             # Separator
             self.vBox.append(Gtk.Separator())
-            print(1)
+            
             # Plotter selector
             self.plotLabel = Gtk.Label(label="Plot Type")
             self.plotSelect = Gtk.ComboBoxText()
@@ -45,14 +45,13 @@ class Syn2DGUI:
                 self.plotSelect.set_active(1)
             else:
                 self.plotSelect.set_active(0)
-            self.plotSelect.set_sensitive(True)
             self.plotBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
             self.plotBox.append(self.plotLabel)
             self.plotBox.append(self.plotSelect)
             self.vBox.append(self.plotBox)
             
             self.plotSelect.connect("changed", self.changePlotter)
-
+        
         # Separator
         self.vBox.append(Gtk.Separator())
         
@@ -110,7 +109,7 @@ class Syn2DGUI:
         self.plotModelButton.connect("toggled", self.plotModel)
         self.modelButtonBox.append(self.makeModelButton)
         self.modelButtonBox.append(self.plotModelButton)
-        self.plotModelButton.set_sensitive(True)
+        self.plotModelButton.set_sensitive(False)
         self.vBox.append(self.modelButtonBox)
         
         # Separator
@@ -305,8 +304,6 @@ class Syn2DGUI:
         self.dataPSFile = ""
         self.inversionPSFile = ""
         self.differencePSFile = ""
-
-        self.mainWindow.show()
 
     def setPlotSettingsChanged(self):
         self.modelChanged = True
