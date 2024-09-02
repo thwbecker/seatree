@@ -93,7 +93,9 @@ class SEATREE(Gtk.Application):
         print('SEATREE.selectModule.modules are', self.modules)
         self.start = StartDialog(self.modules, self.path, not self.windowBuilt)
         choice = self.start.show()
-        self.start.dialog.hide()
+        #self.start.dialog.hide()
+        #self.start.dialog.set_visible(False)
+        self.start.dialog.destroy()
         print(choice)
         if choice == Gtk.ResponseType.CLOSE:
             cleanup()
@@ -112,6 +114,7 @@ class SEATREE(Gtk.Application):
             print('SEATREE.selectModule: Loading module into window.')
             self.window.loadModule(self.modules[index])
             print('SEATREE.selectModule: Module loaded into window.')
+        self.start.dialog.destroy()
         del self.start
         
     def cleanupModules(self):
@@ -195,10 +198,11 @@ class StartDialog(Gtk.ApplicationWindow):
         
     def on_response(self, dialog, response_id):
         self.response_id = response_id
-        self.dialog.hide()
+        #self.dialog.hide()
+        self.dialog.set_visible(False)
         self.loop.quit()
-        #if response_id == Gtk.ResponseType.OK:
-        #    print("OK button clicked")
+        if response_id == Gtk.ResponseType.OK:
+            print("OK button clicked")
         #self.dialog.close()
         
     def getSelectedModuleIndex(self):
@@ -380,7 +384,8 @@ class MainWindow(Gtk.ApplicationWindow):
             del self.moduleBox
             self.moduleBox = panel
             print(self.moduleBox.get_parent())
-            self.moduleBox.get_parent().remove(self.moduleBox)
+            if self.moduleBox.get_parent():
+                self.moduleBox.get_parent().remove(self.moduleBox)
             self.hPane.set_start_child(self.moduleBox)
         else:
             print('del self.moduleBox and assign a new Gtk.Box')

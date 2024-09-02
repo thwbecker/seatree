@@ -271,7 +271,8 @@ class ConManGUI(Gtk.Box):
         self.startButton.set_sensitive(success)
 
     def loadResultFile(self, *args):
-        chooser = Gtk.FileChooserDialog(title="Select result file", parent=None, action=Gtk.FileChooserAction.OPEN, buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+        cancel_button = Gtk.Button.new_from_icon_name("window-close-symbolic")
+        chooser = Gtk.FileChooserDialog(title="Select result file", parent=None, action=Gtk.FileChooserAction.OPEN, buttons=(cancel_button, Gtk.ResponseType.CANCEL, Gtk.ResponseType.OK))
         
         response = chooser.run()
         file = None
