@@ -388,6 +388,12 @@ class MainWindow(Gtk.ApplicationWindow):
             self.moduleBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
             self.hPane.set_start_child(self.moduleBox)
         
+        child = self.moduleBox.get_first_child()
+        while child:
+            child.set_sensitive(True)
+            child = child.get_next_sibling()
+
+
         print('MainWindow.loadModule- self.module.getPloter')
         self.plotter = self.module.getPlotter()
         self.plotterWidget = self.plotter.getPackedWidget()

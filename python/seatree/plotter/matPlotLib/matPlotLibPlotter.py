@@ -294,6 +294,7 @@ class MatPlotLibPlotter(Plotter):
         if range is set, will expect four entry vector with limiting range for plot sorted 
         as [xmin, xmax, ymin, ymax]
         """
+        z = z[:len(y)-1,:len(x)-1]
         if self.contourFills:
             self.image = self.axis.contourf(x, y, z, cmap=self.colorMap, shading='flat', extend='both')
         else:

@@ -22,7 +22,7 @@ from seatree.modules.module import Module
 from seatree.util.scriptRunner import ScriptRunner
 from .syn2dGUI import Syn2DGUI
 from .pgmImage import PGMImage
-import numpy
+import numpy as np
 
 class Syn2D(Gtk.ApplicationWindow, Module):
     

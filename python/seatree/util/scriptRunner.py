@@ -113,8 +113,10 @@ class ScriptRunner:
         output = proc.communicate()
         self.__setProc(None)
         
-        out = output[0].decode()
-        err = output[1].decode()
+        #out = output[0].decode()
+        #err = output[1].decode()
+        out = output[0].decode('utf-8',errors='ignore')
+        err = output[1].decode('utf-8',errors='ignore')
         ret = proc.returncode
         
         result = ScriptResult(out, err, ret, self.previous, self.previousWithWorking)
