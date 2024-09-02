@@ -105,12 +105,12 @@ class ScriptRunner:
         useStdin = stdinStr is not None and len(stdinStr) > 0
         if useStdin:
             proc = self.createProcess(script, stdin=subprocess.PIPE)
-            proc.stdin.write(stdinStr.encode())
-            proc.stdin.close()
+            output = proc.communicate(input=stdinStr.encode())
+            #proc.stdin.write(stdinStr.encode())
+            #proc.stdin.close()
         else:
             proc = self.createProcess(script)
-        
-        output = proc.communicate()
+            output = proc.communicate()
         self.__setProc(None)
         
         #out = output[0].decode()
