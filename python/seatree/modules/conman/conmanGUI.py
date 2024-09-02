@@ -34,7 +34,7 @@ class ConManGUI(Gtk.Box):
         self.connect(DONE_SIGNAL, self.calcDone)
         self.connect(ERROR_SIGNAL, self.calcError)
 
-        self.tooltips = Gtk.Tooltip()
+        #self.tooltips = Gtk.Tooltip()
 
         self.calculating = False
         self.hasData = False
@@ -42,91 +42,100 @@ class ConManGUI(Gtk.Box):
         ### Main Label ###
         self.label = Gtk.Label(label="<b>" + conman.longname + "</b>")
         self.label.set_use_markup(True)
-        self.pack_start(self.label, expand=False)
+        self.append(self.label )
         
         ### Steps ###
         self.stepsBox = Gtk.Box(homogeneous=True, spacing=5)
         self.stepsLabel = Gtk.Label(label="Time Steps:")
-        self.stepsEntry = guiUtils.RangeSelectionBox(initial=1000, min=1000, max=50000, incr=1000, digits=0, buttons=True)
-        self.tooltips.set_tip(self.stepsEntry, 'Select the total number of non-dimensionalized time steps.', tip_private=None)
+        self.stepsEntry = guiUtils.RangeSelectionBox(initial=1000, min1=1000, max1=50000, incr=1000, digits=0, buttons=True)
+        #self.tooltips.set_tip(self.stepsEntry, 'Select the total number of non-dimensionalized time steps.' )
+        self.stepsEntry.set_tooltip_text('Select the total number of non-dimensionalized time steps.' )
+        
         self.stepsEntry.connect("changed", self.settingsChanged)
-        self.stepsBox.pack_start(self.stepsLabel, expand=False)
-        self.stepsBox.pack_start(self.stepsEntry, expand=False)
-        self.pack_start(self.stepsBox, expand=False)
+        self.stepsBox.append(self.stepsLabel )
+        self.stepsBox.append(self.stepsEntry )
+        self.append(self.stepsBox )
         
         ### Saved Steps ###
         self.stepsSavedBox = Gtk.Box(homogeneous=True, spacing=5)
         self.stepsSavedLabel = Gtk.Label(label="Output Steps")
-        self.stepsSavedEntry = guiUtils.RangeSelectionBox(initial=30, min=1, max=100, incr=10, digits=0, buttons=True)
-        self.tooltips.set_tip(self.stepsSavedEntry, 'Select the number of output steps, i.e. how many plots should be generated.', tip_private=None)
+        self.stepsSavedEntry = guiUtils.RangeSelectionBox(initial=30, min1=1, max1=100, incr=10, digits=0, buttons=True)
+        #self.tooltips.set_tip(self.stepsSavedEntry, 'Select the number of output steps, i.e. how many plots should be generated.' )
+        self.stepsSavedEntry.set_tooltip_text('Select the number of output steps, i.e. how many plots should be generated.' )
+        
         self.stepsSavedEntry.connect("changed", self.settingsChanged)
-        self.stepsSavedBox.pack_start(self.stepsSavedLabel, expand=False)
-        self.stepsSavedBox.pack_start(self.stepsSavedEntry, expand=False)
-        self.pack_start(self.stepsSavedBox, expand=False)
+        self.stepsSavedBox.append(self.stepsSavedLabel )
+        self.stepsSavedBox.append(self.stepsSavedEntry )
+        self.append(self.stepsSavedBox )
         
         ### Rayleigh number ###
         self.rayleighBox = Gtk.Box(homogeneous=True, spacing=5)
         self.rayleighLabel = Gtk.Label(label="Rayleigh #:")
 
-        self.rayleighEntry = guiUtils.LogRangeSelectionBox(initial=1e5, min=1e2, max=1e8, incr=1, digits=1, buttons=True, logBase=10, exp=True)
-        self.tooltips.set_tip(self.rayleighEntry, 'Select the Rayleigh number, Ra = (\Delta T \rho g \\alpha H^3)/(\eta \kappa) with \Delta T temperature difference, \rho reference density, g gravitational acceleration, \\alpha thermal expansivity, H box height, \eta viscosity, \kappa thermal diffusivity.', tip_private=None)
+        self.rayleighEntry = guiUtils.LogRangeSelectionBox(initial=1e5, min1=1e2, max1=1e8, incr=1, digits=1, buttons=True, logBase=10, exp=True)
+        #self.tooltips.set_tip(self.rayleighEntry, 'Select the Rayleigh number, Ra = (\Delta T \rho g \\alpha H^3)/(\eta \kappa) with \Delta T temperature difference, \rho reference density, g gravitational acceleration, \\alpha thermal expansivity, H box height, \eta viscosity, \kappa thermal diffusivity.' )
+        self.rayleighEntry.set_tooltip_text('Select the Rayleigh number, Ra = (\Delta T \rho g \\alpha H^3)/(\eta \kappa) with \Delta T temperature difference, \rho reference density, g gravitational acceleration, \\alpha thermal expansivity, H box height, \eta viscosity, \kappa thermal diffusivity.' )
         self.rayleighEntry.connect("changed", self.settingsChanged)
-        self.rayleighBox.pack_start(self.rayleighLabel, expand=False)
-        self.rayleighBox.pack_start(self.rayleighEntry, expand=False)
-        self.pack_start(self.rayleighBox, expand=False)
+        self.rayleighBox.append(self.rayleighLabel )
+        self.rayleighBox.append(self.rayleighEntry )
+        self.append(self.rayleighBox )
         
         ### nelz ###
         self.nelzBox = Gtk.Box(homogeneous=True, spacing=5)
         self.nelzLabel = Gtk.Label(label="Num Elems in Z:")
         self.nelzSelect = Gtk.ComboBoxText()
-        self.tooltips.set_tip(self.nelzSelect, 'Select the number of elements in the z direction, elements in x will be scaled by aspect ratio. Note that a large number of elements is required for high Ra, but may lead to memory or runtime issues.', tip_private=None)
+        #self.tooltips.set_tip(self.nelzSelect, 'Select the number of elements in the z direction, elements in x will be scaled by aspect ratio. Note that a large number of elements is required for high Ra, but may lead to memory or runtime issues.' )
+        self.nelzSelect.set_tooltip_text('Select the number of elements in the z direction, elements in x will be scaled by aspect ratio. Note that a large number of elements is required for high Ra, but may lead to memory or runtime issues.' )
         for val in self.nelzs:
             self.nelzSelect.append_text(str(val))
         self.nelzSelect.set_active(1)
         self.nelzSelect.connect("changed", self.settingsChanged)
-        self.nelzBox.pack_start(self.nelzLabel, expand=False)
-        self.nelzBox.pack_start(self.nelzSelect, expand=False)
-        self.pack_start(self.nelzBox, expand=False)
+        self.nelzBox.append(self.nelzLabel )
+        self.nelzBox.append(self.nelzSelect )
+        self.append(self.nelzBox )
         
         ### aspect ###
         self.aspectBox = Gtk.Box(homogeneous=True, spacing=5)
         self.aspectLabel = Gtk.Label(label="Aspect Ratio:")
 
         self.aspectSelect = Gtk.ComboBoxText()
-        self.tooltips.set_tip(self.aspectSelect, 'Select the aspect ratio (width over height of computational box).', tip_private=None)
+        #self.tooltips.set_tip(self.aspectSelect, 'Select the aspect ratio (width over height of computational box).' )
+        self.aspectSelect.set_tooltip_text('Select the aspect ratio (width over height of computational box).' )
         for val in self.aspect_ratios:
             self.aspectSelect.append_text(str(val))
         self.aspectSelect.set_active(0)
         self.aspectSelect.connect("changed", self.settingsChanged)
-        self.aspectBox.pack_start(self.aspectLabel, expand=False)
-        self.aspectBox.pack_start(self.aspectSelect, expand=False)
-        self.pack_start(self.aspectBox, expand=False)
+        self.aspectBox.append(self.aspectLabel )
+        self.aspectBox.append(self.aspectSelect )
+        self.append(self.aspectBox )
         
         ### Heating ###
         self.heatingBox = Gtk.Box(homogeneous=True, spacing=5)
         self.heatingLabel = Gtk.Label(label="Internal Heating:")
-        self.heatingEntry = guiUtils.RangeSelectionBox(initial=0, min=0, max=50, incr=1, digits=0, buttons=True)
-        self.tooltips.set_tip(self.heatingEntry, 'Select the amount of internal heating (non-dimensionalized units)', tip_private=None)
+        self.heatingEntry = guiUtils.RangeSelectionBox(initial=0, min1=0, max1=50, incr=1, digits=0, buttons=True)
+        #self.tooltips.set_tip(self.heatingEntry, 'Select the amount of internal heating (non-dimensionalized units)' )
+        self.heatingEntry.set_tooltip_text('Select the amount of internal heating (non-dimensionalized units)' )
         self.heatingEntry.connect("changed", self.settingsChanged)
-        self.heatingBox.pack_start(self.heatingLabel, expand=False)
-        self.heatingBox.pack_start(self.heatingEntry, expand=False)
-        self.pack_start(self.heatingBox, expand=False)
+        self.heatingBox.append(self.heatingLabel )
+        self.heatingBox.append(self.heatingEntry )
+        self.append(self.heatingBox )
         
         ### Activation Energy ###
         self.activationBox = Gtk.Box(homogeneous=True, spacing=5)
         self.activationLabel = Gtk.Label(label="Activation Energy:")
-        self.activationEntry = guiUtils.RangeSelectionBox(initial=0, min=0, max=20, incr=1, digits=0, buttons=True)
-        self.tooltips.set_tip(self.activationEntry, 'Select the amount of temperature dependence of viscosity as expressed by the non-dimensionalized activation energy (E) in the Frank-Kamenetskii approximation \eta = \eta_0 exp(E(T-T_0))', tip_private=None)
+        self.activationEntry = guiUtils.RangeSelectionBox(initial=0, min1=0, max1=20, incr=1, digits=0, buttons=True)
+        #self.tooltips.set_tip(self.activationEntry, 'Select the amount of temperature dependence of viscosity as expressed by the non-dimensionalized activation energy (E) in the Frank-Kamenetskii approximation \eta = \eta_0 exp(E(T-T_0))' )
+        self.activationEntry.set_tooltip_text('Select the amount of temperature dependence of viscosity as expressed by the non-dimensionalized activation energy (E) in the Frank-Kamenetskii approximation \eta = \eta_0 exp(E(T-T_0))' )
         
         self.activationEntry.connect("changed", self.settingsChanged)
-        self.activationBox.pack_start(self.activationLabel, expand=False)
-        self.activationBox.pack_start(self.activationEntry, expand=False)
-        self.pack_start(self.activationBox, expand=False)
+        self.activationBox.append(self.activationLabel )
+        self.activationBox.append(self.activationEntry )
+        self.append(self.activationBox )
         
         ### Generate Deck Button ###
         self.gendeckButton = Gtk.Button(label="Prepare input file")
         self.gendeckButton.connect("clicked", self.genDeck)
-        self.pack_start(self.gendeckButton, expand=False)
+        self.append(self.gendeckButton )
         
         ### Plot Check Boxes ###
         self.plotChoicesBox = Gtk.Box(homogeneous=True, spacing=5)
@@ -137,15 +146,15 @@ class ConManGUI(Gtk.Box):
         self.plotVelCheck.set_active(True)
         self.plotAveragesCheck = Gtk.CheckButton(label="Averages")
         self.plotAveragesCheck.set_active(False)
-        self.plotChoicesBox.pack_start(self.plotChoicesLabel, expand=False)
+        self.plotChoicesBox.append(self.plotChoicesLabel )
         self.plotChoicesButtonVBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, homogeneous=True, spacing=5)
         self.plotChoicesButtonTopBox = Gtk.Box(homogeneous=True, spacing=5)
-        self.plotChoicesButtonTopBox.pack_start(self.plotTempCheck, expand=False)
-        self.plotChoicesButtonTopBox.pack_start(self.plotVelCheck, expand=False)
-        self.plotChoicesButtonVBox.pack_start(self.plotChoicesButtonTopBox, expand=False)
-        self.plotChoicesButtonVBox.pack_start(self.plotAveragesCheck, expand=False)
-        self.plotChoicesBox.pack_start(self.plotChoicesButtonVBox, expand=False)
-        self.pack_start(self.plotChoicesBox, expand=False)
+        self.plotChoicesButtonTopBox.append(self.plotTempCheck )
+        self.plotChoicesButtonTopBox.append(self.plotVelCheck )
+        self.plotChoicesButtonVBox.append(self.plotChoicesButtonTopBox )
+        self.plotChoicesButtonVBox.append(self.plotAveragesCheck )
+        self.plotChoicesBox.append(self.plotChoicesButtonVBox )
+        self.append(self.plotChoicesBox )
 
         ### Load Results File ###
         self.loadResultsLabel = Gtk.Label(label="Results File")
@@ -155,31 +164,35 @@ class ConManGUI(Gtk.Box):
         self.resultsLoadButton.connect("clicked", self.loadResultFile)
         self.resultsSaveButton = Gtk.Button(label="Save")
         self.resultsSaveButton.connect("clicked", self.saveResultFile)
-        self.resultsFileBox.pack_start(self.loadResultsLabel, expand=False)
-        self.resultsFileBox.pack_start(self.resultsFileButtonBox, expand=False)
-        self.resultsFileButtonBox.pack_start(self.resultsLoadButton, expand=False)
-        self.resultsFileButtonBox.pack_end(self.resultsSaveButton, expand=False)
+        self.resultsFileBox.append(self.loadResultsLabel )
+        self.resultsFileBox.append(self.resultsFileButtonBox )
+        self.resultsFileButtonBox.append(self.resultsLoadButton )
+        self.resultsFileButtonBox.prepend(self.resultsSaveButton )
         self.resultsSaveButton.set_sensitive(False)
-        self.pack_start(self.resultsFileBox, expand=False)
+        self.append(self.resultsFileBox )
         
         ### Start/Stop Buttons ###
         self.startButton = Gtk.Button(label="Start")
-        self.tooltips.set_tip(self.startButton, 'Start computation, output will be automatically visualized. (Please be patient.)', tip_private=None)
+        #self.tooltips.set_tip(self.startButton, 'Start computation, output will be automatically visualized. (Please be patient.)' )
+        self.startButton.set_tooltip_text('Start computation, output will be automatically visualized. (Please be patient.)' )
+        
         self.stopButton = Gtk.Button(label="Stop")
-        self.tooltips.set_tip(self.stopButton, 'Stop computation, any already generated output will still be able for visualization.', tip_private=None)
+        #self.tooltips.set_tip(self.stopButton, 'Stop computation, any already generated output will still be able for visualization.' )
+        self.stopButton.set_tooltip_text('Stop computation, any already generated output will still be able for visualization.' )
+        
         self.startButton.connect("clicked", self.startCalc)
         self.stopButton.connect("clicked", self.stopCalc)
         self.startButton.set_sensitive(False)
         self.stopButton.set_sensitive(False)
         self.startStopBox = Gtk.Box(homogeneous=True, spacing=5)
-        self.startStopBox.pack_start(self.startButton, expand=False)
-        self.startStopBox.pack_start(self.stopButton, expand=False)
-        self.pack_start(self.startStopBox, expand=False)
+        self.startStopBox.append(self.startButton )
+        self.startStopBox.append(self.stopButton )
+        self.append(self.startStopBox )
         
         ### Step Slider ###
-        self.playSlider = guiUtils.RangeSelectionBox(initial=0, min=0, max=self.getSteps(), incr=1, digits=0, buttons=True, allowDrag=False)
+        self.playSlider = guiUtils.RangeSelectionBox(initial=0, min1=0, max1=self.getSteps(), incr=1, digits=0, buttons=True, allowDrag=False)
         self.playSlider.connect("changed", self.playSliderChanged)
-        self.pack_start(self.playSlider, expand=False)
+        self.append(self.playSlider )
         
         ### Play/Pause Buttons ###
         self.playStep = 0
@@ -188,23 +201,27 @@ class ConManGUI(Gtk.Box):
         self.rendering = False
         self.playButton = Gtk.Button(label="Play")
         self.pauseButton = Gtk.Button(label="Pause")
-        self.tooltips.set_tip(self.playButton, 'Play convection movie by consecutively plotting already generated output.', tip_private=None)
+        #self.tooltips.set_tip(self.playButton, 'Play convection movie by consecutively plotting already generated output.' )
+        self.playButton.set_tooltip_text('Play convection movie by consecutively plotting already generated output.' )
+        
         self.saveAnimButton = Gtk.Button(label="Save Animation")
-        self.tooltips.set_tip(self.saveAnimButton, 'Save all animation plots as a sequence of PNG files (which can later be converted into a movie).', tip_private=None)
+        #self.tooltips.set_tip(self.saveAnimButton, 'Save all animation plots as a sequence of PNG files (which can later be converted into a movie).' )
+        self.saveAnimButton.set_tooltip_text('Save all animation plots as a sequence of PNG files (which can later be converted into a movie).' )
+        
         self.playButton.connect("clicked", self.playData)
         self.pauseButton.connect("clicked", self.pauseData)
         self.saveAnimButton.connect("clicked", self.saveAnim)
         self.playButtonBox = Gtk.Box()
-        self.playButtonBox.pack_start(self.playButton, expand=False)
-        self.playButtonBox.pack_start(self.pauseButton, expand=False)
-        self.playButtonBox.pack_start(self.saveAnimButton, expand=False)
-        self.pack_start(self.playButtonBox, expand=False)
+        self.playButtonBox.append(self.playButton )
+        self.playButtonBox.append(self.pauseButton )
+        self.playButtonBox.append(self.saveAnimButton )
+        self.append(self.playButtonBox )
         
         self.numCalculatedSteps = -1
         
         self.enablePlayButtons()
         
-        self.show_all()
+        self.show()
 
     def enablePlayButtons(self):
         if self.debug:
@@ -224,11 +241,11 @@ class ConManGUI(Gtk.Box):
                 self.playSteps = self.conman.getNumCalculatedSteps()
             if self.debug:
                 print("play step: " + str(self.playStep))
-            self.playSlider.set_value(self.playStep)
-            self.playSlider.set_range(0, self.playSteps - 1)
+            self.playSlider.setValue(self.playStep)
+            self.playSlider.setRange(0, self.playSteps - 1)
         else:
-            self.playSlider.set_value(0)
-            self.playSlider.set_range(0, self.getSteps() - 1)
+            self.playSlider.setValue(0)
+            self.playSlider.setRange(0, self.getSteps() - 1)
         self.enableLock.release()
         if self.debug:
             print("released enable lock!")
@@ -242,13 +259,13 @@ class ConManGUI(Gtk.Box):
         return self.aspect_ratios[active]
 
     def genDeck(self, *args):
-        steps = int(self.stepsEntry.get_value())
-        saveSteps = int(self.stepsSavedEntry.get_value())
-        rayleigh = int(self.rayleighEntry.get_value())
+        steps = int(self.stepsEntry. getValue())
+        saveSteps = int(self.stepsSavedEntry. getValue())
+        rayleigh = int(self.rayleighEntry. getValue())
         nelz = self.getNelz()
         aspect = self.getAspect()
-        heating = int(self.heatingEntry.get_value())
-        activation = int(self.activationEntry.get_value())
+        heating = int(self.heatingEntry. getValue())
+        activation = int(self.activationEntry. getValue())
         
         success = self.conman.genDeck(steps, saveSteps, rayleigh, nelz, aspect, heating, activation)
         self.startButton.set_sensitive(success)
@@ -292,7 +309,7 @@ class ConManGUI(Gtk.Box):
             self.playNextStep()
         elif self.calculating:
             self.conman.updatePlot()
-            self.playSlider.set_value(self.conman.getLastPlottedStepNum())
+            self.playSlider.setValue(self.conman.getLastPlottedStepNum())
 
     def calcDone(self, *args):
         self.calculating = False
@@ -309,10 +326,10 @@ class ConManGUI(Gtk.Box):
         self.enablePlayButtons()
 
     def getSteps(self):
-        return int(self.stepsEntry.get_value())
+        return int(self.stepsEntry. getValue())
 
     def getSleepInterval(self):
-        return self.intervalEntry.get_value()
+        return self.intervalEntry. getValue()
 
     def settingsChanged(self, *args):
         self.numCalculatedSteps = -1
@@ -344,7 +361,7 @@ class ConManGUI(Gtk.Box):
         plotVectors = self.isPlotVelocitiesSelected()
         plotAverages = self.isPlotAveragesSelected()
         
-        self.playSlider.set_value(self.playStep)
+        self.playSlider.setValue(self.playStep)
         self.conman.plotStep(self.playStep, plotTemp=plotTemp, plotVectors=plotVectors, plotAverages=plotAverages)
         
         self.playStep += 1
@@ -422,7 +439,7 @@ class ConManGUI(Gtk.Box):
             plotVectors = self.isPlotVelocitiesSelected()
             plotAverages = self.isPlotAveragesSelected()
             
-            self.playSlider.set_value(step)
+            self.playSlider.setValue(step)
             self.conman.plotStep(step, plotTemp=plotTemp, plotVectors=plotVectors, plotAverages=plotAverages)
             
             fname = self.__getSequenceFileName(file, step, numDigits)
@@ -443,7 +460,7 @@ class ConManGUI(Gtk.Box):
 
     def playSliderChanged(self, *args):
         if not self.calculating and not self.playing and not self.rendering and self.hasData:
-            self.playStep = int(self.playSlider.get_value())
+            self.playStep = int(self.playSlider. getValue())
             
             plotTemp = self.isPlotTempSelected()
             plotVectors = self.isPlotVelocitiesSelected()

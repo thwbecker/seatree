@@ -5,7 +5,7 @@ from gi.repository import Gtk, GLib
 
 import os, sys, time, xml.dom.minidom, math
 
-import numpy
+import numpy as np
 
 from seatree.modules.module import Module
 from .calcThread import CalcThread
@@ -47,7 +47,7 @@ class ConMan(Module):
         # this calls the STModule constructor with the above variables
         Module.__init__(self, shortName, longName, version, storeName, baseImage)
     
-    def getPanel(self, mainWindow, accelGroup):
+    def getPanel(self, mainWindow):
         '''
         This method should return a gtk.Widget to be displayed in the main
         SEATREE window on the left. Usually this will be a gtk.VBox, but any
