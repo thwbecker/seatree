@@ -669,6 +669,10 @@ if not os.path.exists(storeDir):
 #signal.signal(signal.SIGINT, kill_cleanup)
 
 def main():
+    if not Gtk.init_check():
+	print("Failed to initialize GTK")
+	return 
+	    
     app = SEATREE(path=path, storeDir=storeDir)
     if app.loadModules():
         app.selectModule()
