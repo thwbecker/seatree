@@ -4,10 +4,14 @@
 #
 from optparse import OptionParser
 import math
-import pylab as p
+
 import matplotlib
-from matplotlib.backends.backend_gtk import FigureCanvasGTK, NavigationToolbar   
-matplotlib.use('GTK')
+from matplotlib.backends.backend_gtk3agg import ( FigureCanvas as FigureCanvasGTK ) 
+from matplotlib.backends.backend_gtk3 import ( NavigationToolbar2GTK3 as NavigationToolbar ) 
+
+import pylab as p
+
+#matplotlib.use('GTK')
 from manipulate_hc import *
 
 

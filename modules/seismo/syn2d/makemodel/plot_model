@@ -14,14 +14,15 @@ reg=`minmax -I$dx $file.xyz`
 
 
 # make grid
-xyz2grd $file.xyz -G$file.grd $reg  -I$dx/$dx -N0 -V 
+gmt xyz2grd $file.xyz -G$file.grd $reg  -I$dx/$dx -N0 -V 
 
 ofile=$file.ps
-grdimage $file.grd $reg -JX7i  -Y1.5i -C$cmp -K \
+ofile_eps=$file.eps
+gmt grdimage $file.grd $reg -JX7i  -Y1.5i -C$cmp -K \
      -Ba20f2/a20f2WeSn -P > $ofile
-psscale -C$cmp -O -E -D3.5i/-.5i/5i/.25ih -V -B.25:"": >> $ofile
-modifybb $ofile 0 10 590 620 2> /dev/null
-
+gmt psscale -C$cmp -O -E -D3.5i/-.5i/5i/.25ih -V -B.25:"": >> $ofile
+#modifybb $ofile 0 10 590 620 2> /dev/null
+gmt psconvert -Te -A+m0.1 $ofile; mv $ofile_eps $ofile
 convert -density 72 $ofile $file.gif
 
 echo $0: output in $ofile and  $file.gif

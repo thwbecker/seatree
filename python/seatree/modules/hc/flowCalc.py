@@ -170,7 +170,7 @@ class FlowCalc(Module):
 		# coastline
 		self.myPlotter.setCoastlineMaskArea(70000)
 		self.myPlotter.setCoastlineResolution("c")
-		self.myPlotter.setCoastlineWidth(4)
+		self.myPlotter.setCoastlineWidth(0.5)
 		
 		# colorbar
 		self.myPlotter.setColorbarN(50)
@@ -312,8 +312,8 @@ class FlowCalc(Module):
 			command = "cat " +self.geoidFile + " " + self.ogeoidFile + " |  " + hcpath + "sh_corr 9 0 0 4 2> /dev/null"
 			result = self.myPlotter.runGMT(command)
 			r2 = '%.2f'% float(result[1])
-			self.myPlotter.plotText("0.05 -0.05 14 0 0 ML \"r@-1-20@- = " + str(r1) + "\"")
-			self.myPlotter.plotText("0.80 -0.05 14 0 0 ML \"r@-4-9@- = " + str(r2) + "\"")
+			self.myPlotter.plotText("0.05 -0.05 14 0 29 ML \"r@-1-20@- = " + str(r1) + "\"")
+			self.myPlotter.plotText("0.80 -0.05 14 0 29 ML \"r@-4-9@- = " + str(r2) + "\"")
 
 		# close ps file
 		self.myPlotter.closePSFile()
@@ -556,14 +556,14 @@ class FlowCalc(Module):
 			
 			if self.myPlotter.addLabel:
 			#text labels
-				self.myPlotter.plotText("0.05 -0.05 14 0 0 ML \"z = " + str(z) + " km\"")
+				self.myPlotter.plotText("0.05 -0.05 14 0 29 ML \"z = " + str(z) + " km\"")
 				if mode == 0:
-					self.myPlotter.plotText("0.75  -0.05 14 0 0 ML \"@~\\341@~" + str(type) + \
+					self.myPlotter.plotText("0.75  -0.05 14 0 29 ML \"@~\\341@~" + str(type) + \
 									"@-h@-@~\\361@~ = " + str(hmean) + " " + units + "\"")
 				elif mode == 1:
-					self.myPlotter.plotText("0.75  -0.05 14 0 0 ML \"@~\\341@~v@-hpol@-@~\\361@~ = " + str(hmean) + " cm/yr\"")
+					self.myPlotter.plotText("0.75  -0.05 14 0 29 ML \"@~\\341@~v@-hpol@-@~\\361@~ = " + str(hmean) + " cm/yr\"")
 				elif mode == 2:
-					self.myPlotter.plotText("0.75  -0.05 14 0 0 ML \"@~\\341@~v@-htor@-@~\\361@~ = " + str(hmean) + " cm/yr\"")
+					self.myPlotter.plotText("0.75  -0.05 14 0 29 ML \"@~\\341@~v@-htor@-@~\\361@~ = " + str(hmean) + " cm/yr\"")
 		
 
 			# colorbar

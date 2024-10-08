@@ -55,7 +55,8 @@ class GMTWrapper:
 		self.cptFile = ""
 	
 		# Colormap type
-		self.cptType = "haxby"
+		#self.cptType = "haxby"
+                self.cptType = "roma"
 
 		self.last_grd_vals = []
 			
@@ -98,7 +99,7 @@ class GMTWrapper:
 		self.maskSea = False
 		self.coastMaskArea = 70000
 		self.coastResolution = "c"
-		self.coastWidth = 2
+		self.coastWidth = 0.5
 		self.coastLineColor = [100, 100, 100]
 		self.coastLandColor = [128, 128, 128]
 		self.coastSeaColor = [200, 200, 200]
@@ -158,7 +159,8 @@ class GMTWrapper:
 		# draw Plate Boundaries?
 		self.drawPlateBounds = False
 		self.pbFile = mainpath + os.sep + ".." + os.sep + "data" + os.sep + "common" + os.sep + "nuvel.360.xy"
-		self.pbLinewidth = 5
+		#self.pbLinewidth = 5
+                self.pbLinewidth = 1
 		self.pbColor = [0,0,128]
 
 		self.error = ""
@@ -292,7 +294,8 @@ class GMTWrapper:
 		command += "-T" + str(z0) + "/" + str(z1) + "/" + str(dz) + \
 		    " -C" + self.cptType
 		if (setBackgroundMax == False): 
-			command +=  " | " + self.awk + " '{if((substr($1,1,1) != \"#\") && (NF == 8))print($0)}'"
+                        command += " -D "
+                        #			command +=  " | " + self.awk + " '{if((substr($1,1,1) != \"#\") && (NF == 8))print($0)}'"
 		
 		command+= ' > ' + outFile
 #		print command
@@ -597,12 +600,12 @@ class GMTWrapper:
 		#else:
 		#	offset += ' -Y1.25i '
 		if basemap:
-			command += "psbasemap " + self.getRangeString(self.plotXmin,self.plotXmax,self.plotYmin,self.plotYmax,self.projection,True) + " " + \
+			command += "gmt psbasemap " + self.getRangeString(self.plotXmin,self.plotXmax,self.plotYmin,self.plotYmax,self.projection,True) + " " + \
 			   self.getProjectionString(self.projection) + offset + \
 			   "-B" + self.plotBoundAnnotation + \
 			   portraitString + " -K > " + self.psFile
 		else:
-			command += "psxy " + self.getRangeString(self.plotXmin,self.plotXmax,self.plotYmin,self.plotYmax,self.projection,True) + " " + \
+			command += "gmt psxy " + self.getRangeString(self.plotXmin,self.plotXmax,self.plotYmin,self.plotYmax,self.projection,True) + " " + \
 			   self.getProjectionString(self.projection) + offset + \
 			   portraitString + " -Sa1i -K > " + self.psFile
 		self.runGMT(command)
@@ -618,7 +621,7 @@ class GMTWrapper:
 		command = "echo 1000 1000 | "
 		if (self.gmtpath):
 			command += self.gmtpath + os.sep
-		command += "psxy " + self.getRangeString(self.plotXmin,self.plotXmax,self.plotYmin,self.plotYmax,self.projection,True) + " " + \
+		command += "gmt psxy " + self.getRangeString(self.plotXmin,self.plotXmax,self.plotYmin,self.plotYmax,self.projection,True) + " " + \
 		    self.getProjectionString(self.projection) + " -Sa1i -O >> " + self.psFile
 		self.runGMT(command)
 		
@@ -685,7 +688,7 @@ class GMTWrapper:
 		command = ""
 		if (self.gmtpath):
 			command += self.gmtpath + os.sep
-		command += "psxy " + gmtFile + " " + self.getProjectionString(self.projection) + \
+		command += "gmt psxy " + gmtFile + " " + self.getProjectionString(self.projection) + \
 			" " + self.getRangeString(self.plotXmin, self.plotXmax, self.plotYmin, self.plotYmax,self.projection,True) + \
 			" -m -L -K -O -C" + self.cptFile + " >> " + self.psFile
 #		print command
@@ -698,9 +701,9 @@ class GMTWrapper:
 		command = ""
 		if (self.gmtpath):
 			command += self.gmtpath + os.sep
-		command += "psxy " + gmtFile + " " + self.getProjectionString(self.projection) + \
+		command += "gmt psxy " + gmtFile + " " + self.getProjectionString(self.projection) + \
 			" " + self.getRangeString(self.plotXmin, self.plotXmax, self.plotYmin, self.plotYmax,self.projection,True) + \
-			" -A " + " -K -O -M >> " + self.psFile
+			" -A " + " -K -O -m >> " + self.psFile
 #		print command
 		self.runGMT(command)
 
@@ -991,7 +994,7 @@ class GMTWrapper:
 
 	def plotPolygon(self, polygonfile, linewidth, R, G, B):
 		"""
-		Plots GMT -M style polygons
+		Plots GMT -m style polygons
 		
 		Arguments:
 		polygonfile: filename of polygon file
@@ -1002,8 +1005,8 @@ class GMTWrapper:
 		command = ""
 		if (self.gmtpath):
 			command += self.gmtpath + os.sep
-		command += "psxy " + polygonfile + \
-		    " -M " + self.getProjectionString(self.projection) + " " + \
+		command += "gmt psxy " + polygonfile + \
+		    " -m " + self.getProjectionString(self.projection) + " " + \
 		    self.getRangeString(self.plotXmin,self.plotXmax,self.plotYmin,self.plotYmax,self.projection,True) + " " + \
 		    self.getLineString(linewidth,R,G,B) + " -O -K >> " + self.psFile
 		self.runGMT(command)
@@ -1026,7 +1029,7 @@ class GMTWrapper:
 		command = ""
 		if (self.gmtpath):
 			command += self.gmtpath + os.sep
-		command += "psxy " + xyFile
+		command += "gmt psxy " + xyFile
 		if (plotSymbols):
 			command += " -S"
 			if (symbol):
@@ -1078,7 +1081,7 @@ class GMTWrapper:
 			add = add.encode('ascii', 'replace')
 			command += add
 		
-		command += "pstext"
+		command += "gmt pstext"
 		if (not self.textClip):
 			command += " -N"
                 command += " " + self.getRangeString(self.textXmin,self.textXmax,self.textYmin,self.textYmax,self.projection,True)

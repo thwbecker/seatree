@@ -5,6 +5,7 @@ import seatree.gui.util.guiUtils as guiUtils
 import subprocess, sys, commands, fnmatch
 from seatree.util.scriptRunner import ScriptRunner
 
+
 try:
 	from xyDialog import XYDialog
 	showEditors = True;

@@ -26,10 +26,10 @@ class GMTSettingsPanel:
 		
 		# Colormap Type
 		self.colormapCombo = gtk.combo_box_new_text()
+		self.colormapCombo.append_text("roma")
+		self.colormapCombo.append_text("grayC")
 		self.colormapCombo.append_text("haxby")
-		self.colormapCombo.append_text("gray")
-		self.colormapCombo.append_text("wysiwyg")
-		self.colormapCombo.append_text("polar")
+		self.colormapCombo.append_text("vik")
 		self.colormapCombo.append_text("seis")
 		self.colormapCombo.append_text("spectral")
 		self.colormapCombo.append_text("other...")
