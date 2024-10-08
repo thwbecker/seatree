@@ -1,9 +1,12 @@
 import gi
 gi.require_version('Gtk', '4.0')
-from gi.repository import Gtk, Gdk, GLib, GObject
+from gi.repository import Gtk, Gio, GLib, GObject
 import os, math
 
 class FileSelectionBox(Gtk.Box):
+    __gsignals__ = {
+        "changed": (GObject.SIGNAL_RUN_FIRST, None, ()),
+    }
     
     def __init__(self, initial="", chooseTitle="", width=0, mainWindow=None):
         """
@@ -39,18 +42,28 @@ class FileSelectionBox(Gtk.Box):
     
     def chooseFile(self, widget):
         chooser = Gtk.FileChooserDialog(title=self.chooseTitle, parent=self.mainWindow, action=Gtk.FileChooserAction.OPEN)
-        chooser.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
-        
+        #chooser.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
+        chooser.add_buttons(
+            "Cancel", Gtk.ResponseType.CANCEL,
+            "Open", Gtk.ResponseType.OK
+        )
+
         currentFile = self.entry.get_text()
         if currentFile:
-            chooser.set_current_folder(os.path.dirname(currentFile))
-            chooser.set_filename(currentFile)
-        
-        response = chooser.run()
-        if response == Gtk.ResponseType.OK:
-            self.entry.set_text(chooser.get_filename())
-            self.setCursorEnd()
-        chooser.destroy()
+            #current_folder = Gio.File.new_for_path(os.path.dirname(currentFile))
+            #chooser.set_current_folder(current_folder)
+            current_file = Gio.File.new_for_path(currentFile)
+            chooser.set_file(current_file)
+        chooser.connect("response", self.on_response)
+        chooser.show()
+    
+    def on_response(self, dialog, response_id):
+        if response_id == Gtk.ResponseType.OK:  
+            self.entry.set_text(dialog.get_file().get_path())
+        elif response_id == Gtk.ResponseType.CANCEL:   
+            print('FileSlectionBox Cancel clicked')
+            #self.setCursorEnd()
+        dialog.destroy()
     
     def setCursorEnd(self):
         GLib.idle_add(lambda: self.entry.set_position(len(self.entry.get_text())))

@@ -10,7 +10,7 @@ def add_subdirectories_to_path(root_dir):
 root_directory = os.getcwd()
 add_subdirectories_to_path(root_directory)
 
-for path in sys.path:
-    print(path)
+#for path in sys.path:
+#    print(path)
 
 os.system('python3 '+root_directory+'/python3/seatree/gui/SEATREE.py')
