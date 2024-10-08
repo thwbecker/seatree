@@ -22,8 +22,6 @@ im=2			# 1: cholesky 2: LSQR method of finding the
 #
 ravg=0			# remove average from solution?
 #
-# style
-pstyle=2
 
 
 cmp=mytomo.cpt
@@ -40,7 +38,11 @@ make
 
 
 if [ ! -s $cmp ];then
-    makecpt -Chaxby -I -T-10/10/1 | gawk '{if((substr($1,1,1)!="#")&&(NF==8))print($0)}' > $cmp
+    gmt makecpt -Croma -I -T-10/10/1 | \
+	gawk '{if((substr($1,1,1)!="#")&&(NF==5)){
+	split($2,col1,"/");	split($4,col2,"/");
+	printf("%g %i %i %i %g %i %i %i\n",
+	$1,col1[1],col1[2],col1[3],$3,col2[1],col2[2],col2[3])}}' > $cmp
     rm $data.gmt 2> /dev/null	# need to redo the GMT input 
 fi
 
@@ -50,6 +52,7 @@ fi
 if [ ! -s $data.ata ];then
     if [ ! -s $data.txt ];then
 	echo $0: error: data input file $data.txt not found
+	pwd
 	exit
     fi
     if [ $res -le 5 ];then
@@ -160,7 +163,7 @@ if [ ! -s $data.ps ];then
 #
     echo $0: plotting $data with $cmp colormap
     
-    ./plotblk $data $cmp $pstyle > plot.log 2>> plot.log
+    ./plotblk $data  #> plot.log 2>> plot.log
 else
     echo $0: not redoing plot, old solution
 fi

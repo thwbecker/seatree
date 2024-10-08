@@ -1,0 +1,20 @@
+#!/bin/bash
+data=${1-R0075.1}		# data file name, also used for output file
+# names
+cmp=${2-mytomo.cpt}
+
+if [ ! -s $data.gmt ];then
+    echo $0: $data.gmt not found
+    exit
+fi
+ofile=$data.ps
+ofile_eps=$data.eps
+
+reg=-Rg
+proj=-JH180/7i
+gmt psxy $data.gmt $reg $proj -m -P -K > $ofile
+gmt pscoast -Dc -A5000 $reg $proj -W0.5 -O -K >> $ofile
+psscale -D3.5i/-.25i/4i/.15ih -C$cmp -O -B3/:"@~d@~dv [%]": >> $ofile
+gmt psconvert -Te -A+m0.1 $ofile; mv $ofile_eps $ofile
+echo $0: output in $ofile
+
