@@ -15,6 +15,7 @@ plot_lay=${6-1}			# which layer to plot?
 cmp=${7-mytomo.cpt}		# colormap to use
 remove_avg=y			# remove avg from layer
 
+cmp_style=roma;cmp_inv=""
 ARCH=`uname -m`
 #
 # check resolution
@@ -305,15 +306,21 @@ fi
 #
 # plot
 #
-rm $cmp
-if [ ! -s $cmp ];then
-    if [ $ray_type = "S" ];then
-	makecpt -Chaxby -I -T-5/5/.5 -D | gawk '{if((substr($1,1,1)!="#")&&(NF==8))print($0)}' > $cmp
-    else
-	makecpt -Chaxby -I -T-2.5/2.5/.25 -D | gawk '{if((substr($1,1,1)!="#")&&(NF==8))print($0)}' > $cmp
-    fi
-    rm $data.gmt 2> /dev/null	# need to redo the GMT input 
+if [ $ray_type = "S" ];then
+    trange=-T-5/5/.5
+else
+    trange=-T-3/3/.3
 fi
+# used again below
+gmt makecpt -C$cmp_style $cmp_inv $trange  | \
+	gawk '{if((substr($1,1,1)!="#")&&(NF==5)){
+	split($2,col1,"/");	split($4,col2,"/");
+	printf("%g %i %i %i %g %i %i %i\n",
+	$1,col1[1],col1[2],col1[3],$3,col2[1],col2[2],col2[3])}}' > $cmp
+
+
+rm $data.gmt 2> /dev/null	# need to redo the GMT input 
+
 #
 # extract data for plotting, this generates layer files with -Z
 #
@@ -340,10 +347,16 @@ if [ ! -s  layerz.$nlay.dat ];then
 fi
 depth=`gawk -v n=$plot_lay '{if(NR==n)printf("%.1f",$1)}' layerz.$nlay.dat`
 ofile=vel.$plot_lay.ps
-
-psxy layer_$plot_lays -m -A -C$cmp $reg $proj -K -P -Y1.5 > $ofile
-pscoast $reg $proj -Dc -A40000 -O -W1 -K >> $ofile
-psscale -C$cmp -Ba2:"@~d@~v@-$dtype@- [%] @@ z = $depth km": -O  -D3.5/-.2/3/.2h >> $ofile
+ofile_eps=vel.$plot_lay.eps
+#redo because above was for extract  (should do with -Z)
+gmt makecpt -C$cmp_style $cmp_inv $trange  > $cmp
+reg=-Rg
+proj=-JH180/7i
+gmt psxy layer_$plot_lays -m -A -C$cmp $reg $proj -K -P -Y1.5 > $ofile
+gmt pscoast $reg $proj -Dc -A40000 -O -W1 -K >> $ofile
+gmt psscale -E -C$cmp -Ba2:"@~d@~v@-$dtype@- [%] @@ z = $depth km": -O  \
+    -D3.5i/-.2i/3i/.15ih >> $ofile
+gmt psconvert -Te -A+m0.1 $ofile; mv $ofile_eps $ofile
 
 
 echo $0: output in $ofile

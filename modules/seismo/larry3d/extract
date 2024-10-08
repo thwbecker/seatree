@@ -90,7 +90,7 @@ if [[ $mode -eq 2 ]];then
 	    cat tomoplot.log
 	    exit
 	fi
-	surface -fg -Rg -I2 $f -Gdv.$j.grd  -Lld -Lud 
+	gmt surface -fg -Rg -I2 $f -Gdv.$j.grd  -Lld -Lud # could use spinterpolate
 	echo $0: $f $z dv.$j.grd RMS `grd2wrms dv.$j.grd`  
 
 	rm $f
