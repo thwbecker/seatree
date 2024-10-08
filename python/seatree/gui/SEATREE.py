@@ -119,10 +119,8 @@ class SEATREE(Gtk.Application):
         Returns the path to the 'python' directory in the root SEATREE installation directory
         """
         return self.path
+
     def do_activate(self):
-        #if not self.main_window:
-        #    self.main_window = StartDialog(self.modules, self.path, not self.windowBuilt)
-        #self.main_window.show()
         if self.loadModules():
             self.selectModule()
 
@@ -251,8 +249,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.psConvert = PSConverter(verb=self.verb, convertPath=convertPath)
         self.psConvert.width = 650
         
-        #self.window = Gtk.Window()
-        #self.window = self #Gtk.ApplicationWindow(application=app)
         # There is no need to create a new Gtk.Application. It is already inherited from the class MainWindow.
         # This fixed the greyed out button issue in Menu
         self.set_default_size(1200, 800)
@@ -366,7 +362,6 @@ class MainWindow(Gtk.ApplicationWindow):
             child.set_sensitive(True)
             child = child.get_next_sibling()
 
-
         print('MainWindow.loadModule- self.module.getPloter')
         self.plotter = self.module.getPlotter()
         self.plotterWidget = self.plotter.getPackedWidget()
@@ -377,7 +372,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.setSaveActive(False)
         
         self.mainBox.append(self.hPane)
-        #self.window.show()
 
     def packPlotterWidget(self, plotter):
         self.hPane.set_end_child(plotter)
@@ -390,18 +384,10 @@ class MainWindow(Gtk.ApplicationWindow):
     def activate(self):
         print("activating ... activating")
 
-    def on_close_request(self, window, event):
-        Gtk.main_quit()
-
-    def delete_event(self, widget, event, data=None):
-        Gtk.main_quit()
-        return False
-	
-    def destroy(self, widget, data=None):
-        Gtk.main_quit()
-        
+    def on_close_request(self, window, data=None):
+        exit()
+    
     def quit(self, widget, data=None):
-        #Gtk.main_quit()
         exit()
     
     def loadNewModule(self, widget, data=None):
@@ -605,9 +591,6 @@ def main():
         return 
 	    
     app = SEATREE(path=path, storeDir=storeDir)
-    
-    #if app.loadModules():
-    #    app.selectModule()
     app.run(None)
 
 if __name__ == "__main__":
