@@ -111,7 +111,7 @@ class SEATREEInstaller:
 	def setupGMT(self):
 		print "Setting up GMT"
 		self.gmtPath = ""
-		command = "gmtdefaults -L"
+		command = "gmt gmtdefaults -L"
 		if (self.testCommand("", command) == 0):
 			print"GMT appears to be in your system path already..."
 			response = raw_input("Specify another path (y/n default: n)? ")
