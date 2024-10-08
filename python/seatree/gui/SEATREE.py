@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 import gi, sys, os, signal, traceback, importlib, shutil
 gi.require_version("Gtk", "4.0")
-from gi.repository import Gtk, Gio, GLib
+from gi.repository import Gtk, Gio, GLib, Gdk
 
 # add the folder containing the root seatree module to the python path
 pyFile = __file__
@@ -10,7 +10,7 @@ print("SEATREE path: " + path)
 sys.path.append(path)
 
 from seatree.xml.confLoader import ConfLoader
-os.environ['GSK_RENDERER'] = 'cairo'
+#os.environ['GSK_RENDERER'] = 'cairo'
 
 class SEATREE(Gtk.Application):
 
@@ -91,10 +91,9 @@ class SEATREE(Gtk.Application):
 
     def selectModule(self):
         print('SEATREE.selectModule.modules are', self.modules)
-        self.start = StartDialog(self.modules, self.path, not self.windowBuilt)
+        startWindow = Gtk.ApplicationWindow(title="Start Dialog Window")
+        self.start = StartDialog(self.modules, self.path, not self.windowBuilt, parent=startWindow)
         choice = self.start.show()
-        #self.start.dialog.hide()
-        #self.start.dialog.set_visible(False)
         self.start.dialog.destroy()
         print(choice)
         if choice == Gtk.ResponseType.CLOSE:
@@ -105,17 +104,13 @@ class SEATREE(Gtk.Application):
             index = self.start.getSelectedModuleIndex()
             print("Loading Module: " + self.modules[index].getLongName() + " " + str(self.modules[index].getVersion()))
             if (not self.windowBuilt):
-                self.window = MainWindow(app=self, path=path, tmpn=tmpn, convertPath=self.convertPath, version=self.version)
-                print('SEATREE.selectModule: Module window created.')
-                #self.window.set_application(self)
+                programWindow = Gtk.ApplicationWindow(title="Program Window")
+                self.window = MainWindow(app=self, path=path, tmpn=tmpn, convertPath=self.convertPath, version=self.version, parent=programWindow)
                 print('SEATREE.selectModule: window.set_application')
                 self.window.present()
                 self.windowBuilt = True
-            print('SEATREE.selectModule: Loading module into window.')
             self.window.loadModule(self.modules[index])
             print('SEATREE.selectModule: Module loaded into window.')
-        self.start.dialog.destroy()
-        del self.start
         
     def cleanupModules(self):
             if (self.windowBuilt):
@@ -126,24 +121,10 @@ class SEATREE(Gtk.Application):
         """
         return self.path
     def do_activate(self):
-        if not self.main_window:
-            #self.main_window = MainWindow(self)
-            self.main_window = StartDialog(self.modules, self.path, not self.windowBuilt)
-        #self.main_window.present()
-        self.main_window.show()
-
-    def open_program_window(self, program_name):
-        if self.main_window:
-            self.main_window.hide()
-        self.program_window = ProgramWindow(program_name, self)
-        self.program_window.present()
-
-    def close_program_window(self):
-        if self.program_window:
-            self.program_window.close()
-            self.program_window = None
-        if self.main_window:
-            self.main_window.present()
+        #if not self.main_window:
+        #    self.main_window = StartDialog(self.modules, self.path, not self.windowBuilt)
+        #self.main_window.show()
+        self.selectModule()
 
 class StartDialog(Gtk.ApplicationWindow):
     def __init__(self, modules, path, killOnClose=True, parent=None):
@@ -152,7 +133,6 @@ class StartDialog(Gtk.ApplicationWindow):
         self.dialog.set_default_size(400, 300)
         
         if killOnClose:  # catches when window closed
-            #self.dialog.connect("delete-event", self.delete_event)
             self.dialog.connect("destroy", self.destroy)
         
         path = os.path.abspath(os.path.dirname(__file__)+'/../..')
@@ -198,12 +178,10 @@ class StartDialog(Gtk.ApplicationWindow):
         
     def on_response(self, dialog, response_id):
         self.response_id = response_id
-        #self.dialog.hide()
-        self.dialog.set_visible(False)
+        self.dialog.hide()
         self.loop.quit()
         if response_id == Gtk.ResponseType.OK:
             print("OK button clicked")
-        #self.dialog.close()
         
     def getSelectedModuleIndex(self):
         return self.combo.get_active()
@@ -253,7 +231,7 @@ from seatree.gui.loadDialog import LoadDialog
 from seatree.gui.scriptDialog import ScriptDialog
 
 class MainWindow(Gtk.ApplicationWindow):
-    def __init__(self, app, path="..", tmpn="/tmp/SEATREE", convertPath="", version=0.1):
+    def __init__(self, app, path="..", tmpn="/tmp/SEATREE", convertPath="", version=0.1, parent=None):
         super().__init__()
         self.main = app
         
@@ -300,8 +278,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.vPane.set_sensitive(True)
         self.moduleBox.set_sensitive(True)
         
-        self.window.show()
-        
     def setupUI(self):
         self.actionGroup = Gio.SimpleActionGroup()
 
@@ -333,12 +309,6 @@ class MainWindow(Gtk.ApplicationWindow):
                 print(f"Action '{action_name}' enabled: {action.get_enabled()}")
             else:
                 print('Error')
-        #menu_model = Gio.Menu()
-        #file_menu = Gio.Menu()
-        #file_menu.append("Quit", "app.quit")
-
-        #menu_model.append_submenu("File", file_menu)
-
 
         # Create the menu bar
         builder = Gtk.Builder()
@@ -352,9 +322,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.menubar.set_popover(popover_menu)
         self.menubar.set_label("Menu")
 
-        #self.set_child(self.mainBox)
         self.mainBox.append(self.menubar)
-        self.window.show()
 
     def loadModule(self, module):
         self.module.cleanup()
@@ -409,7 +377,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.setSaveActive(False)
         
         self.mainBox.append(self.hPane)
-        self.window.show()
+        #self.window.show()
 
     def packPlotterWidget(self, plotter):
         self.hPane.set_end_child(plotter)
