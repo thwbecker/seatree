@@ -91,8 +91,8 @@ class SEATREE(Gtk.Application):
 
     def selectModule(self):
         print('SEATREE.selectModule.modules are', self.modules)
-        startWindow = Gtk.ApplicationWindow(title="Start Dialog Window")
-        self.start = StartDialog(self.modules, self.path, not self.windowBuilt, parent=startWindow)
+        self.main_window = Gtk.ApplicationWindow(title="Start Dialog Window")
+        self.start = StartDialog(self.modules, self.path, not self.windowBuilt, parent=self.main_window)
         choice = self.start.show()
         self.start.dialog.destroy()
         print(choice)
@@ -100,12 +100,11 @@ class SEATREE(Gtk.Application):
             cleanup()
             exit()
         elif choice == Gtk.ResponseType.OK:
-            print("BBB")
             index = self.start.getSelectedModuleIndex()
             print("Loading Module: " + self.modules[index].getLongName() + " " + str(self.modules[index].getVersion()))
             if (not self.windowBuilt):
-                programWindow = Gtk.ApplicationWindow(title="Program Window")
-                self.window = MainWindow(app=self, path=path, tmpn=tmpn, convertPath=self.convertPath, version=self.version, parent=programWindow)
+                self.program_window = Gtk.ApplicationWindow(title="Program Window")
+                self.window = MainWindow(app=self, path=path, tmpn=tmpn, convertPath=self.convertPath, version=self.version, parent=self.program_window)
                 print('SEATREE.selectModule: window.set_application')
                 self.window.present()
                 self.windowBuilt = True
@@ -124,7 +123,8 @@ class SEATREE(Gtk.Application):
         #if not self.main_window:
         #    self.main_window = StartDialog(self.modules, self.path, not self.windowBuilt)
         #self.main_window.show()
-        self.selectModule()
+        if self.loadModules():
+            self.selectModule()
 
 class StartDialog(Gtk.ApplicationWindow):
     def __init__(self, modules, path, killOnClose=True, parent=None):
@@ -232,7 +232,7 @@ from seatree.gui.scriptDialog import ScriptDialog
 
 class MainWindow(Gtk.ApplicationWindow):
     def __init__(self, app, path="..", tmpn="/tmp/SEATREE", convertPath="", version=0.1, parent=None):
-        super().__init__()
+        super().__init__(application=app, title="SEATREE")
         self.main = app
         
         self.verb = 0
@@ -252,15 +252,15 @@ class MainWindow(Gtk.ApplicationWindow):
         self.psConvert.width = 650
         
         #self.window = Gtk.Window()
-        self.window = self #Gtk.ApplicationWindow(application=app)
+        #self.window = self #Gtk.ApplicationWindow(application=app)
         # There is no need to create a new Gtk.Application. It is already inherited from the class MainWindow.
         # This fixed the greyed out button issue in Menu
-        self.window.set_default_size(1200, 800)
-        self.window.connect("close-request", self.on_close_request)
+        self.set_default_size(1200, 800)
+        self.connect("close-request", self.on_close_request)
         self.titleString = "SEATREE v" + str(self.version)
-        self.window.set_title("SEATREE v" + str(self.version))
+        self.set_title("SEATREE v" + str(self.version))
         self.mainBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        self.window.set_child(self.mainBox)
+        self.set_child(self.mainBox)
         
         self.setupUI()
         
@@ -577,43 +577,6 @@ class MainWindow(Gtk.ApplicationWindow):
         if not path.endswith(os.sep):
             path += os.sep
         return path + "data" + os.sep
-# class MainWindow(Gtk.Window):
-    # def __init__(self, app):
-        # super().__init__(title="Main Window", application=app)
-        # self.set_default_size(400, 200)
-
-        # vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        # self.set_child(vbox)
-
-        # self.combo = Gtk.ComboBoxText()
-        # self.combo.append_text("Program 1")
-        # self.combo.append_text("Program 2")
-        # self.combo.append_text("Program 3")
-        # vbox.append(self.combo)
-
-        # button = Gtk.Button(label="OK")
-        # button.connect("clicked", self.on_button_clicked)
-        # vbox.append(button)
-
-        # self.app = app
-
-    # def on_button_clicked(self, widget):
-        # selected_program = self.combo.get_active_text()
-        # if selected_program:
-            # self.app.open_program_window(selected_program)
-
-class ProgramWindow(Gtk.Window):
-    def __init__(self, program_name, app):
-        super().__init__(title=program_name, application=app)
-        self.set_default_size(400, 200)
-        label = Gtk.Label(label=f"Welcome to {program_name}")
-        self.set_child(label)
-
-        self.app = app
-        self.connect("destroy", self.on_destroy)
-
-    def on_destroy(self, widget):
-        self.app.close_program_window()
 
 def sys_var(name):
     return os.popen("echo $" + name).readline()[:-1]
@@ -642,9 +605,10 @@ def main():
         return 
 	    
     app = SEATREE(path=path, storeDir=storeDir)
-    if app.loadModules():
-        app.selectModule()
-        app.run(None)
+    
+    #if app.loadModules():
+    #    app.selectModule()
+    app.run(None)
 
 if __name__ == "__main__":
     main()
