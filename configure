@@ -21,7 +21,7 @@ echo $bn: running install.py in python/seatree/install subdirectory
 echo
 export PYTHONPATH=/home/dliu/seatree.dev/python
 
-python3 python/seatree/install/install.py
+python3 python3/seatree/install/install.py
 echo
 echo $bn: SEATREE installation done. type "seatree" in current directory 
 echo $bn: `pwd` 
