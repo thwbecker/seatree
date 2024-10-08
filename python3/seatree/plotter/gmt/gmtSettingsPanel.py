@@ -12,9 +12,9 @@ class GMTSettingsPanel:
         self.width = width
         self.gmtPlotterWidget = gmtPlotterWidget
 
-        self.eb = Gtk.EventBox()
+        self.eb = Gtk.Box()
         self.eb.set_size_request(self.width, 200)
-        self.eb.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(0.5, 0.5, 0.5, 1))
+        #self.eb.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(0.5, 0.5, 0.5, 1))
 
         self.vBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
         self.row1 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
@@ -38,29 +38,29 @@ class GMTSettingsPanel:
 
         self.colormapLabel = Gtk.Label(label="Colormap Type:")
         self.colormapBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
-        self.colormapBox.pack_start(self.colormapLabel, False, False, 0)
+        self.colormapBox.append(self.colormapLabel)
         
         self.invertCheck = Gtk.CheckButton(label="Invert")
         self.invertCheckBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-        self.invertCheckBox.pack_start(self.invertCheck, False, False, 0)
+        self.invertCheckBox.append(self.invertCheck)
 
         self.adjustCheck = Gtk.CheckButton(label="Auto scale")
         self.adjustCheck.set_active(True)
         self.adjustCheckBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-        self.adjustCheckBox.pack_start(self.adjustCheck, False, False, 0)
+        self.adjustCheckBox.append(self.adjustCheck)
 
         self.labelCheck = Gtk.CheckButton(label="Labels")
         self.labelCheck.set_active(True)
         self.labelCheckBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-        self.labelCheckBox.pack_start(self.labelCheck, False, False, 0)
+        self.labelCheckBox.append(self.labelCheck)
 
         self.plateBoundaryCheck = Gtk.CheckButton(label="Pbound")
         self.plateBoundaryCheckBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-        self.plateBoundaryCheckBox.pack_start(self.plateBoundaryCheck, False, False, 0)
+        self.plateBoundaryCheckBox.append(self.plateBoundaryCheck)
         
         self.coastCheck = Gtk.CheckButton(label="Coastlines")
         self.coastCheckBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-        self.coastCheckBox.pack_start(self.coastCheck, False, False, 0)
+        self.coastCheckBox.append(self.coastCheck)
         
         self.coastMaskCombo = Gtk.ComboBoxText()
         self.coastMaskCombo.append_text("No Mask")
@@ -70,7 +70,7 @@ class GMTSettingsPanel:
 
         self.plotGridLines = Gtk.CheckButton(label="Grid lines")
         self.plotGridLinesBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-        self.plotGridLinesBox.pack_start(self.plotGridLines, False, False, 0)
+        self.plotGridLinesBox.append(self.plotGridLines)
 
         self.colorSymLabel = Gtk.Label(label="Colors:")
 
@@ -97,35 +97,35 @@ class GMTSettingsPanel:
         self.rangeButton = Gtk.Button(label="Update Lat/Lon Range")
         self.rangeButton.connect("clicked", self.openRangeWindow)
 
-        self.row1.pack_start(self.colormapBox, False, False, 0)
-        self.row1.pack_start(self.colormapCombo, False, False, 0)
-        self.row1.pack_start(self.colormapEntry, False, False, 0)
-        self.row1.pack_start(self.invertCheckBox, False, False, 0)
-        self.row1.pack_start(self.adjustCheckBox, False, False, 0)
-        self.row1.pack_start(self.labelCheckBox, False, False, 0)
-        self.row1.pack_start(self.rangeButton, False, False, 0)
+        self.row1.append(self.colormapBox)
+        self.row1.append(self.colormapCombo)
+        self.row1.append(self.colormapEntry)
+        self.row1.append(self.invertCheckBox)
+        self.row1.append(self.adjustCheckBox)
+        self.row1.append(self.labelCheckBox)
+        self.row1.append(self.rangeButton)
 
         self.row2 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
 
         self.applyChangesButton = Gtk.Button(label="Apply Changes")
         self.applyChangesButton.connect("clicked", self.applyChanges)
 
-        self.row2.pack_start(self.plotGridLinesBox, False, False, 0)
-        self.row2.pack_start(self.coastCheckBox, False, False, 0)
-        self.row2.pack_start(self.coastMaskCombo, False, False, 0)
-        self.row2.pack_start(self.plateBoundaryCheckBox, False, False, 0)
-        self.row2.pack_start(self.colorSymLabel, False, False, 0)
-        self.row2.pack_start(self.pbcolButton, False, False, 0)
-        self.row2.pack_start(self.coastColorButton, False, False, 0)
-        self.row2.pack_start(self.vecColButton, False, False, 0)
-        self.row2.pack_start(self.gridres, False, False, 0)
-        self.row2.pack_start(self.gridresLabel, False, False, 0)
+        self.row2.append(self.plotGridLinesBox )
+        self.row2.append(self.coastCheckBox )
+        self.row2.append(self.coastMaskCombo )
+        self.row2.append(self.plateBoundaryCheckBox )
+        self.row2.append(self.colorSymLabel )
+        self.row2.append(self.pbcolButton )
+        self.row2.append(self.coastColorButton )
+        self.row2.append(self.vecColButton )
+        self.row2.append(self.gridres )
+        self.row2.append(self.gridresLabel )
 
         self.row3 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
 
         # Projection
         self.projectionLabel = Gtk.Label(label="Projection:")
-        self.projectionEntry = guiUtils.RangeSelectionBox(initial=170, min=0, max=359, digits=0, buttons=True)
+        self.projectionEntry = guiUtils.RangeSelectionBox(initial=170, min1=0, max1=359, digits=0, buttons=True)
         self.projectionEntryEnd = Gtk.Entry()
         self.projectionEntryEnd.set_width_chars(2)
         self.projectionEntryEnd.set_max_length(2)
@@ -142,12 +142,12 @@ class GMTSettingsPanel:
             self.projectCombo.append_text(pt)
         self.projectCombo.set_active(0)
 
-        self.projectionBox.pack_start(self.projectionLabel, False, False, 0)
-        self.projectionBox.pack_start(self.projectCombo, False, False, 0)
-        self.projectionBox.pack_start(self.projectionEntry, True, True, 0)
-        self.projectionBox.pack_start(self.projectionEntryEnd, False, False, 0)
-        self.projectionBox.pack_start(self.projectionLabel2, False, False, 0)
-        self.row3.pack_start(self.projectionBox, False, False, 0)
+        self.projectionBox.append(self.projectionLabel )
+        self.projectionBox.append(self.projectCombo )
+        self.projectionBox.append(self.projectionEntry)
+        self.projectionBox.append(self.projectionEntryEnd )
+        self.projectionBox.append(self.projectionLabel2 )
+        self.row3.append(self.projectionBox )
 
         self.row4 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
 
@@ -163,7 +163,7 @@ class GMTSettingsPanel:
         self.vBox.append(self.row3)
         self.vBox.append(self.row4)
 
-        self.eb.set_child(self.vBox)
+        self.eb.append(self.vBox)
         #
         # init with none, gets set in gmt plotter widget
         self.gmtPlotter = gmtWrapper

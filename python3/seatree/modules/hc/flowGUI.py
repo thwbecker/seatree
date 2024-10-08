@@ -15,11 +15,11 @@ except Exception as e:
 
 class FlowGUI:
     
-    def __init__(self, mainWindow, accel_group, flowCalc):
+    def __init__(self, mainWindow, flowCalc):
         self.mainWindow = mainWindow
         self.flowCalc = flowCalc
-
-        self.tooltips = Gtk.Tooltip()
+        self.window = mainWindow
+        #self.tooltips = Gtk.Tooltip()
 
         self.vBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         
@@ -30,7 +30,7 @@ class FlowGUI:
         # Label
         self.computeLabel = Gtk.Label(label="<b>Calculation Settings</b>")
         self.computeLabel.set_use_markup(True)
-        self.vBox.pack_start(self.computeLabel, expand=False, fill=False, padding=0)
+        self.vBox.append(self.computeLabel )
         
         # Density Scaling Type
         self.densScalingLabel = Gtk.Label(label="Density Scaling Type")
@@ -39,34 +39,34 @@ class FlowGUI:
         self.densScalingSelect.append_text("Depth-dependent scaling")
         self.densScalingSelect.connect("changed", self.setDensityScalingType)
         self.densScalingBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
-        self.densScalingBox.pack_start(self.densScalingLabel, expand=True, fill=True, padding=0)
-        self.densScalingBox.pack_end(self.densScalingSelect, expand=True, fill=True, padding=0)
-        self.vBox.pack_start(self.densScalingBox, expand=False, fill=False, padding=0)
+        self.densScalingBox.append(self.densScalingLabel)
+        self.densScalingBox.append(self.densScalingSelect)
+        self.vBox.append(self.densScalingBox )
         
         # Density Scaling Factor
         self.densFactorLabel = Gtk.Label(label="Density Scale Factor")
-        self.densFactorEntry = guiUtils.RangeSelectionBox(initial=self.flowCalc.dfac, min=-2.0, max=2.0, incr=0.05, digits=2, buttons=True)
-        self.tooltips.set_tip(self.densFactorEntry, 'density scaling factor', tip_private=None)
+        self.densFactorEntry = guiUtils.RangeSelectionBox(initial=self.flowCalc.dfac, min1=-2.0, max1=2.0, incr=0.05, digits=2, buttons=True)
+        self.densFactorEntry.set_tooltip_text('density scsaling factor')
         self.densFactorBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
-        self.densFactorBox.pack_start(self.densFactorLabel, expand=True, fill=True, padding=0)
-        self.densFactorBox.pack_end(self.densFactorEntry, expand=True, fill=True, padding=0)
-        self.vBox.pack_start(self.densFactorBox, expand=False, fill=False, padding=0)
+        self.densFactorBox.append(self.densFactorLabel)
+        self.densFactorBox.append(self.densFactorEntry)
+        self.vBox.append(self.densFactorBox )
         
         # Depth Dependent Density Scaling File
         self.densDependentLabel = Gtk.Label(label="Depth-dep. scaling File")
         self.densDependentFile = guiUtils.FileSelectionBox(initial=self.flowCalc.dsf, chooseTitle="Select Depth Dependent Scaling File", width=10, mainWindow=self.mainWindow)
 
         self.densDependentBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
-        self.densDependentBox.pack_start(self.densDependentLabel, expand=True, fill=True, padding=0)
-        self.tooltips.set_tip(self.densDependentLabel, 'read depth dependent density scaling from file', tip_private=None)
+        self.densDependentBox.append(self.densDependentLabel)
+        self.densDependentLabel.set_tooltip_text('read depth dependent density scaling from file')
         self.densDependentRightBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
-        self.densDependentRightBox.pack_start(self.densDependentFile, expand=True, fill=True, padding=0)
+        self.densDependentRightBox.append(self.densDependentFile)
         if showEditors:
             self.densEditButton = Gtk.Button.new_with_label("Edit")
             self.densEditButton.connect("clicked", self.editDens)
-            self.densDependentRightBox.pack_end(self.densEditButton, expand=False, fill=False, padding=0)
-        self.densDependentBox.pack_end(self.densDependentRightBox, expand=True, fill=True, padding=0)
-        self.vBox.pack_start(self.densDependentBox, expand=False, fill=False, padding=0)
+            self.densDependentRightBox.append(self.densEditButton )
+        self.densDependentBox.append(self.densDependentRightBox)
+        self.vBox.append(self.densDependentBox )
         
         if self.flowCalc.use_dsf:
             self.densScalingSelect.set_active(1)
@@ -79,37 +79,37 @@ class FlowGUI:
 
         self.densAdjustLabel = Gtk.Label(label="Depth-dep. PREM density")
         self.densAdjustCheck = Gtk.CheckButton(label="")
-        self.tooltips.set_tip(self.densAdjustCheck, 'Scale the density anomaly at each depth with a depth-dependent PREM density. Else, will use an average mantle density. The variations from the constant mantle density are from 75% at 50 km to 124% at 2800 km. (The computation is still incompressible.)', tip_private=None)
+        self.densAdjustCheck.set_tooltip_text('Scale the density anomaly at each depth with a depth-dependent PREM density. Else, will use an average mantle density. The variations from the constant mantle density are from 75% at 50 km to 124% at 2800 km. (The computation is still incompressible.)')
         self.densAdjustCheck.set_active(True)
 
         self.densAdjustBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
-        self.densAdjustBox.pack_start(self.densAdjustLabel, expand=True, fill=True, padding=0)
-        self.densAdjustBox.pack_end(self.densAdjustCheck, expand=True, fill=True, padding=0)
-        self.vBox.pack_start(self.densAdjustBox, expand=False, fill=False, padding=0)
+        self.densAdjustBox.append(self.densAdjustLabel)
+        self.densAdjustBox.append(self.densAdjustCheck)
+        self.vBox.append(self.densAdjustBox )
     
         # Density Type
         self.densTypeLabel = Gtk.Label(label="Density Type")
         self.densTypeEntry = Gtk.Entry()
-        self.tooltips.set_tip(self.densTypeEntry, 'type of spherical harmonics expansion format. dshs means to use the short model format,  as in Becker & Boschi (2002) tomography model compilation, and in the included example model data', tip_private=None)
+        self.densTypeEntry.set_tooltip_text('type of spherical harmonics expansion format. dshs means to use the short model format,  as in Becker & Boschi (2002) tomography model compilation, and in the included example model data')
         self.densTypeEntry.set_text(self.flowCalc.dt)
         self.densTypeBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
-        self.densTypeBox.pack_start(self.densTypeLabel, expand=True, fill=True, padding=0)
-        self.densTypeBox.pack_end(self.densTypeEntry, expand=True, fill=True, padding=0)
-        self.vBox.pack_start(self.densTypeBox, expand=False, fill=False, padding=0)
+        self.densTypeBox.append(self.densTypeLabel)
+        self.densTypeBox.append(self.densTypeEntry)
+        self.vBox.append(self.densTypeBox )
         
         # Density Model
         self.densModelLabel = Gtk.Label(label="Density Model")
         self.densModelFile = guiUtils.FileSelectionBox(initial=self.flowCalc.dm, chooseTitle="Select Density Model File", width=10, mainWindow=self.mainWindow)
         self.densModelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
-        self.densModelBox.pack_start(self.densModelLabel, expand=True, fill=True, padding=0)
-        self.tooltips.set_tip(self.densModelFile, 'density model in spherical harmonics expansion, in %. if density model type is set to dshs, will expect the Becker & Boschi (2001) short format. Example models in the SEATREE compilation are described at http://geodynamics.usc.edu/~becker/tomography/', tip_private=None)
-        self.densModelBox.pack_end(self.densModelFile, expand=True, fill=True, padding=0)
-        self.vBox.pack_start(self.densModelBox, expand=False, fill=False, padding=0)
+        self.densModelBox.append(self.densModelLabel)
+        self.densModelFile.set_tooltip_text('density model in spherical harmonics expansion, in %. if density model type is set to dshs, will expect the Becker & Boschi (2001) short format. Example models in the SEATREE compilation are described at http://geodynamics.usc.edu/~becker/tomography/')
+        self.densModelBox.append(self.densModelFile)
+        self.vBox.append(self.densModelBox )
         
         # Viscosity File
         self.viscFileLabel = Gtk.Label(label="Viscosity File")
         width = 5 if showEditors else 7
-        self.viscFile = guiUtils.FileSelectionBox(initial=self.flowCalc.vf, choose_title="Select Viscosity File", width=width, main_window=self.window)
+        self.viscFile = guiUtils.FileSelectionBox(initial=self.flowCalc.vf, chooseTitle="Select Viscosity File", width=width, mainWindow=self.window)
         self.viscFileBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         self.viscFileBox.append(self.viscFileLabel)
         self.viscFileRightBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
@@ -123,7 +123,7 @@ class FlowGUI:
 
         # Boundary Condition
         self.boundCondLabel = Gtk.Label(label="Surface\nboundary condition")
-        self.boundCondFile = guiUtils.FileSelectionBox(initial=self.flowCalc.platevelf, choose_title="Select Boundary Condition File", width=7, main_window=self.window)
+        self.boundCondFile = guiUtils.FileSelectionBox(initial=self.flowCalc.platevelf, chooseTitle="Select Boundary Condition File", width=7, mainWindow=self.window)
         self.boundCondFile.set_sensitive(self.flowCalc.tbc == 2)
 
         self.boundCondSelect = Gtk.ComboBoxText()
@@ -131,7 +131,7 @@ class FlowGUI:
         self.boundCondSelect.append_text("No slip")
         self.boundCondSelect.append_text("Plate velocities")
         self.boundCondSelect.set_active(self.flowCalc.tbc)
-        self.tooltips.set_tip(self.boundCondSelect, 'mechanical boundary condition at surface')
+        self.boundCondSelect.set_tooltip_text('mechanical boundary condition at surface')
 
         self.boundCondSelect.connect("changed", self.setBoundaryCondition)
 
@@ -162,11 +162,11 @@ class FlowGUI:
         # Compute Buttons
         self.computeButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         self.computeVelButton = Gtk.Button(label="Compute Velocities")
-        self.tooltips.set_tip(self.computeVelButton, 'compute the geoid and velocities for the current settings')
+        self.computeVelButton.set_tooltip_text('compute the geoid and velocities for the current settings')
 
         self.computeVelButton.connect("clicked", self.computeVel)
         self.computeTracButton = Gtk.Button(label="Compute Radial Tractions")
-        self.tooltips.set_tip(self.computeTracButton, 'compute the geoid and tractions on a plane with normal in the radial direction for the current settings')
+        self.computeTracButton.set_tooltip_text('compute the geoid and tractions on a plane with normal in the radial direction for the current settings')
 
         self.computeTracButton.connect("clicked", self.computeTrac)
         self.computeButtonBox.append(self.computeVelButton)
@@ -182,12 +182,12 @@ class FlowGUI:
 
         self.geoidBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         self.plotGeoidButton = Gtk.Button(label="Plot Model Geoid")
-        self.tooltips.set_tip(self.plotGeoidButton, 'Plot the model predicted geoid (this can be done after either traction or velocity computations have been performed). r values on plot show correlation with non-hydrostatic ITG-Grace03 up to spherical harmonic degree 20, and restricted to degrees 4 and 9')
+        self.plotGeoidButton.set_tooltip_text('Plot the model predicted geoid (this can be done after either traction or velocity computations have been performed). r values on plot show correlation with non-hydrostatic ITG-Grace03 up to spherical harmonic degree 20, and restricted to degrees 4 and 9')
         self.plotGeoidButton.connect("clicked", self.plotGeoid)
         self.geoidBox.append(self.plotGeoidButton)
 
         self.plotOGeoidButton = Gtk.Button(label="Plot Observed Geoid")
-        self.tooltips.set_tip(self.plotOGeoidButton, 'Plot the geoid from ITG-Grace03 (Mayer-Guerr et al, 2007), corrected for the hydrostatic shape of the Earth following Nakiboglu (1982), up to L=31')
+        self.plotOGeoidButton.set_tooltip_text('Plot the geoid from ITG-Grace03 (Mayer-Guerr et al, 2007), corrected for the hydrostatic shape of the Earth following Nakiboglu (1982), up to L=31')
         self.plotOGeoidButton.connect("clicked", self.plotOGeoid)
 
         self.geoidBox.append(self.plotOGeoidButton)
@@ -200,8 +200,8 @@ class FlowGUI:
 
         # Layer
         self.layerLabel = Gtk.Label(label="Velocity/Traction Layer")
-        self.layerScale = guiUtils.RangeSelectionBox(initial=self.flowCalc.layers[0], min=1, max=self.flowCalc.maxLayers, digits=0, buttons=True)
-        self.tooltips.set_tip(self.layerScale, 'select the depth level for the map; 1=CMB n=surface')
+        self.layerScale = guiUtils.RangeSelectionBox(initial=self.flowCalc.layers[0], min1=1, max1=self.flowCalc.maxLayers, digits=0, buttons=True)
+        self.layerScale.set_tooltip_text('select the depth level for the map; 1=CMB n=surface')
         self.layerBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         self.layerBox.append(self.layerLabel)
         self.layerBox.append(self.layerScale)
@@ -209,15 +209,15 @@ class FlowGUI:
         self.layerBox.set_sensitive(False)
 
         self.plotVelButton = Gtk.Button(label="Plot Velocities")
-        self.tooltips.set_tip(self.plotVelButton, 'Plot the horizontal velocity field at the selected layer as vectors with the radial velocities plotted as background.')
+        self.plotVelButton.set_tooltip_text('Plot the horizontal velocity field at the selected layer as vectors with the radial velocities plotted as background.')
         self.plotVelButton.connect("clicked", self.plotVel)
         self.plotPolButton = Gtk.Button(label="Plot Poloidal Velocities")
-        self.tooltips.set_tip(self.plotPolButton, 'Plot the poloidal component of the horizontal velocity field at the selected layer as vectors with the poloidal potential plotted as background.')
+        self.plotPolButton.set_tooltip_text('Plot the poloidal component of the horizontal velocity field at the selected layer as vectors with the poloidal potential plotted as background.')
         self.plotPolButton.connect("clicked", self.plotPol)
         self.plotTorButton = Gtk.Button(label="Plot Toroidal Velocities")
         self.torActiveTip = 'Plot the toroidal component of the horizontal velocity field at the selected layer as vectors with the toroidal potential plotted as background.'
         self.torDisabledTip = 'No toroidal flow without lateral viscosity variations and no prescribed plate motions.'
-        self.tooltips.set_tip(self.plotTorButton, self.torDisabledTip)
+        self.plotTorButton.set_tooltip_text(self.torDisabledTip)
         self.plotTorButton.connect("clicked", self.plotTor)
 
         self.plotVelButtonBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
@@ -226,17 +226,17 @@ class FlowGUI:
         self.plotVelButtonBox.append(self.plotTorButton)
 
         self.plotTracButton = Gtk.Button(label="Plot Radial Tractions")
-        self.tooltips.set_tip(self.plotTracButton, 'Plot the horizontal components of the tractions on a plane with normal in the radial direction at the selected layer as vectors, and the radial component of those tractions as background.')
+        self.plotTracButton.set_tooltip_text('Plot the horizontal components of the tractions on a plane with normal in the radial direction at the selected layer as vectors, and the radial component of those tractions as background.')
         self.plotTracButton.connect("clicked", self.plotTrac)
 
         # Prepare VTK file button
         self.makeVTKButton = Gtk.Button(label="Prepare VTK")
-        self.tooltips.set_tip(self.makeVTKButton, 'Makes VTK files required for 3d visualization')
+        self.makeVTKButton.set_tooltip_text('Makes VTK files required for 3d visualization')
         self.makeVTKButton.connect("clicked", self.makeVTK)
 
         # Plot 3d button
         self.plot3dButton = Gtk.Button(label="Visualize in Paraview")
-        self.tooltips.set_tip(self.plot3dButton, 'Launches Paraview in a separate window.')
+        self.plot3dButton.set_tooltip_text('Launches Paraview in a separate window.')
         self.plot3dButton.connect("clicked", self.plot3d)
 
         # Buttons aligned vertically on right hand side
@@ -258,7 +258,7 @@ class FlowGUI:
 
         self.figCount = 1
 
-        self.setDeactivateListeners()
+        #self.setDeactivateListeners()
         
     # Prepare VTK file
     def makeVTK(self, widget):
@@ -318,10 +318,10 @@ class FlowGUI:
             self.makeVTKButton.set_sensitive(True)
 
             if self.boundCondSelect.get_active_text() == "Plate velocities":
-                self.tooltips.set_tip(self.plotTorButton, self.torActiveTip)
+                self.plotTorButton.set_tooltip_text(self.torActiveTip)
                 self.plotTorButton.set_sensitive(True)
             else:
-                self.tooltips.set_tip(self.plotTorButton, self.torDisabledTip)
+                self.plotTorButton.set_tooltip_text(self.torDisabledTip)
                 self.plotTorButton.set_sensitive(False)
 
             self.layerBox.set_sensitive(True)

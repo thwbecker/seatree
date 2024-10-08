@@ -41,16 +41,16 @@ class ImagePlotter(Plotter):
         self.image.show()
         
         self.imageBuffer = 7
-        self.imageEB = Gtk.EventBox()
-        self.imageEB.add(self.image)
-        self.imageEB.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(1, 1, 1, 1))
+        self.imageEB = Gtk.Box()
+        self.imageEB.append(self.image)
+        #self.imageEB.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(1, 1, 1, 1))
         self.imageEB.set_size_request(self.imageWidth + self.imageBuffer, self.imageHeight + self.imageBuffer)
         
         self.baseImage = self.imageFile
         
         self.displayImage(self.imageFile, default=True)
         
-        self.imageEB.show_all()
+        #self.imageEB.show_all()
         
         return self.imageEB
     

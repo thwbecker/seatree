@@ -16,22 +16,23 @@ import shutil
 from .mplSettingsPanel import *
 import numpy as np
 
-# symbol types
-SQUARE = 's'
-CIRCLE = 'o'
-TRIANGLE_UP = '^'
-TRIANGLE_DOWN = 'v'
-TRIANGLE_LEFT = '<'
-TRIANGLE_RIGHT = '>'
-DIAMOND = 'd'
-PENTAGRAM = 'p'
-HEXAGON = 'h'
-OCTAGON = '8'
-
 HORIZONTAL = 'horizontal'
 VERTICAL = 'vertical'
 
 class MatPlotLibPlotter(Plotter):
+    SQUARE = 's'
+    CIRCLE = 'o'
+    TRIANGLE_UP = '^'
+    TRIANGLE_DOWN = 'v'
+    TRIANGLE_LEFT = '<'
+    TRIANGLE_RIGHT = '>'
+    DIAMOND = 'd'
+    PENTAGRAM = 'p'
+    HEXAGON = 'h'
+    OCTAGON = '8'
+
+    HORIZONTAL = 'horizontal'
+    VERTICAL = 'vertical'
     
     def __init__(self, module, mainWindow, preferredWidth, preferredHeight, startWithImage=True):
         """
@@ -294,11 +295,10 @@ class MatPlotLibPlotter(Plotter):
         if range is set, will expect four entry vector with limiting range for plot sorted 
         as [xmin, xmax, ymin, ymax]
         """
-        z = z[:len(y)-1,:len(x)-1]
         if self.contourFills:
             self.image = self.axis.contourf(x, y, z, cmap=self.colorMap, shading='flat', extend='both')
         else:
-            self.image = self.axis.pcolor(x, y, z, cmap=self.colorMap, shading='flat')
+            self.image = self.axis.pcolor(x, y, z[:len(y)-1,:len(x)-1], cmap=self.colorMap, shading='flat')
         
         if self.contourLines:
             self.axis.contour(x, y, z, colors='black', linewidths=1, extend='both')

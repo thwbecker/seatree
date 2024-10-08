@@ -42,10 +42,13 @@ class FlowCalc(Module):
         self.detectAwk()
         self.storeDir = "."
     
-    def getPanel(self, mainWindow, accel_group):
-        self.gui = FlowGUI(mainWindow, accel_group, self)
+    #def getPanel(self, mainWindow, accel_group):
+    #    self.gui = FlowGUI(mainWindow, accel_group, self)
+    #    return self.gui.getPanel()
+    def getPanel(self, mainWindow):
+        self.gui = FlowGUI(mainWindow, self)
         return self.gui.getPanel()
-    
+
     def setDefaults(self, mainWin):
         self.mainWindow = mainWin
         tmpn = self.mainWindow.getTempFilePrefix()

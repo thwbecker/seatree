@@ -41,7 +41,7 @@ class GMTPlotter(ImagePlotter):
         imageEB = ImagePlotter.getMainWidget(self)
         
         if self.rescaleOnResize:
-            self.resize_handler = imageEB.connect("size-allocate", self.resizePlot)
+            #self.resize_handler = imageEB.connect("size-allocate", self.resizePlot)
             rect = self.imageEB.get_allocation()
             width = rect.width
             height = rect.height
