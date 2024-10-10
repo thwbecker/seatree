@@ -1,0 +1,13 @@
+git rm modified_twb/ConMan.F
+git rm modified_twb/batchelor.F
+git rm modified_twb/diff.ConMan.F
+git rm modified_twb/diff.form_temp_matrix.F
+git rm modified_twb/diff.form_temp_rhs_implicit.F
+git rm modified_twb/diff.input.F
+git rm modified_twb/diff.rheol.F
+git rm modified_twb/fault.F
+git rm modified_twb/form_temp_matrix.F
+git rm modified_twb/form_temp_rhs_implicit.F
+git rm modified_twb/genBC.f
+git rm modified_twb/input.F
+git rm modified_twb/rheol.F

@@ -4,27 +4,28 @@
 #
 model=${1-new} 			# model name
 rayleigh=${2-1e5}		# Rayleigh number
-nelz=${3-32}			# number of elements in z
+nelz=${3-30}			# number of elements in z
 nsteps=${4-1000}		# number of timesteps
 aspect=${5-1}			# aspect ratio, determines x width
 heating=${6-0}			# internal heating
 activationE=${7-0}		# activation energy
-
+gdbin=${8-~becker/progs/src/cig/ConMan/src/gendeck/} # gendeck binary location
 
 nelx=`echo $nelz $aspect | gawk '{x=int($1*$2);if(x%2!=0)x--;print(x)}'` # number of elements in x
 
 version=1			# 1: standard ConMan
 temp_ic=0			# temperature init, 0: conductive
 restart="y"			# write restart file?
-visc_out_opt=3			# viscosity output options 3: eff visc only
 refactor_stiffness="y"		# allow for changes in viscosity 
 wrap_around_bc="n"
 
-nstep_restart=`echo $nsteps | gawk '{print($1/3)}'` # when to print restart files?
-nstep_timeseries=50				    # for timeseries output
-nstep_field=`echo $nsteps | gawk '{print($1/30)}'`  # for field output
+nstep_restart=`echo $nsteps | gawk '{print(int($1/3))}'` # when to print restart files?
+nstep_field=`echo $nsteps | gawk '{print(int($1/30))}'`  # for velocity and temp field output
+nstep_stress=10000				    # for stress field output
 
 ndtime_print=1.0		# non-dim time to print results
+
+solver_type=1 # 0: banded 1: skyline
 
 tbot=1				# temp BCs
 ttop=0
@@ -49,31 +50,28 @@ echo $0: resolution: $nelx by $nelz elements aspect ratio $aspect
 echo $0: Rayleigh number $rayleigh
 
 
+verbose=0			# 0 terse 1 verbose 2 terse with init
 
-
-./GenDeck <<EOF
+cat <<EOF > gendeck.in
 $version
-\n
+
 $model
 Automatically generated with GenDeck
 $nelx
 $nelz
-2
-n
+$verbose
+y
 $temp_ic
 $restart
-$visc_out_opt
 $refactor_stiffness
 $wrap_around_bc
-1
-4
-0.25
+$solver_type
 $nsteps
 $ndtime_print
 1.0
 $nstep_restart
-$nstep_timeseries
 $nstep_field
+$nstep_stress
 y
 y
 y
@@ -98,9 +96,11 @@ $activationE
 $tempoff
 $activationV
 $referencex2
-$ref_stress
 $visc_max
 n
 $tbot
 $ttop
 EOF
+
+$gdbin/GenDeck < gendeck.in
+

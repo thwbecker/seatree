@@ -1,0 +1,162 @@
+#!/bin/bash
+#
+# plot a simple conman convection model run with GMT (version 4 syntax)
+#
+# this assumes output files are gzipped
+#
+name=${1-tests.C.10.0}
+save_grid=${2-0}
+add_visc=${3-0}
+smooth_plot=${4-0}			# 1: make plot look nicer by smoothing 0: original resolution
+owd=`pwd`
+
+tmpd=`mktemp -d`
+trap "rm -rf $tmpd" EXIT	# temporary directory
+
+cd $tmpd
+
+
+if [ ! -s $owd/output/temp.$name.gz ];then
+    echo $0: $owd/output/temp.$name.gz not found
+    exit
+else
+    zcat $owd/output/temp.$name.gz | head -1 > tmp.$$
+    read ndof nelx nelz numnp ntstep time < tmp.$$; rm tmp.$$
+    ((nx=nelx+1))		# nodes
+    ((nz=nelz+1))
+    ((numnp2=numnp+2))
+    echo $0: working on temp.$name, numnp $numnp nelx $nelx nelz $nelz nodex $nx nodesz $nz
+fi
+
+# split velocities and temperatures into timesteps
+zcat $owd/output/temp.$name.gz | split  -a 8 -l $numnp2 --additional-suffix=.temp -d 
+
+if [ $add_visc -eq 1 ];then
+    # split stress and viscosity
+    zcat $owd/output/stress.$name.gz | split  -a 8 -l $numnp2 --additional-suffix=.str -d 
+fi
+
+nstep=`ls x0*.temp | wc -l`	# based on temp
+
+echo $0: extracted $nstep timesteps
+
+proj=-Jx.02
+#makecpt -T0/1/.05 -D -Cpolar > tmp.cpt
+makecpt -T0/1/.05 -D -Cvik > tmp.cpt
+#makecpt -T-2/2/.2 -Chot -I -D > tmp.e.cpt
+makecpt -T-2/2/.2 -Chaxby -I -D > tmp.e.cpt
+
+i=0;fs="";fs_gif=""
+while [ $i -lt $nstep ];do
+    vel_file=`echo $i | gawk '{printf("x%08i",$1)}'`.temp # split temp/vel file
+    if [ ! -s $vel_file ];then
+	echo $vel_file not found
+	exit
+
+    else
+	head -1 $vel_file | gawk '{printf("%i %12.3e\n",$5,$6)}' > tmp.$$
+	read tstep tactual < tmp.$$; rm tmp.$$
+	
+	tail -n +3 $vel_file > tmp.v	#
+	if [ $i -eq 0 ];then
+	    # do like this because some -1e-15 instead of zero
+	    gawk '{printf("%.1f %.1f\n",$2,$3)}' tmp.v | minmax -C > tmp.$$
+	    read xmin xmax zmin zmax < tmp.$$ ; rm tmp.$$
+	    dx=`echo $xmin $xmax $nelx | gawk '{print(($2-$1)/$3)}'`
+	    dz=`echo $zmin $zmax $nelz | gawk '{print(($2-$1)/$3)}'`
+	    reg=-R$xmin/$xmax/$zmin/$zmax
+	    echo $0: $name $reg dx $dx $dz
+	fi
+	#_ node_____x1__________x2___________v1____________v2______tempature___temp+adiaba
+	opt="$reg -I$dx/$dz -F"
+	eps=`echo $dx $dz | gawk '{if($1<$2)print($1/10);else print($2/10)}'`
+	gawk -v eps=$eps '{printf("%.4f %.4f %.5e\n",$2+eps,$3+eps,$4)}' tmp.v | xyz2grd -Gtmp.vx.grd $opt 
+	gawk -v eps=$eps '{printf("%.4f %.4f %.5e\n",$2+eps,$3+eps,$5)}' tmp.v | xyz2grd -Gtmp.vz.grd $opt & 
+	gawk -v eps=$eps '{printf("%.4f %.4f %.5e\n",$2+eps,$3+eps,$6)}' tmp.v | xyz2grd -Gtmp.t.grd  $opt &
+
+	if [ $add_visc -eq 1 ];then
+	    
+	    str_file=`echo $i | gawk '{printf("x%08i",$1)}'`.str # split temp/vel file
+	    tail -n +3 $str_file > tmp.str
+	    gawk '{printf("%.4f %.4f %.5e\n",$2,$3,$8)}' tmp.str | xyz2grd -Gtmp.e.grd  $opt 
+	    eta_mean=`gawk -v xmin=$xmin -v xmax=$xmax -v y=$yprof 'BEGIN{for(x=xmin;x<=xmax;x+=0.01)print(x,y)}' | grdtrack -Ql -Gtmp.e.grd -Z | gawk -f log10.awk | gawk -f mean.awk | gawk '{printf("%.3f",$1)}'`
+	fi
+
+	wait
+
+	yprof=0.5		# mean T at this depth
+	Tmean=`gawk -v xmin=$xmin -v xmax=$xmax -v y=$yprof 'BEGIN{for(x=xmin;x<=xmax;x+=0.01)print(x,y)}' | grdtrack -Ql -Gtmp.t.grd -Z | gawk -f mean.awk | gawk '{printf("%.3f",$1)}'`
+
+
+	if [ $i -eq 1 ];then	# only plot second time step
+	    
+	    ofile=$vel_file.ps
+	    
+	    if [ $smooth_plot -eq 1 ];then
+		grdsample -Ql tmp.t.grd -Gtmp.t.plot.grd -I1
+		if [ -s tmp.e.grd ];then
+		    grdsample -Ql tmp.e.grd -Gtmp.e.plot.grd -I1
+		fi
+	    else
+		cp tmp.t.grd tmp.t.plot.grd
+		if [ -s tmp.e.grd ];then
+		    cp tmp.e.grd tmp.e.plot.grd
+		fi
+	    fi
+	    
+	    if [ $add_visc -eq 1 ];then
+		grdimage tmp.t.plot.grd $reg $proj -Ctmp.cpt \
+			 -Ba100f10:"x":/a100f10:"z":wEsN:."t'=$tactual, @~\341@~T@~\361@~@-$yprof@-=$Tmean": \
+			 -P -K -Y7 > $ofile
+		grdcontour tmp.t.plot.grd $reg $proj -C0.5 -O -K >> $ofile
+		psscale -Ef -D-.75/3/4/.2 -Ba0.25/:"T": -Ctmp.cpt -O -K >> $ofile
+		grdmath tmp.e.plot.grd LOG10 = tmp.grd
+		grdimage tmp.grd $reg $proj -Ctmp.e.cpt -Ba0.5f.05:"x":/a0.5f.05:"z":wESn -O -K -Y-6.25 >> $ofile
+		psscale -D-.75/3/4/.2 -Ba1/:"log@-10@-(@~h@~)": -Ctmp.e.cpt -E -O >> $ofile
+	    else
+		grdimage tmp.t.plot.grd $reg $proj -Ctmp.cpt -Ba100f10:"x":/a100f10:"z":wESn:."": -P -K > $ofile
+		rm cont* 2> /dev/null
+		grdcontour tmp.t.plot.grd $reg $proj -C0.5 -O -K -D >> $ofile
+		# 0.5 contour
+		mkdir -p $owd/cont/
+		gawk -v zmax=$zmax '{if($1==">")print($1);else print($1,zmax-$2)}'  contour_0.5_0.xyz > $owd/cont/tcont.0.5.$name.dat
+		# top of the slab profile
+		mkdir -p $owd/slabtop/
+		gawk -v zmax=$zmax 'BEGIN{zl=zmax-400;x=0;for(z=zmax;z>=zl;z-=0.5){print(x,z);x+=0.5;}}' | \
+		    grdtrack -Ql -S -Gtmp.t.plot.grd | gawk -v zmax=$zmax '{print(zmax-$2,$3)}' > $owd/slabtop/t.0.$name.dat
+		# in the slab
+		gawk -v zmax=$zmax 'BEGIN{zl=zmax-400;x=0;for(z=zmax;z>=zl;z-=0.5){print(x-2,z-2);x+=0.5;}}' | \
+		    grdtrack -Ql -S -Gtmp.t.plot.grd | gawk -v zmax=$zmax '{print(zmax-$2,$3)}' > $owd/slabtop/t.-2.$name.dat
+		# outside the slab
+		gawk -v zmax=$zmax 'BEGIN{zl=zmax-400;x=0;for(z=zmax;z>=zl;z-=0.5){print(x+2,z+2);x+=0.5;}}' | \
+		    grdtrack -Ql -S -Gtmp.t.plot.grd | gawk -v zmax=$zmax '{print(zmax-$2,$3)}' > $owd/slabtop/t.2.$name.dat
+
+		
+		grdvector tmp.vx.grd tmp.vz.grd $reg $proj \
+			  -Q0.04/0.25/0.06n.5 -Ggray -W0.5 -I30 -S2 -O -K >> $ofile
+		psscale -Ef -D-.75/3/4/.2 -Ba0.25/:"T": -Ctmp.cpt -O >> $ofile
+	    fi
+	    #gv $ofile;exit
+	    #modifybb $ofile
+	    
+	    fs="$fs $ofile"
+	    fs_gif="$fs_gif $vel_file.gif"
+	    echo $0: $name tstep $tstep tactual $tactual Tmean at $yprof $Tmean eta_mean $eta_mean
+	    if [ $save_grid -eq 1 ];then
+		mkdir -p $owd/tgrids/
+		cp tmp.t.grd $owd/tgrids/t.$name.grd
+	    fi
+	    rm tmp.*grd tmp.v tmp.str 2> /dev/null
+	fi
+    fi
+    ((i=i+1))
+done
+wait
+
+mv $fs tmp.ps
+epstopdf tmp.ps
+cp tmp.pdf  $owd/$name.pdf
+echo $0: written to $name.pdf
+
+
+

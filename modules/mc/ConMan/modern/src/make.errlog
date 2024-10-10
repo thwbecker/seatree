@@ -1,0 +1,405 @@
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o ConMan.o ConMan.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o adjust_velocity_rhs_for_bc.o adjust_velocity_rhs_for_bc.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o elminp.o elminp.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o error.o error.f
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o form_temp_matrix.o form_temp_matrix.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o form_velocity_rhs.o form_velocity_rhs.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o form_temp_rhs_explicit.o form_temp_rhs_explicit.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o form_velocity_stiffness_matrix.o form_velocity_stiffness_matrix.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o form_temp_rhs_impicit.o form_temp_rhs_impicit.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o velo_stiff_matrix_assemble.o velo_stiff_matrix_assemble.f
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o form_temp_mass_matrix.o form_temp_mass_matrix.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o time_driver.o time_driver.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o dyna_P.o dyna_P.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o genien.o genien.F
+genien.F:36:72:
+
+ 1     read (igeom,*,err=1,end=998) n, ng, mat_no ,(itemp(i),i=1,nen)
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+genien.F:56:72:
+
+ 2      read (igeom,*,err=2,end=998) n1, ince1, inc1, n2, ince2, inc2
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o genienIP.o genienIP.F
+genienIP.F:40:72:
+
+ 1     read (igeom,*,err=1,end=998) n, ng, mat_no ,(itemp(i),i=1,nen)
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+genienIP.F:60:72:
+
+ 2      read (igeom,*,err=2,end=998) n1, ince1, inc1, n2, ince2, inc2
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o genmat.o genmat.F
+genmat.F:33:72:
+
+ 1     read (iin,*,err=1,end=999)  (visc(i),i=1,numat)
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+genmat.F:38:72:
+
+ 2     read (iin,*,err=2,end=999)  (alam(i),i=1,numat)
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+genmat.F:43:72:
+
+ 3     read (iin,*,err=3,end=999) (diff(i) , i = 1 , numat)
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+genmat.F:48:72:
+
+ 5     read (iin,*,err=5,end=999) ( ra(i) , i = 1 , numat)
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+genmat.F:53:72:
+
+ 6     read (iin,*,err=6,end=999) ( dmhu(i) , i = 1 , numat)
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+genmat.F:58:72:
+
+ 7     read (iin,*,err=7,end=999) ( tcon(1,i) , i = 1 , numat)
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+genmat.F:63:72:
+
+ 8     read (iin,*,err=8,end=999) ( tcon(2,i) , i = 1 , numat)
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o genshg.o genshg.F
+f951: Warning: Nonconforming tab character in column 1 of line 121 [-Wtabs]
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o genshp.o genshp.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o input.o input.F
+input.F:39:72:
+
+      &                           ntimvs, nwrap , itype , isolve
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+input.F:75:72:
+
+ 2     read (iin,*,err=2,end=999) nstep ,accel
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+input.F:90:72:
+
+      &                           tmovis
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+input.F:163:72:
+
+ 4     read (iin,*,err=4,end=999) pert , xsize , zsize
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+input.F:168:72:
+
+ 5     read (iin,*,err=5,end=999) Di, T0, diff_T, cgamma, rho0
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+input.F:177:72:
+
+ 6     read (iin,*,err=6,end=999) numat , numsuf
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o pickdt.o pickdt.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o printd.o printd.f
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o rdflux.o rdflux.F
+rdflux.F:16:72:
+
+      &                            suf(k,2) , suf(k,3)
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o ddiff.o ddiff.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o vadd.o vadd.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o deos.o deos.F
+deos.F:47:0:
+
+      &        * exp( Di / cgamma * (one-xl(2,n)))
+ 
+Warning: ‘xl[7]’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+deos.F:21:0:
+
+       dimension xl(2,4), tl(4), tlr(4), tlw(4)
+ 
+note: ‘xl[7]’ was declared here
+deos.F:47:0:
+
+      &        * exp( Di / cgamma * (one-xl(2,n)))
+ 
+Warning: ‘xl[5]’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+deos.F:21:0:
+
+       dimension xl(2,4), tl(4), tlr(4), tlw(4)
+ 
+note: ‘xl[5]’ was declared here
+deos.F:47:0:
+
+      &        * exp( Di / cgamma * (one-xl(2,n)))
+ 
+Warning: ‘xl[3]’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+deos.F:21:0:
+
+       dimension xl(2,4), tl(4), tlr(4), tlw(4)
+ 
+note: ‘xl[3]’ was declared here
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o intemp.o intemp.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o stress.o stress.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o fluxke.o fluxke.F
+fluxke.F:123:14:
+
+           if (ra(mat(iel)) .ne. 0) then
+              1
+Warning: Inequality comparison for REAL(8) at (1)
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o geoid.o geoid.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o output.o output.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o masflx.o masflx.F
+masflx.F:45:9:
+
+       if(x(2, ien(1,1)) .eq. x(2, ien(2,1)))then
+         1
+Warning: Equality comparison for REAL(8) at (1)
+masflx.F:162:9:
+
+       if(x(2, ien(1,1)) .eq. x(2, ien(2,1))) then
+         1
+Warning: Equality comparison for REAL(8) at (1)
+masflx.F:150:0:
+
+       write(icomp,*) "radial mass flux", lstep, time*tfac,time
+ 
+Warning: ‘tfac’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+masflx.F:150:0:
+
+       write(icomp,*) "radial mass flux", lstep, time*tfac,time
+ 
+note: ‘tfac’ was declared here
+masflx.F:157:0:
+
+         scale = scale + shl(1,5)*det(iel,1) + shl(4,5)*det(ivel,4)
+ 
+Warning: ‘ivel’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o projct2.o projct2.F
+f951: Warning: Nonconforming tab character in column 1 of line 97 [-Wtabs]
+f951: Warning: Nonconforming tab character in column 1 of line 98 [-Wtabs]
+f951: Warning: Nonconforming tab character in column 1 of line 99 [-Wtabs]
+f951: Warning: Nonconforming tab character in column 1 of line 100 [-Wtabs]
+f951: Warning: Nonconforming tab character in column 1 of line 101 [-Wtabs]
+f951: Warning: Nonconforming tab character in column 1 of line 102 [-Wtabs]
+f951: Warning: Nonconforming tab character in column 1 of line 103 [-Wtabs]
+f951: Warning: Nonconforming tab character in column 1 of line 104 [-Wtabs]
+f951: Warning: Nonconforming tab character in column 1 of line 105 [-Wtabs]
+f951: Warning: Nonconforming tab character in column 1 of line 106 [-Wtabs]
+f951: Warning: Nonconforming tab character in column 1 of line 107 [-Wtabs]
+f951: Warning: Nonconforming tab character in column 1 of line 108 [-Wtabs]
+f951: Warning: Nonconforming tab character in column 1 of line 180 [-Wtabs]
+f951: Warning: Nonconforming tab character in column 1 of line 183 [-Wtabs]
+f951: Warning: Nonconforming tab character in column 1 of line 193 [-Wtabs]
+f951: Warning: Nonconforming tab character in column 1 of line 220 [-Wtabs]
+f951: Warning: Nonconforming tab character in column 1 of line 225 [-Wtabs]
+projct2.F:186:4:
+
+ 2001  format(601(f15.5))
+    1
+Warning: Label 2001 at (1) defined but not used
+projct2.F:40:24:
+
+      lpsol(i, j) = zero
+                        1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(8) at (1) [-Wconversion]
+projct2.F:45:20:
+
+    lpsoll(i) = zero
+                    1
+Warning: Possible change of value in conversion from REAL(8) to INTEGER(8) at (1) [-Wconversion]
+projct2.F:93:0:
+
+         do n = 2, nenl
+ 
+Warning: ‘nenl’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+projct2.F:93:0:
+
+         do n = 2, nenl
+ 
+note: ‘nenl’ was declared here
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o prj4q.o prj4q.f
+prj4q.f:83:10:
+
+       if (detinv .eq. zero) goto 999
+          1
+Warning: Equality comparison for REAL(8) at (1)
+prj4q.f:104:12:
+
+         if (dinv(k) .eq. zero) itmp = 1
+            1
+Warning: Equality comparison for REAL(8) at (1)
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o grdpar.o grdpar.f
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o ppmprt.o ppmprt.F
+f951: Warning: Nonconforming tab character in column 1 of line 85 [-Wtabs]
+f951: Warning: Nonconforming tab character in column 1 of line 86 [-Wtabs]
+f951: Warning: Nonconforming tab character in column 1 of line 87 [-Wtabs]
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o print_compbm_data.o print_compbm_data.F
+print_compbm_data.F:220:12:
+
+         if (ra(mat(iel)) .ne. zero) then
+            1
+Warning: Inequality comparison for REAL(8) at (1)
+print_compbm_data.F:280:11:
+
+        if (T_mean .ne. zero) pNu = pt5 / T_mean
+           1
+Warning: Inequality comparison for REAL(8) at (1)
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o print.o print.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o rheol.o rheol.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o output_rheol.o output_rheol.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o solver.src/back.o solver.src/back.f
+solver.src/back.f:29:10:
+
+       if (ajj.ne.zero) b(j) = b(j)/ajj
+          1
+Warning: Inequality comparison for REAL(8) at (1)
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o solver.src/coldot.o solver.src/coldot.f
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o solver.src/factor.o solver.src/factor.f
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o solver.src/unback.o solver.src/unback.f
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o solver.src/unfact.o solver.src/unfact.f
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o solver.src/zfactor.o solver.src/zfactor.f
+solver.src/zfactor.f:43:24:
+
+                    if ( const .ne. zero ) then
+                        1
+Warning: Inequality comparison for REAL(8) at (1)
+solver.src/zfactor.f:98:13:
+
+         if ( const .ne. zero ) then
+             1
+Warning: Inequality comparison for REAL(8) at (1)
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o utils.src/fftsubs.o utils.src/fftsubs.f
+utils.src/fftsubs.f:344:9:
+
+       IF(S1 .EQ. 0) GO TO 460
+         1
+Warning: Equality comparison for REAL(8) at (1)
+utils.src/fftsubs.f:370:9:
+
+       IF(S1 .NE. 0) GO TO 430
+         1
+Warning: Inequality comparison for REAL(8) at (1)
+utils.src/fftsubs.f:914:9:
+
+       IF(S1 .EQ. 0) GO TO 460
+         1
+Warning: Equality comparison for REAL(8) at (1)
+utils.src/fftsubs.f:940:9:
+
+       IF(S1 .NE. 0) GO TO 430
+         1
+Warning: Inequality comparison for REAL(8) at (1)
+utils.src/fftsubs.f:920:0:
+
+       B(K3)=AKM*S3+BKM*C3
+ 
+Warning: ‘s3’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+utils.src/fftsubs.f:917:0:
+
+       A(K2)=AJP*C2-BJP*S2
+ 
+Warning: ‘s2’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+utils.src/fftsubs.f:896:0:
+
+       K3=K2+KSPAN
+ 
+Warning: ‘k3’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+utils.src/fftsubs.f:920:0:
+
+       B(K3)=AKM*S3+BKM*C3
+ 
+Warning: ‘c3’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+utils.src/fftsubs.f:917:0:
+
+       A(K2)=AJP*C2-BJP*S2
+ 
+Warning: ‘c2’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+utils.src/fftsubs.f:350:0:
+
+       B(K3)=AKM*S3+BKM*C3
+ 
+Warning: ‘s3’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+utils.src/fftsubs.f:347:0:
+
+       A(K2)=AJP*C2-BJP*S2
+ 
+Warning: ‘s2’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+utils.src/fftsubs.f:326:0:
+
+       K3=K2+KSPAN
+ 
+Warning: ‘k3’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+utils.src/fftsubs.f:350:0:
+
+       B(K3)=AKM*S3+BKM*C3
+ 
+Warning: ‘c3’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+utils.src/fftsubs.f:347:0:
+
+       A(K2)=AJP*C2-BJP*S2
+ 
+Warning: ‘c2’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o utils.src/mydate.o utils.src/mydate.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o utils.src/mytime.o utils.src/mytime.f
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra   -c -o utils.src/timer.o utils.src/timer.F
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o grid.src/clear.o grid.src/clear.f
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o grid.src/genBC.o grid.src/genBC.f
+grid.src/genBC.f:87:10:
+
+       if (a(i).ne.zero) then
+          1
+Warning: Inequality comparison for REAL(8) at (1)
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o grid.src/genfl.o grid.src/genfl.f
+grid.src/genfl.f:30:72:
+
+ 1     read (igeom,*,err=1,end=998) node,numgp,(temp(i,1),i=1,ndest)
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+grid.src/genfl.f:41:72:
+
+ 2       read (igeom,*,err=2,end=998) m, mgen, (temp(i,j),i=1,ndest)
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+grid.src/genfl.f:49:72:
+
+ 3     read (igeom,*,err=3,end=998) (ninc(i),inc(i),i=1,ndest)
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o grid.src/genfl12.o grid.src/genfl12.f
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o grid.src/geniBC.o grid.src/geniBC.f
+grid.src/geniBC.f:94:72:
+
+ 1     read(iin,*,err=1,end=998) n,ne,ng,(ib(i),i=1,m)
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o grid.src/genNBC.o grid.src/genNBC.f
+grid.src/genNBC.f:82:4:
+
+ 2001  format(5(10x,i7))
+    1
+Warning: Label 2001 at (1) defined but not used
+grid.src/genNBC.f:80:4:
+
+ 2000  format(' smooth corner nodes ',//,10x,'  #  ',10x,
+    1
+Warning: Label 2000 at (1) defined but not used
+grid.src/genNBC.f:40:72:
+
+ 1     read(iin,*,err=1,end=999) nsta,neda,inca
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+grid.src/genNBC.f:55:72:
+
+ 2     read(iin,*,err=2,end=999) nstb,nedb,incb
+                                                                        1
+Warning: Branch at (1) may result in an infinite loop
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o grid.src/iclear_mov.o grid.src/iclear_mov.f
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o grid.src/move.o grid.src/move.f
+gfortran -O3 -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fbounds-check -Wall -Wextra  -c -o grid.src/smove.o grid.src/smove.f
+gfortran -I. -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -o ../conman ConMan.o adjust_velocity_rhs_for_bc.o elminp.o error.o form_temp_matrix.o form_velocity_rhs.o form_temp_rhs_explicit.o form_velocity_stiffness_matrix.o form_temp_rhs_impicit.o velo_stiff_matrix_assemble.o form_temp_mass_matrix.o time_driver.o dyna_P.o genien.o genienIP.o genmat.o genshg.o genshp.o input.o pickdt.o printd.o rdflux.o ddiff.o vadd.o deos.o intemp.o stress.o fluxke.o geoid.o output.o masflx.o projct2.o prj4q.o grdpar.o ppmprt.o print_compbm_data.o print.o rheol.o output_rheol.o  ./solver.src/back.o ./solver.src/coldot.o ./solver.src/factor.o ./solver.src/unback.o ./solver.src/unfact.o ./solver.src/zfactor.o ./utils.src/fftsubs.o ./utils.src/mydate.o ./utils.src/mytime.o ./utils.src/timer.o ./grid.src/clear.o ./grid.src/genBC.o ./grid.src/genfl.o ./grid.src/genfl12.o ./grid.src/geniBC.o ./grid.src/genNBC.o ./grid.src/iclear_mov.o ./grid.src/move.o ./grid.src/smove.o ./subduct.src/fault.o ./subduct.src/batchelor.o

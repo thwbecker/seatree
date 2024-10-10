@@ -1,0 +1,36 @@
+      SUBROUTINE UNFACT(A,C,IDIAG,NEQ)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      DIMENSION A(*),C(*),IDIAG(*)
+ 
+      JR=0
+      DO 300 J=1,NEQ
+      JD=IDIAG(J)
+      JH=JD-JR
+      IF(JH .LE. 1) GO TO 250
+      IS=J+1-JH
+      IE=J-1
+      K=JR+1
+C
+C     REDUCE ALL EQUATIONS EXCEPT DIAGONAL
+C
+      ID=0
+      DO 200 I=IS,IE
+      IR=ID
+      ID=IDIAG(I)
+      IH=MIN0(ID-IR-1,I-IS)
+      IF(IH .EQ. 0) GO TO 150
+      A(K)=A(K)-COLDOT(A(K-IH),C(ID-IH),IH)
+      C(K)=C(K)-COLDOT(C(K-IH),A(ID-IH),IH)
+  150 CONTINUE
+      C(K)=C(K)/A(ID)
+      K=K+1
+  200 CONTINUE
+C
+C     REDUCE DIAGONAL TERM
+C
+      A(JD)=A(JD)-COLDOT(A(JR+1),C(JR+1),JH-1)
+250   CONTINUE
+      JR=JD
+  300 CONTINUE
+      RETURN
+      END

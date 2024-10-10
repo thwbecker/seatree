@@ -23,7 +23,7 @@ c    Composition cards.
 c   
 c
 ccccccccc1ccccccccc2ccccccccc3ccccccccc4ccccccccc5ccccccccc6ccccccccc7cc
-c
+
       parameter (maxmat = 10)
       parameter (maxsuf = 100)
 c
@@ -35,6 +35,8 @@ c  code versions
       parameter (iann = 5)
       parameter (ichn = 6)
       parameter (idef = 7)
+
+
 c
       dimension  visc(maxmat),    alam(maxmat),   diff(maxmat),
      &          diffb(maxmat),      ra(maxmat),    rab(maxmat),
