@@ -67,8 +67,14 @@ c
 ccccccccc1ccccccccc2ccccccccc3ccccccccc4ccccccccc5ccccccccc6ccccccccc7cc
       program gendeck
 c
+c
+c   ifort didn't think that xmin,xmax,zmin,zmax and such were real
+c
+      implicit real(a-h, o-z), integer(i-n)
+
       real*8 pi
 c
+
       character*56 ititle
 c  title excluding date and time
 
@@ -83,6 +89,8 @@ c
       integer corner, getint, gunit, munit, runit, grefu, velbcf
 c
       logical lexist
+      logical addcomment
+
       parameter (istdi = 5)
       parameter (istdo = 6)
       parameter (iunit = 10)
@@ -93,6 +101,8 @@ c
       parameter (grefu = 15)
 c
       pi = acos(-1.d0)
+
+      addcomment = .true.
 c
 c... banner
 c
@@ -247,6 +257,7 @@ c
         read (irefu, *) numnp, nsdx, ndofx, nelx, nelz, iflow, necho,
      &                  inrstr, iorstr, nstres, nodebn, ntimvs, ntseq,
      &                  numeg, isky, lwork, nwrap, nnnit, expo
+
       else
 c
 c... offer defaults given in 'deck.defaults.h'
@@ -293,12 +304,13 @@ c
       end if
       write (istdo, *) '? => user specific'
       inrstr = getint ('Enter initial buoyancy field option:', inrstr)
-c
+
       if (iorstr .eq. 1) then
         dfault = 'y'
       else
         dfault = 'n'
       end if
+
 c
       write (istdo, *)
       if (yes ('Write restart file', dfault)) then
@@ -307,19 +319,19 @@ c
         iorstr = 0
       end if
 c 
-      write (istdo, *)
-      write (istdo, *) '0 => no stress/strain rate, viscosity, nor effec
-     &tive viscosity output'
-      if ((icode .ne. iscm) .and. (icode .ne. idds)) then
-        write (istdo, *) '1 => stress, viscosity, effective viscosity ou
-     &tput'
-        write (istdo, *) '2 => strain rate, viscosity, effective viscosi
-     &ty output'
-        write (istdo, *) '3 => effective viscosity only'
-      else
-        write (istdo, *) '1 => stress, viscosity output'
-      end if
-      nstres = getint ('Enter stress option:', nstres)
+c      write (istdo, *)
+c      write (istdo, *) '0 => no stress/strain rate, viscosity, nor effec
+c     &tive viscosity output'
+c      if ((icode .ne. iscm) .and. (icode .ne. idds)) then
+c        write (istdo, *) '1 => stress, viscosity, effective viscosity ou
+c     &tput'
+c        write (istdo, *) '2 => strain rate, viscosity, effective viscosi
+c     &ty output'
+c        write (istdo, *) '3 => effective viscosity only'
+c      else
+c        write (istdo, *) '1 => stress, viscosity output'
+c      end if
+c      nstres = getint ('Enter stress option:', nstres)
 c
       nodebn = 2 * (nelx + 1)
 c
@@ -357,15 +369,15 @@ c
         write (istdo, *)
         write (istdo, *) '0 => banded solver'
         write (istdo, *) '1 => skyline solver'
-        write (istdo, *) '2 => dmf solver'
+c        write (istdo, *) '2 => dmf solver'
         isky = getint ('Enter solver option:', isky)
 c
-        if (isky .eq. 2) then
-          write (istdo, *)
-          lwork = getint ('Enter size of dmf workspace (lwork):', lwork)
-        else
-          lwork = 0
-        end if
+c        if (isky .eq. 2) then
+c          write (istdo, *)
+c          lwork = getint ('Enter size of dmf workspace (lwork):', lwork)
+c        else
+c          lwork = 0
+c        end if
 c
       else
 c
@@ -380,19 +392,21 @@ c
      &    (icode .ne. iscm) .and. (icode .ne. idds) 
      &                      .and. (icode .ne. iann)) then
         write (istdo, *)
-        nnnit = getint ('Enter number of non-Newtonian iterations (>= 1)
-     &:                        ', nnnit)
-        if (nnnit .gt. 1) then
-          expo = gtreal ('Enter weighting of strain-rate- vs. stress-def
-     &fined effective viscosity:', expo)
-        else
+c        nnnit = getint ('Enter number of non-Newtonian iterations (>= 1)
+c     &:                        ', nnnit)
+c        if (nnnit .gt. 1) then
+c          expo = gtreal ('Enter weighting of strain-rate- vs. stress-def
+c     &fined effective viscosity:', expo)
+c        else
 c
 c... Newtonian rheology
+cc
+c          expo = 0.0
 c
-          expo = 0.0
-c
-        end if
-      else
+c        end if
+           nnnit = 1
+          expo  = 0.0
+       else
 c
 c... cannot apply sress-dependence without factoring stiffness matrix 
 c      at every time step
@@ -401,10 +415,13 @@ c
           expo  = 0.0
 c
       end if
-c
-      write (iunit, 9000) numnp, nsd, ndof, nelx, nelz, iflow, necho,
-     &       inrstr, iorstr, nstres, nodebn, ntimvs, ntseq, numeg, isky,
-     &       lwork, nwrap, nnnit, expo 
+c precision
+      mprec=2
+      if(addcomment)write (iunit,*) 'geometry parameters'
+      write (iunit, 9000) numnp, nsd, ndof, nelx, nelz, mprec, iflow, 
+     &       necho,
+     &       inrstr, iorstr, nodebn, ntimvs, ntseq, numeg, isky,nwrap
+c     &       lwork, nwrap, nnnit, expo 
 c
       if ((icode .eq. iddc) .or. (icode .eq. idds)) then
         if (iref) then
@@ -446,11 +463,15 @@ c
         if (iref) then
           read (irefu, *) ibnd, igrdbt, igngrd, srfden 
         else
+
+
+           
 c
 c... offer defaults given in 'deck.defaults.h'
 c
         end if
 c
+
         write (istdo, *)
         igrdbt = getint ('Enter number of nodes (from bottom) to the def
      &orming region:  ', igrdbt)
@@ -484,9 +505,11 @@ c
 c
       else
       end if             
+
 c
 c... Time Sequence Card
 c
+      if(addcomment)write (iunit,*) 'time step information'
       if (iref) then
 c
 c... ignore "niter", "alpha" - given as parameters in 'deck.defaults.h'
@@ -530,11 +553,13 @@ c
       write (istdo, *)
       nsdprt = getint ('Enter steps between restart dumps:      ', 
      &                  nsdprt)
-      nsvprt = getint ('Enter steps between time series outputs:',
-     &                  nsvprt)
-      nstprt = getint ('Enter steps between field outputs:      ',   
+      nstprt = getint ('Enter steps between velocity and temp outputs:',
      &                  nstprt)
+      nsmprt = getint ('Enter steps between stress field outputs:     ',   
+     &                  nsmprt)
 c
+      nsvprt = nstprt
+      if(addcomment)write (iunit,*) 'output information'
       write (iunit, "(4i6)") nsdprt, nsvprt, nstprt, nsmprt
 c
 c... Velocity Boundary Condition Flag Cards
@@ -549,6 +574,7 @@ c
       write (istdo, *) '************************************************
      &****************'
 c
+      if(addcomment)write (iunit,*) 'velocity boundary conditions'
       if (iref) then
 c
 c... skip velocity boundary condition flag cards
@@ -642,9 +668,13 @@ c
       end if
 c
       write (iunit, 9050) 0, 0, 0, 0, 0
+
+
 c
 c... Temperature/Composition Boundary Condition Flag Cards
 c
+
+      if(addcomment)write (iunit,*) 'temperature boundary conditions'
       write (istdo, *)
       write (istdo, *) '************************************************
      &**********************'
@@ -742,6 +772,8 @@ c
         zsize = zmax - zmin
       end if
 c
+      if(addcomment)write (iunit,*) 'initial temp cond information'
+    
       write (istdo, *)
       if (inrstr .ne. 1) then
 c
@@ -795,6 +827,7 @@ c
 c
 c... Element Parameter Card
 c
+      if(addcomment)write (iunit,*) 'element parameters'
       if (iref) then
 c
 c... ignore "ntype", "nen", "nenl", "nedof", and "nitp" - given as 
@@ -986,6 +1019,7 @@ c
         write (iunit, 9300) (diffb(k), k = 1, numat)
       else
       end if
+      if(addcomment)write (iunit,*) 'rayleigh number'
       write (iunit, 9300) (ra(k), k = 1, numat)
       if ((icode .eq. iddc) .or. (icode .eq. idds) .or.
      &    (icode .eq. ichn) .or. (icode .eq. idef)) then
@@ -1270,6 +1304,7 @@ c
       else
       end if
 c
+      write(gunit,*)
       close (gunit)
       close (grefu)
       if (lmovie) then
@@ -1308,7 +1343,7 @@ c
 c
       close (runit)
 c
-9000  format (i7, 2i4, 2i5, 5i4, i6, 4i4, i9, 2i4, f8.3)
+9000  format (i7, 2i4, 2i5, 6i4, i6, 4i4, i9, 2i4)
 9025  format (3i6, 1pe12.5)
 9050  format (3 (i6, 1x), 5x, 3 (i3, 1x))
 9300  format (10 (1pe12.5, 1x))
