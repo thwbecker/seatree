@@ -38,7 +38,7 @@ OINCS = hc.h hc_filenames.h sh.h hc_constants.h
 #HEAL_LIB_FLAGS = -L/usr/local/src/cfitsio/lib/ -L/opt/cfitsio/lib/
 #HEAL_LIBS_LINKLINE = -lchealpix -lhealpix -lcfitsio 
 #HEAL_INCS = $(HEAL_INC_DIR)/myhealpix.h $(HEAL_INC_DIR)/chealpix.h 
-#HEAL_DEFINES = -DHC_USE_HEALPIX
+ #HEAL_DEFINES = -DHC_USE_HEALPIX
 #
 # Rick spherical harmonics stuff
 #
