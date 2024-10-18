@@ -12,14 +12,14 @@ class FlowInstaller:
         self.arch = self.main.arch
         # setup/build HC
         if (self.checkBuildHC()):
-            self.getGMTHome()
-            print("GMT Home: " + self.gmtHome)
+            self.getGMT4HOME()
+            print("GMT Home: " + self.GMT4HOME)
             
             self.getNetCDFDir()
             print("NetCDF Home: " + self.netCDFHome)
             
-            if (not self.setupMakefile()):
-                return
+            #if (not self.setupMakefile()):
+            #   return
             
             if (not self.buildHC()):
                 return
@@ -66,14 +66,14 @@ class FlowInstaller:
         
         return self.hcDir
     
-    def getGMTHome(self):
+    def getGMT4HOME(self):
         path = os.path.abspath(self.gmtPath + os.sep + ".." + os.sep)
         
-        var = self.sys_var("GMTHOME")
+        var = self.sys_var("GMT4HOME")
         if (var and os.path.isdir(var)):
             path = var
         
-        self.gmtHome = self.getIncLibDir("GMT", path, path, "gmt.h", "libgmt.a")
+        self.GMT4HOME = self.getIncLibDir("GMT", path, path, "gmt.h", "libgmt.a")
     
     def getNetCDFDir(self):
         path = os.sep + "usr"
@@ -144,11 +144,11 @@ class FlowInstaller:
                 response = "2"
             try:
                 if (int(response) == 1):
-                    gmtFlags = "GGRD_INC_FLAGS = -I$(GMTHOME)/include -I$(NETCDFHOME)/include -DUSE_GMT3\n"
+                    gmtFlags = "GGRD_INC_FLAGS = -I$(GMT4HOME)/include -I$(NETCDFHOME)/include -DUSE_GMT3\n"
                     gmtFlags += "GGRD_LIBS_LINKLINE = -lggrd -lgmt -lnetcdf"
                     break
                 elif (int(response) == 2):
-                    gmtFlags = "GGRD_INC_FLAGS = -I$(GMTHOME)/include -I$(NETCDFHOME)/include  \n"
+                    gmtFlags = "GGRD_INC_FLAGS = -I$(GMT4HOME)/include -I$(NETCDFHOME)/include  \n"
                     gmtFlags += "GGRD_LIBS_LINKLINE = -lggrd -lgmt -lpsl -lnetcdf "
                     break
                 else:
@@ -178,7 +178,7 @@ class FlowInstaller:
         
         makes = []
         makes.append("ARCH=" + self.arch + "\n")
-        makes.append("GMTHOME=" + self.gmtHome + "\n")
+        makes.append("GMT4HOME=" + self.GMT4HOME + "\n")
         makes.append("NETCDFHOME=" + self.netCDFHome + "\n")
         makes.append("\n")
         makes.append(gmtFlags + "\n")
