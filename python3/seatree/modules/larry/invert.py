@@ -222,430 +222,430 @@ class Invert(Module):
 
                 self.writeInversionLogFile()
 
-    def makeSolution(self):
-        """ for a given matrix file, compute a solution """
+        def makeSolution(self):
+            """ for a given matrix file, compute a solution """
 
-        self.readInversionLogFile()
-        #
-        # Does solution exist already?
-        #
-        solfile = self.storeDir + os.sep + self.data_short + ".sol"
-        
-        if os.path.exists(solfile) and \
-                (self.ndamp == self.old_ndamp) and (self.rdamp == self.old_rdamp) and \
-                (self.res == self.old_res) and (self.old_rdampf == self.rdampf) and \
-                (self.ravg == self.old_ravg):
-            if self.verbose > 0:
-                print(solfile)
-                print("Using old solution: ndamp " + str(self.ndamp) + " rdamp: " + str(self.rdamp)  + ' rdampf: ' + str(self.rdampf) + ' VR: ', str(self.vr), ' norm: ', str(self.norm) + '\n')
-
-            oldsol = True
-        else:
-            self.computeSolution()
-            oldsol = False
-
-        #
-        # solution OK, did we change the colormap for GMT?
-        gmtfile = self.storeDir + os.sep + self.data_short + ".gmt"
-
-        if not oldsol or not os.path.exists(gmtfile) or \
-                (self.old_colormap != self.colormap) or not os.path.exists(self.colormap):
-            self.createGMTInput()
-            self.writeInversionLogFile()
-        else:
-            if self.verbose > 0:
-                print(gmtfile)
-                print('using old GMT input and colormap\n')
-
-        def createGMTInput(self):
+            self.readInversionLogFile()
             #
-            # Extract a file for plotting and generate a colormap
+            # Does solution exist already?
             #
-            if self.verbose > 0:
-                print('creating GMT input')
             solfile = self.storeDir + os.sep + self.data_short + ".sol"
-            if not os.path.exists(solfile):
-                print('error, solution file ' + solfile + ' not found')
-                return
-            if not os.path.exists(self.colormap) or self.myPlotter.adjust:
-                self.colormap = self.storeDir + os.sep + "mytomo.cpt"
+            
+            if os.path.exists(solfile) and \
+                    (self.ndamp == self.old_ndamp) and (self.rdamp == self.old_rdamp) and \
+                    (self.res == self.old_res) and (self.old_rdampf == self.rdampf) and \
+                    (self.ravg == self.old_ravg):
                 if self.verbose > 0:
-                    print("Writing CPT to: " + self.colormap)
+                    print(solfile)
+                    print("Using old solution: ndamp " + str(self.ndamp) + " rdamp: " + str(self.rdamp)  + ' rdampf: ' + str(self.rdampf) + ' VR: ', str(self.vr), ' norm: ', str(self.norm) + '\n')
 
-                if self.myPlotter.adjust: # determine max and min
-                    filename = self.storeDir + os.sep + self.data_short + ".sol"
-                    if self.verbose > 0:
-                        print('adjusting based on ', filename)
-                    with open(filename, 'r') as f:
-                        min_val, max_val = 1e20, -1e20
-                        for line in f:
-                            val = line.split()
-                            if len(val) == 2:
-                                if float(val[1]) > max_val: max_val = float(val[1])
-                                if float(val[1]) < min_val: min_val = float(val[1])
-                    tr = self.myPlotter.grdNiceCmpRange(min_val, max_val, cutoff=0.9)
-                    self.myPlotter.setColorbarInterval(tr[3])
-                else:
-                    tr = -10, 10, 1
-                    self.myPlotter.setColorbarInterval(5)
-
-                self.myPlotter.makeCPT(tr[0], tr[1], tr[2], self.colormap)
-
-            command = "cat <<EOF | "
-            if self.larryDir:
-                command += self.larryDir + os.sep
-            command += "blk2gmt > " + self.storeDir + os.sep + \
-                "blk.log\n" +  self.data_short + ".sol\n" + \
-                self.data_short + ".gmt\n" + "\"" + self.colormap \
-                + "\"\n" + str(self.res) + "\n" + str(self.refine) + "\nEOF"
-            self.scriptRunner.runScript(command)
-            if self.verbose > 1:
-                print('GMT done \n')
-
-    def setGMTOptions(self):
-        #
-        # Set Default Plotting Options
-        #
-        
-        if self.pstyle == 1:
-            p = GMTProjection("Q", 0, "", 7, "") # projection
-            self.pstloc1 = "0.0 -0.075"
-            self.pstloc2 = "1.2 -0.075"
-        elif self.pstyle == 2:
-            p = GMTProjection("H", 180, "", 7, "") # projection
-            self.pstloc1 = "0.1 0.0"
-            self.pstloc2 = "1.1 0.0"
-        elif self.pstyle == 3:
-            p = GMTProjection("H", 0, "", 7, "") # projection
-            self.pstloc1 = "0.1 0.0"
-            self.pstloc2 = "1.1 0.0"    
-        
-        # Plot Settings
-        self.myPlotter.setPlotRange(0, 360, -90, 90)
-        self.myPlotter.setMapProjection(p)
-
-        self.myPlotter.setTextProjection(GMTProjection("X", "", "", 7, 4))
-
-        self.myPlotter.setPortraitMode(1)
-        
-        # Draw Coastlines
-        self.myPlotter.setCoastlineMaskArea(70000)
-        self.myPlotter.setCoastlineResolution("c")
-        self.myPlotter.setCoastlineWidth(2)
-        
-        # Draw ColorBar
-        self.myPlotter.setColorbarN(50)
-        self.myPlotter.setColorbarPos("4.0i", "-.3i")
-        self.myPlotter.setColorbarSize("3i", ".25i")
-        self.myPlotter.setColorbarHorizontal(True)
-        self.myPlotter.setColorbarTriangles(False)
-        self.myPlotter.setColorbarInterval(5)
-        self.myPlotter.setColormapInvert(True)
-        self.myPlotter.setColorbarUnits('@~D@~v [%]')
-
-    def plotSources(self, fname):
-        sourcesFile = self.storeDir + os.sep + "sources.xy"
-        with open(sourcesFile, "w") as fp:
-            pts = self.loadSWaveFile(fname, (0, 1), True)
-            for pt in pts:
-                fp.write(str(pt[1]) + "\t" + str(pt[0]) + "\n")
-        
-        fileName = self.storeDir + os.sep + "sources.ps"
-        self.myPlotter.initPSFile(fileName)
-        
-        self.myPlotter.drawCoastline(drawCoasts=False, maskSea=True, maskLand=True)
-        if self.myPlotter.drawPlateBounds:
-            self.myPlotter.drawPlateBoundaries()
-        self.myPlotter.plotXY(sourcesFile, colorName="red", plotSymbols=True, symbol="a", symbolSize=0.1)
-        
-        # Close PS File
-        self.myPlotter.closePSFile()
-
-        self.commandString += self.myPlotter.getCommandString()
-        self.myPlotter.clearCommandString()
-        
-        self.prevPlot = "sources"
-        
-        return fileName
-
-    def loadSWaveFile(self, fname, cols, skipDups, reduce=1):
-        self.prevFName = fname
-        pts = []
-        count = 0
-        with open(fname, "r") as f:
-            for line in f:
-                count += 1
-                if count < 3 or count % reduce != 0:
-                    # skip the first 2 lines
-                    continue
-                line = line.strip()
-                split = line.split()
-                newPt = []
-                for col in cols:
-                    val = float(split[col])
-                    # make sure lat 0=>360
-                    if not col % 2 == 0 and val < 0:
-                        val += 360
-                    newPt.append(val)
-                pts.append(newPt)
-        if skipDups:
-            pts.sort()
-            newPts = [pts[0]]
-            for i in range(1, len(pts)):
-                if pts[i-1] != pts[i]:
-                    newPts.append(pts[i])
-            pts = newPts
-        return pts
-
-    def plotReceivers(self, fname):
-        receiversFile = self.storeDir + os.sep + "receivers.xy"
-        with open(receiversFile, "w") as fp:
-            pts = self.loadSWaveFile(fname, (2, 3), True)
-            for pt in pts:
-                fp.write(str(pt[1]) + "\t" + str(pt[0]) + "\n")
-        
-        fileName = self.storeDir + os.sep + "receivers.ps"
-        self.myPlotter.initPSFile(fileName)
-        
-        self.myPlotter.drawCoastline(drawCoasts=False, maskSea=True, maskLand=True)
-        if self.myPlotter.drawPlateBounds:
-            self.myPlotter.drawPlateBoundaries()
-        self.myPlotter.plotXY(receiversFile, colorName="blue", plotSymbols=True, symbol="c", symbolSize=0.1)
-        
-        # Close PS File
-        self.myPlotter.closePSFile()
-
-        self.commandString += self.myPlotter.getCommandString()
-        self.myPlotter.clearCommandString()
-        
-        self.prevPlot = "receivers"
-        
-        return fileName
-
-    def plotPaths(self, fname, modulus):
-        self.prevMod = modulus
-        print("plotting paths for " + fname)
-        pathsFile = self.storeDir + os.sep + "paths.xy"
-        with open(pathsFile, "w") as fp:
-            lines = self.loadSWaveFile(fname, (0, 1, 2, 3), False, modulus)
-            for line in lines:
-                fp.write("  " + str(line[1]) + " " + str(line[0]) + "\n")
-                fp.write("  " + str(line[3]) + " " + str(line[2]) + "\n")
-                fp.write(">\n")
-        
-        fileName = self.storeDir + os.sep + "paths.ps"
-        self.myPlotter.initPSFile(fileName)
-        
-        self.myPlotter.drawCoastline(drawCoasts=False, maskSea=True, maskLand=True)
-        if self.myPlotter.drawPlateBounds:
-            self.myPlotter.drawPlateBoundaries()
-        self.myPlotter.plotPolygon(pathsFile, 0.01, 0, 0, 0)
-        
-        # Close PS File
-        self.myPlotter.closePSFile()
-
-        self.commandString += self.myPlotter.getCommandString()
-        self.myPlotter.clearCommandString()
-        
-        self.prevPlot = "paths"
-        
-        return fileName
-
-    def plot(self):    
-        gmtfile = self.storeDir + os.sep + self.data_short + ".gmt"
-        if not os.path.exists(gmtfile):
-            print('error, GMT input file ', gmtfile, ' not found ')
-            return
-        fileName = self.storeDir + os.sep + self.data_short + ".ps"
-        if self.verbose > 0:
-            print('plotting to ', fileName)
-
-        # Set PostScript File
-        self.myPlotter.initPSFile(fileName)
-        # set colormap
-        self.myPlotter.setCPTFile(self.colormap)
-        #
-        # Plot Data
-        self.myPlotter.plotAnomalyBoxes(gmtfile)
-        if self.myPlotter.drawPlateBounds:
-            self.myPlotter.drawPlateBoundaries()
-        self.myPlotter.drawCoastline()
-
-        if self.myPlotter.addLabel:
-            self.myPlotter.plotText("0.05 -0.05 14 0 0 ML \"VR = " + str(float(self.vr) * 100.) + " %\"")
-            self.myPlotter.plotText("0.8  -0.05 14 0 0 ML \"|x| = " + str(self.norm) + " \"")
-            self.myPlotter.drawColorbar()
-        
-        # Close PS File
-        self.myPlotter.closePSFile()
-
-        self.commandString += self.myPlotter.getCommandString()
-        self.myPlotter.clearCommandString()
-        
-        self.prevPlot = "plot"
-
-        return fileName
-
-    def computeSolution(self):
-        #
-        # Compute a solution
-        #
-        if self.im == 1:  # Cholesky
-            if self.verbose > 0:
-                print("Computing new solution using Cholesky")
-
-            command = "cat <<EOF | "
-            if self.larryDir:
-                command += self.larryDir + os.sep
-            command += "blk_cholesky\n" + "\"" + self.data + "\"\n" + \
-                       self.storeDir + os.sep + self.data_short + ".ata\n" + \
-                       self.storeDir + os.sep + self.data_short + ".atd\n" + \
-                       self.storeDir + os.sep + self.data_short + ".sol\n" + \
-                       str(self.ndamp) + "\n" + str(self.rdamp) + "\n" + str(self.ravg) + "\nEOF"
-            self.scriptRunner.runScript(command)
-            self.extractInversionResults()
-        elif self.im == 2:  # LSQR
-            if self.verbose > 0:
-                print("Computing new solution using LSQR")
-
-            logfile = self.storeDir + os.sep + "lsqr.log"
-            #
-            # Compute Solution
-            command = "cat <<EOF | "
-            if self.larryDir:
-                command += self.larryDir + os.sep
-            command += "blk_lsqr > " + logfile + "\n" + \
-                       "\"" + self.data + "\"\n" + \
-                       self.data_short + "\n" + \
-                       self.data_short + ".sol\n" + \
-                       str(self.res) + "\n" + \
-                       str(self.refine) + "\n" + \
-                       str(self.ravg) + "\n" + \
-                       str(self.ndamp) + "\n" + \
-                       str(self.rdamp) + "\n" + str(self.rdampf) + "\nEOF"
-            self.scriptRunner.runScript(command)
-
-            sol_file = self.storeDir + os.sep + self.data_short + ".sol"
-            if not os.path.exists(sol_file):
-                print(f'Error: solution file {sol_file} not produced')
-                print(f'Log output in {logfile}')
+                oldsol = True
             else:
-                self.extractInversionResults()  # get variance reduction
+                self.computeSolution()
+                oldsol = False
+
+            #
+            # solution OK, did we change the colormap for GMT?
+            gmtfile = self.storeDir + os.sep + self.data_short + ".gmt"
+
+            if not oldsol or not os.path.exists(gmtfile) or \
+                    (self.old_colormap != self.colormap) or not os.path.exists(self.colormap):
+                self.createGMTInput()
                 self.writeInversionLogFile()
+            else:
+                if self.verbose > 0:
+                    print(gmtfile)
+                    print('using old GMT input and colormap\n')
+
+            def createGMTInput(self):
+                #
+                # Extract a file for plotting and generate a colormap
+                #
+                if self.verbose > 0:
+                    print('creating GMT input')
+                solfile = self.storeDir + os.sep + self.data_short + ".sol"
+                if not os.path.exists(solfile):
+                    print('error, solution file ' + solfile + ' not found')
+                    return
+                if not os.path.exists(self.colormap) or self.myPlotter.adjust:
+                    self.colormap = self.storeDir + os.sep + "mytomo.cpt"
+                    if self.verbose > 0:
+                        print("Writing CPT to: " + self.colormap)
+
+                    if self.myPlotter.adjust: # determine max and min
+                        filename = self.storeDir + os.sep + self.data_short + ".sol"
+                        if self.verbose > 0:
+                            print('adjusting based on ', filename)
+                        with open(filename, 'r') as f:
+                            min_val, max_val = 1e20, -1e20
+                            for line in f:
+                                val = line.split()
+                                if len(val) == 2:
+                                    if float(val[1]) > max_val: max_val = float(val[1])
+                                    if float(val[1]) < min_val: min_val = float(val[1])
+                        tr = self.myPlotter.grdNiceCmpRange(min_val, max_val, cutoff=0.9)
+                        self.myPlotter.setColorbarInterval(tr[3])
+                    else:
+                        tr = -10, 10, 1
+                        self.myPlotter.setColorbarInterval(5)
+
+                    self.myPlotter.makeCPT(tr[0], tr[1], tr[2], self.colormap)
+
+                command = "cat <<EOF | "
+                if self.larryDir:
+                    command += self.larryDir + os.sep
+                command += "blk2gmt > " + self.storeDir + os.sep + \
+                    "blk.log\n" +  self.data_short + ".sol\n" + \
+                    self.data_short + ".gmt\n" + "\"" + self.colormap \
+                    + "\"\n" + str(self.res) + "\n" + str(self.refine) + "\nEOF"
+                self.scriptRunner.runScript(command)
+                if self.verbose > 1:
+                    print('GMT done \n')
+
+        def setGMTOptions(self):
+            #
+            # Set Default Plotting Options
+            #
+            
+            if self.pstyle == 1:
+                p = GMTProjection("Q", 0, "", 7, "") # projection
+                self.pstloc1 = "0.0 -0.075"
+                self.pstloc2 = "1.2 -0.075"
+            elif self.pstyle == 2:
+                p = GMTProjection("H", 180, "", 7, "") # projection
+                self.pstloc1 = "0.1 0.0"
+                self.pstloc2 = "1.1 0.0"
+            elif self.pstyle == 3:
+                p = GMTProjection("H", 0, "", 7, "") # projection
+                self.pstloc1 = "0.1 0.0"
+                self.pstloc2 = "1.1 0.0"    
+            
+            # Plot Settings
+            self.myPlotter.setPlotRange(0, 360, -90, 90)
+            self.myPlotter.setMapProjection(p)
+
+            self.myPlotter.setTextProjection(GMTProjection("X", "", "", 7, 4))
+
+            self.myPlotter.setPortraitMode(1)
+            
+            # Draw Coastlines
+            self.myPlotter.setCoastlineMaskArea(70000)
+            self.myPlotter.setCoastlineResolution("c")
+            self.myPlotter.setCoastlineWidth(2)
+            
+            # Draw ColorBar
+            self.myPlotter.setColorbarN(50)
+            self.myPlotter.setColorbarPos("4.0i", "-.3i")
+            self.myPlotter.setColorbarSize("3i", ".25i")
+            self.myPlotter.setColorbarHorizontal(True)
+            self.myPlotter.setColorbarTriangles(False)
+            self.myPlotter.setColorbarInterval(5)
+            self.myPlotter.setColormapInvert(True)
+            self.myPlotter.setColorbarUnits('@~D@~v [%]')
+
+        def plotSources(self, fname):
+            sourcesFile = self.storeDir + os.sep + "sources.xy"
+            with open(sourcesFile, "w") as fp:
+                pts = self.loadSWaveFile(fname, (0, 1), True)
+                for pt in pts:
+                    fp.write(str(pt[1]) + "\t" + str(pt[0]) + "\n")
+            
+            fileName = self.storeDir + os.sep + "sources.ps"
+            self.myPlotter.initPSFile(fileName)
+            
+            self.myPlotter.drawCoastline(drawCoasts=False, maskSea=True, maskLand=True)
+            if self.myPlotter.drawPlateBounds:
+                self.myPlotter.drawPlateBoundaries()
+            self.myPlotter.plotXY(sourcesFile, colorName="red", plotSymbols=True, symbol="a", symbolSize=0.1)
+            
+            # Close PS File
+            self.myPlotter.closePSFile()
+
+            self.commandString += self.myPlotter.getCommandString()
+            self.myPlotter.clearCommandString()
+            
+            self.prevPlot = "sources"
+            
+            return fileName
+
+        def loadSWaveFile(self, fname, cols, skipDups, reduce=1):
+            self.prevFName = fname
+            pts = []
+            count = 0
+            with open(fname, "r") as f:
+                for line in f:
+                    count += 1
+                    if count < 3 or count % reduce != 0:
+                        # skip the first 2 lines
+                        continue
+                    line = line.strip()
+                    split = line.split()
+                    newPt = []
+                    for col in cols:
+                        val = float(split[col])
+                        # make sure lat 0=>360
+                        if not col % 2 == 0 and val < 0:
+                            val += 360
+                        newPt.append(val)
+                    pts.append(newPt)
+            if skipDups:
+                pts.sort()
+                newPts = [pts[0]]
+                for i in range(1, len(pts)):
+                    if pts[i-1] != pts[i]:
+                        newPts.append(pts[i])
+                pts = newPts
+            return pts
+
+        def plotReceivers(self, fname):
+            receiversFile = self.storeDir + os.sep + "receivers.xy"
+            with open(receiversFile, "w") as fp:
+                pts = self.loadSWaveFile(fname, (2, 3), True)
+                for pt in pts:
+                    fp.write(str(pt[1]) + "\t" + str(pt[0]) + "\n")
+            
+            fileName = self.storeDir + os.sep + "receivers.ps"
+            self.myPlotter.initPSFile(fileName)
+            
+            self.myPlotter.drawCoastline(drawCoasts=False, maskSea=True, maskLand=True)
+            if self.myPlotter.drawPlateBounds:
+                self.myPlotter.drawPlateBoundaries()
+            self.myPlotter.plotXY(receiversFile, colorName="blue", plotSymbols=True, symbol="c", symbolSize=0.1)
+            
+            # Close PS File
+            self.myPlotter.closePSFile()
+
+            self.commandString += self.myPlotter.getCommandString()
+            self.myPlotter.clearCommandString()
+            
+            self.prevPlot = "receivers"
+            
+            return fileName
+
+        def plotPaths(self, fname, modulus):
+            self.prevMod = modulus
+            print("plotting paths for " + fname)
+            pathsFile = self.storeDir + os.sep + "paths.xy"
+            with open(pathsFile, "w") as fp:
+                lines = self.loadSWaveFile(fname, (0, 1, 2, 3), False, modulus)
+                for line in lines:
+                    fp.write("  " + str(line[1]) + " " + str(line[0]) + "\n")
+                    fp.write("  " + str(line[3]) + " " + str(line[2]) + "\n")
+                    fp.write(">\n")
+            
+            fileName = self.storeDir + os.sep + "paths.ps"
+            self.myPlotter.initPSFile(fileName)
+            
+            self.myPlotter.drawCoastline(drawCoasts=False, maskSea=True, maskLand=True)
+            if self.myPlotter.drawPlateBounds:
+                self.myPlotter.drawPlateBoundaries()
+            self.myPlotter.plotPolygon(pathsFile, 0.01, 0, 0, 0)
+            
+            # Close PS File
+            self.myPlotter.closePSFile()
+
+            self.commandString += self.myPlotter.getCommandString()
+            self.myPlotter.clearCommandString()
+            
+            self.prevPlot = "paths"
+            
+            return fileName
+
+        def plot(self):    
+            gmtfile = self.storeDir + os.sep + self.data_short + ".gmt"
+            if not os.path.exists(gmtfile):
+                print('error, GMT input file ', gmtfile, ' not found ')
+                return
+            fileName = self.storeDir + os.sep + self.data_short + ".ps"
             if self.verbose > 0:
-                print(f'Solution computed VR = {self.vr}\n')
-        else:
-            print(f"Solution method {self.im} undefined")
-            delFile = self.storeDir + os.sep + self.data_short + ".gmt"
-            if os.path.exists(delFile):
-                os.unlink(delFile)
+                print('plotting to ', fileName)
 
-    def extractInversionResults(self):
-        # Variance and Norm
-        if self.im == 2:
-            with open(self.storeDir + os.sep + 'lsqr.log', 'r+') as f:
-                listOfFile = f.readlines()
-                if len(listOfFile) >= 2:
-                    # get variance reduction and norm from last line of file
-                    last_line = listOfFile.pop().split()
-                    self.vr = f'{float(last_line[2]):5.3f}'  # variance reduction
-                    self.norm = f'{float(last_line[4]):7.2e}'  # norm
-        else:
-            print('Only LSQR implemented')
-            exit()
+            # Set PostScript File
+            self.myPlotter.initPSFile(fileName)
+            # set colormap
+            self.myPlotter.setCPTFile(self.colormap)
+            #
+            # Plot Data
+            self.myPlotter.plotAnomalyBoxes(gmtfile)
+            if self.myPlotter.drawPlateBounds:
+                self.myPlotter.drawPlateBoundaries()
+            self.myPlotter.drawCoastline()
 
-    def writeInversionLogFile(self):
-        #
-        # write inversion log file
-        #
-        filename = self.storeDir + os.sep + self.data_short + '.res.dat'
-        with open(filename, 'w') as f:
-            f.write(f'{self.data} {self.res} {self.refine} {self.ravg} {self.ndamp} '
-                    f'{self.rdamp} {self.rdampf} {self.vr} {self.norm} {self.colormap}')
+            if self.myPlotter.addLabel:
+                self.myPlotter.plotText("0.05 -0.05 14 0 0 ML \"VR = " + str(float(self.vr) * 100.) + " %\"")
+                self.myPlotter.plotText("0.8  -0.05 14 0 0 ML \"|x| = " + str(self.norm) + " \"")
+                self.myPlotter.drawColorbar()
+            
+            # Close PS File
+            self.myPlotter.closePSFile()
 
-    def readInversionLogFile(self):
-        #
-        # read inversion log file, if it exists
-        #
-        filename = self.storeDir + os.sep + self.data_short + '.res.dat'
-        read = False
-        if os.path.exists(filename):
-            with open(filename, 'r') as f:
-                listOfFile = f.readlines()
-                line = listOfFile[0].split()
-                if len(line) != 10:
-                    print(f'Format error in {filename}')
+            self.commandString += self.myPlotter.getCommandString()
+            self.myPlotter.clearCommandString()
+            
+            self.prevPlot = "plot"
+
+            return fileName
+
+        def computeSolution(self):
+            #
+            # Compute a solution
+            #
+            if self.im == 1:  # Cholesky
+                if self.verbose > 0:
+                    print("Computing new solution using Cholesky")
+
+                command = "cat <<EOF | "
+                if self.larryDir:
+                    command += self.larryDir + os.sep
+                command += "blk_cholesky\n" + "\"" + self.data + "\"\n" + \
+                        self.storeDir + os.sep + self.data_short + ".ata\n" + \
+                        self.storeDir + os.sep + self.data_short + ".atd\n" + \
+                        self.storeDir + os.sep + self.data_short + ".sol\n" + \
+                        str(self.ndamp) + "\n" + str(self.rdamp) + "\n" + str(self.ravg) + "\nEOF"
+                self.scriptRunner.runScript(command)
+                self.extractInversionResults()
+            elif self.im == 2:  # LSQR
+                if self.verbose > 0:
+                    print("Computing new solution using LSQR")
+
+                logfile = self.storeDir + os.sep + "lsqr.log"
+                #
+                # Compute Solution
+                command = "cat <<EOF | "
+                if self.larryDir:
+                    command += self.larryDir + os.sep
+                command += "blk_lsqr > " + logfile + "\n" + \
+                        "\"" + self.data + "\"\n" + \
+                        self.data_short + "\n" + \
+                        self.data_short + ".sol\n" + \
+                        str(self.res) + "\n" + \
+                        str(self.refine) + "\n" + \
+                        str(self.ravg) + "\n" + \
+                        str(self.ndamp) + "\n" + \
+                        str(self.rdamp) + "\n" + str(self.rdampf) + "\nEOF"
+                self.scriptRunner.runScript(command)
+
+                sol_file = self.storeDir + os.sep + self.data_short + ".sol"
+                if not os.path.exists(sol_file):
+                    print(f'Error: solution file {sol_file} not produced')
+                    print(f'Log output in {logfile}')
                 else:
-                    self.old_data = line[0]
-                    self.old_res = float(line[1])
-                    self.old_refine = float(line[2])
-                    self.old_ravg = float(line[3])
-                    self.old_ndamp = float(line[4])
-                    self.old_rdamp = float(line[5])
-                    self.old_rdampf = float(line[6])
-                    self.vr = float(line[7])
-                    self.norm = float(line[8])
-                    self.old_colormap = line[9]
-                    read = True
-        else:
-            if self.verbose > 1:
-                print('No inversion log file found, using defaults')
-        if not read:
-            self.old_data = ''
-            self.old_ndamp, self.old_rdamp, self.old_ravg, \
-                self.old_refine, self.old_rdampf = -1, -1, -1, -1, -1
+                    self.extractInversionResults()  # get variance reduction
+                    self.writeInversionLogFile()
+                if self.verbose > 0:
+                    print(f'Solution computed VR = {self.vr}\n')
+            else:
+                print(f"Solution method {self.im} undefined")
+                delFile = self.storeDir + os.sep + self.data_short + ".gmt"
+                if os.path.exists(delFile):
+                    os.unlink(delFile)
 
-    def getSettings(self):  # assemble settings from run and GUI
-        element = WriteXml(name="Invert")
+        def extractInversionResults(self):
+            # Variance and Norm
+            if self.im == 2:
+                with open(self.storeDir + os.sep + 'lsqr.log', 'r+') as f:
+                    listOfFile = f.readlines()
+                    if len(listOfFile) >= 2:
+                        # get variance reduction and norm from last line of file
+                        last_line = listOfFile.pop().split()
+                        self.vr = f'{float(last_line[2]):5.3f}'  # variance reduction
+                        self.norm = f'{float(last_line[4]):7.2e}'  # norm
+            else:
+                print('Only LSQR implemented')
+                exit()
 
-        x = element.addNode("Datafile")
-        element.addText(x, str(self.data))
-        x = element.addNode("NormDamping")
-        element.addText(x, str(self.ndamp))
-        x = element.addNode("RoughnessDamping")
-        element.addText(x, str(self.rdamp))
-        x = element.addNode("Resolution")
-        element.addText(x, str(self.res))
-        # put any additional input from the GUI here
+        def writeInversionLogFile(self):
+            #
+            # write inversion log file
+            #
+            filename = self.storeDir + os.sep + self.data_short + '.res.dat'
+            with open(filename, 'w') as f:
+                f.write(f'{self.data} {self.res} {self.refine} {self.ravg} {self.ndamp} '
+                        f'{self.rdamp} {self.rdampf} {self.vr} {self.norm} {self.colormap}')
 
-        return element.getRoot()
+        def readInversionLogFile(self):
+            #
+            # read inversion log file, if it exists
+            #
+            filename = self.storeDir + os.sep + self.data_short + '.res.dat'
+            read = False
+            if os.path.exists(filename):
+                with open(filename, 'r') as f:
+                    listOfFile = f.readlines()
+                    line = listOfFile[0].split()
+                    if len(line) != 10:
+                        print(f'Format error in {filename}')
+                    else:
+                        self.old_data = line[0]
+                        self.old_res = float(line[1])
+                        self.old_refine = float(line[2])
+                        self.old_ravg = float(line[3])
+                        self.old_ndamp = float(line[4])
+                        self.old_rdamp = float(line[5])
+                        self.old_rdampf = float(line[6])
+                        self.vr = float(line[7])
+                        self.norm = float(line[8])
+                        self.old_colormap = line[9]
+                        read = True
+            else:
+                if self.verbose > 1:
+                    print('No inversion log file found, using defaults')
+            if not read:
+                self.old_data = ''
+                self.old_ndamp, self.old_rdamp, self.old_ravg, \
+                    self.old_refine, self.old_rdampf = -1, -1, -1, -1, -1
 
-    def loadSettings(self, element):  # load settings from File
-        xmlReader = ReadXml("null", Element=element)
-        for i in range(0, xmlReader.getNumElements()):
-            varName = xmlReader.getNodeLocalName(i)
-            if varName == "Datafile":
-                self.data = xmlReader.getNodeText(i)
-                self.data_short = self.short_filename(self.data, True)
-            elif varName == "NormDamping":
-                self.ndamp = float(xmlReader.getNodeText(i))
-            elif varName == "RoughnessDamping":
-                self.rdamp = float(xmlReader.getNodeText(i))
-            elif varName == "Resolution":
-                self.res = int(xmlReader.getNodeText(i))
+        def getSettings(self):  # assemble settings from run and GUI
+            element = WriteXml(name="Invert")
 
-        self.gui.update()
+            x = element.addNode("Datafile")
+            element.addText(x, str(self.data))
+            x = element.addNode("NormDamping")
+            element.addText(x, str(self.ndamp))
+            x = element.addNode("RoughnessDamping")
+            element.addText(x, str(self.rdamp))
+            x = element.addNode("Resolution")
+            element.addText(x, str(self.res))
+            # put any additional input from the GUI here
 
-    def getPlotter(self):
-        return self.gmtPlotterWidget
+            return element.getRoot()
 
-    def getOutput(self):
-        return self.commandString
+        def loadSettings(self, element):  # load settings from File
+            xmlReader = ReadXml("null", Element=element)
+            for i in range(0, xmlReader.getNumElements()):
+                varName = xmlReader.getNodeLocalName(i)
+                if varName == "Datafile":
+                    self.data = xmlReader.getNodeText(i)
+                    self.data_short = self.short_filename(self.data, True)
+                elif varName == "NormDamping":
+                    self.ndamp = float(xmlReader.getNodeText(i))
+                elif varName == "RoughnessDamping":
+                    self.rdamp = float(xmlReader.getNodeText(i))
+                elif varName == "Resolution":
+                    self.res = int(xmlReader.getNodeText(i))
 
-    def clearOutput(self):
-        self.commandString = ""
+            self.gui.update()
 
-    def clearColormap(self):
-        os.unlink(self.colormap)
+        def getPlotter(self):
+            return self.gmtPlotterWidget
 
-    def short_filename(self, filename, remove_suffix):
-        """ remove any starting directories
-        and .txt or .dat suffix if remove_suffix is true """
-        #
-        # remove starting dir name
-        short_filename = filename.rsplit(os.sep, 1).pop(1)
-        if remove_suffix:
-            for s in ['dat', 'txt']:
-                if filename.endswith(s):
-                    short_filename = short_filename.replace('.' + s, "")
-        return short_filename
+        def getOutput(self):
+            return self.commandString
+
+        def clearOutput(self):
+            self.commandString = ""
+
+        def clearColormap(self):
+            os.unlink(self.colormap)
+
+        def short_filename(self, filename, remove_suffix):
+            """ remove any starting directories
+            and .txt or .dat suffix if remove_suffix is true """
+            #
+            # remove starting dir name
+            short_filename = filename.rsplit(os.sep, 1).pop(1)
+            if remove_suffix:
+                for s in ['dat', 'txt']:
+                    if filename.endswith(s):
+                        short_filename = short_filename.replace('.' + s, "")
+            return short_filename
