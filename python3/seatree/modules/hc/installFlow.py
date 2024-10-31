@@ -166,7 +166,7 @@ class FlowInstaller:
                     self.arch = var
             
             if (not self.arch):
-                self.arch = "x86_64"
+                self.arch = "" #"x86_64" should be general to windows, linux and macos now. Recompile if needed.
             
             newArch = input("CPU Architecture (default: " + self.arch + "): ")
             
