@@ -41,6 +41,8 @@ class NonLinLocInstaller:
 		# chkbd
 		binPathNode = myXml.addNode("binPath")
 		binPath = self.binPath
+		print('binPath for nonLinLoc is', binPath)
+		
 		if (binPath and os.path.isdir(binPath)):
 			myXml.addText(binPathNode, binPath)
 		else:

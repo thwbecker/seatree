@@ -9,7 +9,7 @@ class NonLinLocGUI(Gtk.Box):
         Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL, spacing=5)
         
         self.label = Gtk.Label(label="NonLinLoc")
-        self.pack_start(self.label, expand=False)
+        self.append(self.label)
         
         self.makeModelButton = Gtk.Button(label="Create Model Grid") 
         self.makeModelButton.connect("clicked", self.createModel)
@@ -45,41 +45,41 @@ class NonLinLocGUI(Gtk.Box):
         self.plotSumCheck.set_sensitive(False)
         
         self.modelBox = Gtk.Box(homogeneous=True)
-        self.pack_start(self.modelBox, expand=False)
-        self.modelBox.pack_start(self.makeModelButton, expand=False)
-        self.modelBox.pack_start(self.plotModelButton, expand=True)
+        self.append(self.modelBox)
+        self.modelBox.append(self.makeModelButton)
+        self.modelBox.append(self.plotModelButton)
         
         self.timeBox = Gtk.Box(homogeneous=True)
-        self.pack_start(self.timeBox, expand=False)
-        self.timeBox.pack_start(self.makeTimeGridButton, expand=False)
-        self.timeBox.pack_start(self.plotTimeGridButton, expand=True)
+        self.append(self.timeBox)
+        self.timeBox.append(self.makeTimeGridButton)
+        self.timeBox.append(self.plotTimeGridButton)
         
         self.angleBox = Gtk.Box(homogeneous=True)
-        self.pack_start(self.angleBox, expand=False)
-        self.angleBox.pack_start(self.makeAngleGridButton, expand=False)
-        self.angleBox.pack_start(self.plotAngleGridButton, expand=True)
+        self.append(self.angleBox)
+        self.angleBox.append(self.makeAngleGridButton)
+        self.angleBox.append(self.plotAngleGridButton)
         
         self.eventBox = Gtk.Box(homogeneous=True)
         self.eventComputeBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, homogeneous=True)
         self.eventPlotBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, homogeneous=True)
         
-        self.eventComputeBox.pack_start(self.doEventLocButton, expand=False)
-        self.eventComputeBox.pack_start(self.makeLocSumButton, expand=False)
+        self.eventComputeBox.append(self.doEventLocButton)
+        self.eventComputeBox.append(self.makeLocSumButton)
         
         self.eventPlotBoxesBox = Gtk.Box(homogeneous=False)
         
-        self.eventPlotBoxesBox.pack_start(self.plotEventCheck)
-        self.eventPlotBoxesBox.pack_start(self.plotSumCheck)
+        self.eventPlotBoxesBox.append(self.plotEventCheck)
+        self.eventPlotBoxesBox.append(self.plotSumCheck)
         
-        self.eventPlotBox.pack_start(self.eventPlotBoxesBox)
-        self.eventPlotBox.pack_start(self.plotLocsButton)
+        self.eventPlotBox.append(self.eventPlotBoxesBox)
+        self.eventPlotBox.append(self.plotLocsButton)
         
-        self.eventBox.pack_start(self.eventComputeBox)
-        self.eventBox.pack_start(self.eventPlotBox)
+        self.eventBox.append(self.eventComputeBox)
+        self.eventBox.append(self.eventPlotBox)
         
-        self.pack_start(self.eventBox, expand=False)
+        self.append(self.eventBox)
         
-        self.show_all()
+        self.show()
     
     def createModel(self, widget):
         if self.nll.createModelGrid():
