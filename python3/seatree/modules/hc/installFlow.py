@@ -166,7 +166,7 @@ class FlowInstaller:
                     self.arch = var
             
             if (not self.arch):
-                self.arch = "" #"x86_64" should be general to windows, linux and macos now. Recompile if needed.
+                self.arch = "x86_64" 
             
             newArch = input("CPU Architecture (default: " + self.arch + "): ")
             
@@ -236,6 +236,7 @@ class FlowInstaller:
         
         hc = myXml.addNode("hcPath")
         hcPath = self.getHCBinPath()
+        print('HC Path is '+hcPath+' ; written into hcConf.xml')
         if (hcPath and os.path.isdir(hcPath)):
             myXml.addText(hc, hcPath)
         else:
@@ -244,16 +245,17 @@ class FlowInstaller:
         myXml.writeToXml()
     
     def getHCBinPath(self):
-        if (self.arch):
-            return self.hcDir + os.sep + "bin" + os.sep + self.arch
-        else:
-            items = os.listdir(self.hcDir + os.sep + "bin")
-            for f in items:
-                if f[0] == '.': continue
-                f = self.hcDir + os.sep + "bin" + os.sep + f
-                if (os.path.isdir(f)):
-                    return f
-        return ""
+        #if (self.arch):
+        #    return self.hcDir + os.sep + "bin" + os.sep + self.arch
+        #else:
+        #    items = os.listdir(self.hcDir + os.sep + "bin")
+        #    for f in items:
+        #        if f[0] == '.': continue
+        #        f = self.hcDir + os.sep + "bin" + os.sep + f
+        #        if (os.path.isdir(f)):
+        #            return f
+        #return ""
+        return self.hcDir+"/bin"
     
     def uname(self):
         return os.popen("uname -m").readline()[:-1]
