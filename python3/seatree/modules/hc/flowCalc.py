@@ -53,6 +53,7 @@ class FlowCalc(Module):
         self.mainWindow = mainWin
         tmpn = self.mainWindow.getTempFilePrefix()
         gmtPath = self.mainWindow.getGMTPath()
+        print(gmtPath)
         options = FlowOptions(tmpn, os.path.dirname(tmpn), gmtPath, self.seatreePath)
         self.setOptions(options)
         self.setGMTOptions()
@@ -84,6 +85,7 @@ class FlowCalc(Module):
             psFile = self.plotTractions()[0]
         
         if psFile:
+            print('psFIle exists! Plot!')
             self.gmtPlotterWidget.displayPlot(psFile)
 
     
@@ -388,17 +390,18 @@ class FlowCalc(Module):
             dfile = "vdepth.dat"
 
         return self.plotLayers(type, units, dfile, prefix, self.velFile, pmode)
-def plotTractions(self):
-    if self.verb > 0:
-        print("Plotting Radial Tractions...")
-    type = "@~t@~"
-    units = "MPa"
-    if self.computedir:
-        dfile = os.path.abspath(self.computedir + os.sep + "sdepth.dat")
-    else:
-        dfile = "sdepth.dat"
-    self.previousPlot = "tractions"
-    return self.plotLayers(type, units, dfile, "rtrac", self.rtracFile, 0)
+    
+    def plotTractions(self):
+        if self.verb > 0:
+            print("Plotting Radial Tractions...")
+        type = "@~t@~"
+        units = "MPa"
+        if self.computedir:
+            dfile = os.path.abspath(self.computedir + os.sep + "sdepth.dat")
+        else:
+            dfile = "sdepth.dat"
+        self.previousPlot = "tractions"
+        return self.plotLayers(type, units, dfile, "rtrac", self.rtracFile, 0)
 
     def plotLayers(self, type, units, dfile, prefix, file, mode):
         """

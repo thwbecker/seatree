@@ -543,7 +543,7 @@ class GMTWrapper:
         self.runGMT(command)
         
         if self.BBFront or self.modifyBB:
-            with open(self.psFile, 'r') as fp:
+            with open(self.psFile, 'r', errors='ignore') as fp:
                 lines = []
                 atend = -1
                 box = -1
@@ -561,7 +561,8 @@ class GMTWrapper:
                 else:
                     lines[atend] = lines[box]
                 lines.pop(box)
-                with open(self.psFile, 'w') as fp:
+
+                with open(self.psFile, 'w', errors='ignore') as fp:
                     for line in lines:
                         fp.write(line)
     

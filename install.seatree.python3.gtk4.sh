@@ -70,5 +70,16 @@ if [ -n "$MACH" ]; then
         fi   
     fi 
 
-    yes '' | ./configure 
-fi 
+    export GMT4HOME=$(pwd)/gmt-4.5.18
+    export GMTHOME=$GMT4HOME
+    export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1
+    yes '' | ./configure.python3.gtk4 
+fi
+
+export GMT4HOME=$(pwd)/gmt-4.5.18
+export GMTHOME=$GMT4HOME
+export GMT_GSHHG_DATA=$GMT4HOME/gshhg-gmt-2.3.7
+export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1 
+ln -s $NETCDFHOME/lib/libnetcdf.so.22 $NETCDFHOME/lib/libnetcdf.so.7
+export PATH=$PATH:$NETCDFHOME/lib:$GMT_GSHHG_DATA
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$NETCDFHOME/lib

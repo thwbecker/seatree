@@ -86,6 +86,7 @@ class PSConverter:
         self.antialias = antialias
         if psfile:  # ps file specified here, use that
             self.psfile = psfile
+            print('Psfile exists, use it',self.psfile)
         if self.psfile is None:
             print('convertPsToPng: error, ps file needs to be defined')
             print('convertPsToPng: possible cause: has GMT input already been created?')
@@ -116,6 +117,9 @@ class PSConverter:
         else:
             cmd += "+antialias "
         cmd += f"{use_ps} {pngfile}"
+        #cmd = "gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pngalpha -r96 -sOutputFile="+str(pngfile)+' '+str(use_ps)
+        cmd = os.environ["GMT4HOME"]+"/bin/ps2raster "+str(use_ps)+" -A -P -Tg" 
+        print('Running cmd', cmd, 'to create png files.')
         self.command(cmd)
         
         return pngfile

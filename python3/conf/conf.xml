@@ -4,34 +4,34 @@
       <module>
        <importName>seatree.modules.hc.flowCalc</importName>
        <className>FlowCalc</className>
-       <directory>/home/utig5/dliu/seatree.dev/python3/seatree/modules/hc</directory>
+       <directory>/home/utig5/dliu/seatree.dev/seatree.dev/python3/seatree/modules/hc</directory>
       </module>
       <module>
        <importName>seatree.modules.syn2d.syn2d</importName>
        <className>Syn2D</className>
-       <directory>/home/utig5/dliu/seatree.dev/python3/seatree/modules/syn2d</directory>
+       <directory>/home/utig5/dliu/seatree.dev/seatree.dev/python3/seatree/modules/syn2d</directory>
       </module>
       <module>
        <importName>seatree.modules.conman.conman</importName>
        <className>ConMan</className>
-       <directory>/home/utig5/dliu/seatree.dev/python3/seatree/modules/conman</directory>
+       <directory>/home/utig5/dliu/seatree.dev/seatree.dev/python3/seatree/modules/conman</directory>
       </module>
       <module>
        <importName>seatree.modules.larry.invert</importName>
        <className>Invert</className>
-       <directory>/home/utig5/dliu/seatree.dev/python3/seatree/modules/larry</directory>
+       <directory>/home/utig5/dliu/seatree.dev/seatree.dev/python3/seatree/modules/larry</directory>
       </module>
       <module>
        <importName>seatree.modules.nonLinLoc.NonLinLoc</importName>
        <className>NonLinLoc</className>
-       <directory>/home/utig5/dliu/seatree.dev/python3/seatree/modules/nonLinLoc</directory>
+       <directory>/home/utig5/dliu/seatree.dev/seatree.dev/python3/seatree/modules/nonLinLoc</directory>
       </module>
       <module>
        <importName>seatree.modules.larry3d.larry3d</importName>
        <className>larry3d</className>
-       <directory>/home/utig5/dliu/seatree.dev/python3/seatree/modules/larry3d</directory>
+       <directory>/home/utig5/dliu/seatree.dev/seatree.dev/python3/seatree/modules/larry3d</directory>
       </module>
      </modules>
-     <gmtPath>/usr/lib/gmt/bin</gmtPath>
+     <gmtPath>/home/staff/dliu/seatree.dev/seatree.dev/gmt-4.5.18/bin</gmtPath>
      <convertPath/>
     </SEATREEConfiguration>

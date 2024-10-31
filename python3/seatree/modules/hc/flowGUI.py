@@ -359,66 +359,96 @@ class FlowGUI:
         self.flowCalc.updateHCWrapper()
 
     def saveFile(self, title, origfile, startdir=""):
-        chooser = Gtk.FileChooserDialog(title=title, parent=self.mainWindow.window, action=Gtk.FileChooserAction.SAVE, buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
-        if startdir:
-            chooser.set_filename(startdir)
-        filename = ""
-        response = chooser.run()
-        if response == Gtk.ResponseType.OK:
-            filename = chooser.get_filename()
-            if os.path.exists(origfile) and filename:
-                shutil.copy(origfile, filename)
-                print("Saved " + filename)
-        chooser.destroy()
+#        chooser = Gtk.FileChooserDialog(title=title, parent=self.mainWindow, action=Gtk.FileChooserAction.SAVE, buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+        chooser = Gtk.FileChooserDialog(
+            title=title,
+            parent=self.mainWindow,
+            action=Gtk.FileChooserAction.SAVE
+        )
+        chooser.add_buttons=(
+            '_Cancel', Gtk.ResponseType.CANCEL,
+            '_Open', Gtk.ResponseType.OK
+        )
+        def on_response(dialog, response_id):
+            if startdir and response_id==Gtk.ResponseType.OK:
+                chooser.set_filename(startdir)
+            filename = ""
+            response = chooser.run()
+            if response == Gtk.ResponseType.OK:
+                filename = chooser.get_filename()
+                if os.path.exists(origfile) and filename:
+                    shutil.copy(origfile, filename)
+                    print("Saved " + filename)
+            dialog.destroy()
+
         return filename
 
     def saveComputeFiles(self, widget):
-        chooser = Gtk.FileChooserDialog(title="Select DIRECTORY To Save Solution Files", parent=self.mainWindow.window, action=Gtk.FileChooserAction.SELECT_FOLDER, buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+#        chooser = Gtk.FileChooserDialog(title="Select DIRECTORY To Save Solution Files", parent=self.mainWindow, action=Gtk.FileChooserAction.SELECT_FOLDER, buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+        chooser = Gtk.FileChooserDialog(
+            title="Select DIRECTORY To Save Solution Files",
+            parent=self.mainWindow,
+            action=Gtk.FileChooserAction.SELECT_FOLDER
+        )
+        chooser.add_button=('_Cancel', Gtk.ResponseType.CANCEL)
+        chooser.add_button=('_Save', Gtk.ResponseType.OK)
 
-        response = chooser.run()
-        if response == Gtk.ResponseType.OK:
-            dir = chooser.get_filename()
-            geoidName = dir + os.sep + "geoid.ab"
-            if os.path.exists(self.flowCalc.geoidFile):
-                shutil.copy(self.flowCalc.geoidFile, dir)
-                print("Copied geoid.ab to " + dir + geoidName)
-            velName = dir + os.sep + "vel.sol.bin"
-            if os.path.exists(self.flowCalc.velFile):
-                shutil.copy(self.flowCalc.velFile, dir)
-                print("Copied vel.sol.bin to " + dir + velName)
-            tracName = dir + os.sep + "rtrac.sol.bin"
-            if os.path.exists(self.flowCalc.rtracFile):
-                shutil.copy(self.flowCalc.rtracFile, dir)
-                print("Copied rtrac.sol.bin to " + dir + tracName)
-        chooser.destroy()
+        def on_response(dialog, response_id):
+            if response_id == Gtk.ResponseType.OK:
+                dir = chooser.get_filename()
+                geoidName = dir + os.sep + "geoid.ab"
+                if os.path.exists(self.flowCalc.geoidFile):
+                    shutil.copy(self.flowCalc.geoidFile, dir)
+                    print("Copied geoid.ab to " + dir + geoidName)
+                velName = dir + os.sep + "vel.sol.bin"
+                if os.path.exists(self.flowCalc.velFile):
+                    shutil.copy(self.flowCalc.velFile, dir)
+                    print("Copied vel.sol.bin to " + dir + velName)
+                tracName = dir + os.sep + "rtrac.sol.bin"
+                if os.path.exists(self.flowCalc.rtracFile):
+                    shutil.copy(self.flowCalc.rtracFile, dir)
+                    print("Copied rtrac.sol.bin to " + dir + tracName)
+            dialog.destroy()
+        chooser.connect("response", on_response)
+        chooser.show()
 
     def loadComputeFiles(self, widget):
-        chooser = Gtk.FileChooserDialog(title="Select DIRECTORY Containing Solution Files", parent=self.mainWindow.window, action=Gtk.FileChooserAction.SELECT_FOLDER, buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
-
-        response = chooser.run()
-        if response == Gtk.ResponseType.OK:
-            dir = chooser.get_filename()
-            geoidName = dir + os.sep + "geoid.ab"
-            if os.path.exists(geoidName):
-                self.flowCalc.geoidFile = geoidName
-                self.plotGeoidButton.set_sensitive(True)
-                self.computeSaveButton.set_sensitive(True)
-            velName = dir + os.sep + "vel.sol.bin"
-            if os.path.exists(velName):
-                self.flowCalc.velFile = velName
-                self.plotVelButton.set_sensitive(True)
-                self.layerBox.set_sensitive(True)
-                self.computeSaveButton.set_sensitive(True)
-            tracName = dir + os.sep + "rtrac.sol.bin"
-            if os.path.exists(tracName):
-                self.flowCalc.rtracFile = tracName
-                self.plotTracButton.set_sensitive(True)
-                self.layerBox.set_sensitive(True)
-                self.computeSaveButton.set_sensitive(True)
-        chooser.destroy()
+        chooser = Gtk.FileChooserDialog(
+            title="Select DIRECTORY Containing Solution Files", 
+            parent=self.mainWindow, 
+            action=Gtk.FileChooserAction.SELECT_FOLDER
+        ) 
+        chooser.add_buttons=(
+                '_Cancel', Gtk.ResponseType.CANCEL, 
+                '_Open', Gtk.ResponseType.OK
+        )
+        
+        def on_response(dialog, response_id):
+        
+            if response_id == Gtk.ResponseType.OK:
+                dir = chooser.get_filename()
+                geoidName = dir + os.sep + "geoid.ab"
+                if os.path.exists(geoidName):
+                    self.flowCalc.geoidFile = geoidName
+                    self.plotGeoidButton.set_sensitive(True)
+                    self.computeSaveButton.set_sensitive(True)
+                velName = dir + os.sep + "vel.sol.bin"
+                if os.path.exists(velName):
+                    self.flowCalc.velFile = velName
+                    self.plotVelButton.set_sensitive(True)
+                    self.layerBox.set_sensitive(True)
+                    self.computeSaveButton.set_sensitive(True)
+                tracName = dir + os.sep + "rtrac.sol.bin"
+                if os.path.exists(tracName):
+                    self.flowCalc.rtracFile = tracName
+                    self.plotTracButton.set_sensitive(True)
+                    self.layerBox.set_sensitive(True)
+                    self.computeSaveButton.set_sensitive(True)
+            dialog.destroy()
+        chooser.connect("response", on_response)
+        chooser.present()
 
     def setBoundaryCondition(self, widget):
-        tbc_s = self.boundCondSelect.get_active_text()
         if tbc_s == "Free slip":
             self.boundCondFile.set_sensitive(False)
         elif tbc_s == "No slip":
@@ -445,7 +475,9 @@ class FlowGUI:
     def plotGeoid(self, widget):
         self.setPlotOptions()
         file = self.flowCalc.plotGeoid()
+        print('Geoid file is', file)
         self.convertAndDisplay(file)
+        print('Successfully convery and display Geoid')
 
     def plotOGeoid(self, widget):
         self.setPlotOptions()

@@ -19,7 +19,7 @@ echo $bn: F77: $F77 FFLAGS: $FFLAGS
 echo
 echo $bn: running install.py in python/seatree/install subdirectory
 echo
-export PYTHONPATH=/home/dliu/seatree.dev/python
+#export PYTHONPATH=/home/dliu/seatree.dev/python
 
 python3 python3/seatree/install/install.py
 echo

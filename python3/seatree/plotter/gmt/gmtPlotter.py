@@ -33,7 +33,8 @@ class GMTPlotter(ImagePlotter):
         self.psConvert = PSConverter(verb=0, convertPath=convertPath)
         self.gmtSettingsPanel = GMTSettingsPanel(self, self.gmtPlotter)
         self.rescaleOnResize = rescaleOnResize
-        
+        self.resize_handler = None        
+
         self.psFile = ""
         self.pngFile = ""
     
@@ -41,7 +42,7 @@ class GMTPlotter(ImagePlotter):
         imageEB = ImagePlotter.getMainWidget(self)
         
         if self.rescaleOnResize:
-            #self.resize_handler = imageEB.connect("size-allocate", self.resizePlot)
+            #self.resize_handler = imageEB.connect("resize", self.resizePlot)
             rect = self.imageEB.get_allocation()
             width = rect.width
             height = rect.height
@@ -82,7 +83,8 @@ class GMTPlotter(ImagePlotter):
         antialias - boolean that, if True, will antialias the image
         """
         if self.rescaleOnResize:
-            self.imageEB.handler_block(self.resize_handler)
+            pass
+            #self.imageEB.handler_block(self.resize_handler)
         self.psFile = psFile
         self.psConvert.psfile = psFile
         self.psConvert.antialias = antialias
@@ -99,32 +101,33 @@ class GMTPlotter(ImagePlotter):
         self.displayImage(self.pngFile)
         self.mainWindow.setSaveActive(True)
         if self.rescaleOnResize:
-            self.imageEB.handler_unblock(self.resize_handler)
+            pass  
+            #self.imageEB.handler_unblock(self.resize_handler)
     
     def resizePlot(self, widget=None, allocation=None):
         if self.psFile:
-            self.imageEB.handler_block(self.resize_handler)
+            #self.imageEB.handler_block(self.resize_handler)
             self.plotLock = True
             width = allocation.width
             height = allocation.height
             if self.oldWidth == width and self.oldHeight == height:
-                #print "caught 1!"
+                print ("caught 1!")
                 self.plotLock = False
-                self.imageEB.handler_unblock(self.resize_handler)
+                #self.imageEB.handler_unblock(self.resize_handler)
                 return
-            #print "Resizing for " + str(width) + " " + str(height)
+            print("Resizing for " + str(width) + " " + str(height))
             dens = self.psConvert.calcDensity(maxWidth=width, maxHeight=height)
             if self.oldDensity == dens:
-                #print "caught 2!"
+                print("caught 2!")
                 self.plotLock = False
-                self.imageEB.handler_unblock(self.resize_handler)
+                #self.imageEB.handler_unblock(self.resize_handler)
                 return
             self.pngFile =  self.psConvert.convertPsToPng(pngfile = self.pngFile)
             self.displayImage(self.pngFile)
             self.oldWidth = width
             self.oldHeight = height
             self.plotLock = False
-            self.imageEB.handler_unblock(self.resize_handler)
+            #self.imageEB.handler_unblock(self.resize_handler)
     
     def getGMTPlotter(self):
         return self.gmtPlotter

@@ -1,5 +1,4 @@
-import gi
-gi.require_version('Gtk', '4.0')
+
 from gi.repository import Gtk
 
 class Plotter:
@@ -32,6 +31,12 @@ class Plotter:
         
         topWidget = self.getMainWidget()
         bottomPanel = self.getBottomPanel()
+        
+#        if topWidget is None:
+#            raise ValueError("topWidget cannot be None.")
+
+#        self.widget = Gtk.Paned.new(Gtk.Orientation.VERTICAL)
+#        self.widget.set_start_child(topWidget)
         
         if bottomPanel:
             self.widget = Gtk.Paned.new(Gtk.Orientation.VERTICAL)
