@@ -21,6 +21,11 @@ for regional grids, this assumes 0...360 convention
 #include "hc.h"
 #include "fitxyee.h"		/* part of numerical recipes */
 
+#include <math.h>
+#ifdef __APPLE__
+#define finite isfinite
+#endif
+
 void calc_mean(struct nr_dp *, int ,double *);
 void calc_std(struct nr_dp *, int ,double *,double *);
 
