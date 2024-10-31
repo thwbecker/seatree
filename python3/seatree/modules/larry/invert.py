@@ -70,8 +70,12 @@ class Invert(Module):
         self.prevPlot = None
         self.prevFName = None
 
-    def getPanel(self, mainWindow, accel_group):
-        self.gui = InvertGUI(mainWindow, accel_group, self)
+    #def getPanel(self, mainWindow, accel_group):
+    #    self.gui = InvertGUI(mainWindow, accel_group, self)
+    #    return self.gui.getPanel()
+
+    def getPanel(self, mainWindow):
+        self.gui = InvertGUI(mainWindow, self)
         return self.gui.getPanel()
     
     def cleanPanel(self, accel_group):
@@ -129,174 +133,174 @@ class Invert(Module):
         if psFile is not None:
             self.gmtPlotterWidget.displayPlot(psFile)
             self.commandString += self.gmtPlotterWidget.getPsToPngCommand()
-def setOptions(self, data, ndamp, rdamp, res, gmtPath, verbose, colormap):
-    """ data file, norm damping, roughness damping, pixel resolution, gmt path """
-    
-    self.data = data # full filename
-    self.data_short = self.short_filename(self.data, True) # end without suffix
-    self.ndamp = ndamp
-    self.rdamp = rdamp
-    self.rdampf = self.rdamp
-    self.verbose = verbose 
-    self.res = res
-    self.colormap = colormap
-    self.myPlotter = GMTWrapper(verb=self.verbose, path=gmtPath)
-    self.myPlotter.adjust = False
-    #
-    # check if we have inversion results already
-    self.readInversionLogFile()
+    def setOptions(self, data, ndamp, rdamp, res, gmtPath, verbose, colormap):
+        """ data file, norm damping, roughness damping, pixel resolution, gmt path """
+        
+        self.data = data # full filename
+        self.data_short = self.short_filename(self.data, True) # end without suffix
+        self.ndamp = ndamp
+        self.rdamp = rdamp
+        self.rdampf = self.rdamp
+        self.verbose = verbose 
+        self.res = res
+        self.colormap = colormap
+        self.myPlotter = GMTWrapper(verb=self.verbose, path=gmtPath)
+        self.myPlotter.adjust = False
+        #
+        # check if we have inversion results already
+        self.readInversionLogFile()
 
-def loadConfFile(self):
-    doc = xml.dom.minidom.parse(self.seatreePath + os.sep + "conf" + os.sep + "larry" + os.sep + "larryConf.xml")
-    pathNode = doc.getElementsByTagName("larryPath")
-    if pathNode and pathNode[0].firstChild:
-        larrypath = pathNode[0].firstChild.nodeValue.strip()
-        if not larrypath:
+    def loadConfFile(self):
+        doc = xml.dom.minidom.parse(self.seatreePath + os.sep + "conf" + os.sep + "larry" + os.sep + "larryConf.xml")
+        pathNode = doc.getElementsByTagName("larryPath")
+        if pathNode and pathNode[0].firstChild:
+            larrypath = pathNode[0].firstChild.nodeValue.strip()
+            if not larrypath:
+                larrypath = ""
+        else: 
             larrypath = ""
-    else: 
-        larrypath = ""
-    self.larryDir = larrypath
-    if self.verbose > 0:
-        print("Larry binary path: " + self.larryDir)
-
-def createPlotSettings(self):
-    # For running Invert from command line
-    self.tmpn = "."
-
-def makeMatrix(self):
-    #
-    # check status
-    self.readInversionLogFile()
-    #
-    # Check if new data exists
-    if not os.path.exists(self.data):
-        print('data file ' + self.data + " does not exist, is needed for invert to run")
-        return
-    #
-    # check if index file was produced. LSQR needs xxx, ind, and pnt files
-    #
-    matrix_out = self.storeDir + os.sep + self.data_short + '.ind'
-    #
-    # Check if pre-existing matrix file is the correct resolution
-    if os.path.isfile(matrix_out) and (self.data == self.old_data) and \
-            (self.res == self.old_res) and \
-            (self.refine == self.old_refine):
+        self.larryDir = larrypath
         if self.verbose > 0:
-            print(matrix_out)
-            print("Using old matrix files with resolution " + str(self.res) + ' refine ' + str(self.refine) + '\n')
-    else:
+            print("Larry binary path: " + self.larryDir)
+
+    def createPlotSettings(self):
+        # For running Invert from command line
+        self.tmpn = "."
+
+    def makeMatrix(self):
         #
-        # Create .ata matrix file
+        # check status
+        self.readInversionLogFile()
         #
-        if self.verbose > 0:
-            print("Making new ata matrix with resolution " + str(self.res) + ' degree and refine ' + str(self.refine))
-        command = "cat <<EOF | blk_matrix_ata  > " + \
-            self.tmpn + "bma.log" + "\n" + str(self.res) + "\n" + \
-            str(self.refine) + "\n" + "\"" + self.data + "\"" + "\n" + \
-            self.data_short + "\n" + "EOF"
-        command = "cat <<EOF | "
-        if self.larryDir:
-            command += self.larryDir + os.sep
-        command += "blk_matrix_ata  > " + self.storeDir + os.sep + "bma.log" + "\n" + \
-                str(self.res) + "\n" + str(self.refine) + "\n" + \
-                "\"" + self.data + "\"" + "\n" + \
+        # Check if new data exists
+        if not os.path.exists(self.data):
+            print('data file ' + self.data + " does not exist, is needed for invert to run")
+            return
+        #
+        # check if index file was produced. LSQR needs xxx, ind, and pnt files
+        #
+        matrix_out = self.storeDir + os.sep + self.data_short + '.ind'
+        #
+        # Check if pre-existing matrix file is the correct resolution
+        if os.path.isfile(matrix_out) and (self.data == self.old_data) and \
+                (self.res == self.old_res) and \
+                (self.refine == self.old_refine):
+            if self.verbose > 0:
+                print(matrix_out)
+                print("Using old matrix files with resolution " + str(self.res) + ' refine ' + str(self.refine) + '\n')
+        else:
+            #
+            # Create .ata matrix file
+            #
+            if self.verbose > 0:
+                print("Making new ata matrix with resolution " + str(self.res) + ' degree and refine ' + str(self.refine))
+            command = "cat <<EOF | blk_matrix_ata  > " + \
+                self.tmpn + "bma.log" + "\n" + str(self.res) + "\n" + \
+                str(self.refine) + "\n" + "\"" + self.data + "\"" + "\n" + \
                 self.data_short + "\n" + "EOF"
-        self.scriptRunner.runScript(command)
-        if not os.path.isfile(matrix_out):
-            print('error, blk_matrix_ata failed')
-            print('looking for ', matrix_out)
+            command = "cat <<EOF | "
+            if self.larryDir:
+                command += self.larryDir + os.sep
+            command += "blk_matrix_ata  > " + self.storeDir + os.sep + "bma.log" + "\n" + \
+                    str(self.res) + "\n" + str(self.refine) + "\n" + \
+                    "\"" + self.data + "\"" + "\n" + \
+                    self.data_short + "\n" + "EOF"
+            self.scriptRunner.runScript(command)
+            if not os.path.isfile(matrix_out):
+                print('error, blk_matrix_ata failed')
+                print('looking for ', matrix_out)
+            else:
+                if self.verbose > 0:
+                    print("Matrix made\n")
+                #
+                # remove solution file, if it exists
+                solfile = self.storeDir + os.sep + self.data_short + ".sol"
+                if os.path.exists(solfile):
+                    if self.verbose > 0:
+                        print('removing old solution file\n')
+                    os.unlink(solfile)
+
+                self.writeInversionLogFile()
+
+    def makeSolution(self):
+        """ for a given matrix file, compute a solution """
+
+        self.readInversionLogFile()
+        #
+        # Does solution exist already?
+        #
+        solfile = self.storeDir + os.sep + self.data_short + ".sol"
+        
+        if os.path.exists(solfile) and \
+                (self.ndamp == self.old_ndamp) and (self.rdamp == self.old_rdamp) and \
+                (self.res == self.old_res) and (self.old_rdampf == self.rdampf) and \
+                (self.ravg == self.old_ravg):
+            if self.verbose > 0:
+                print(solfile)
+                print("Using old solution: ndamp " + str(self.ndamp) + " rdamp: " + str(self.rdamp)  + ' rdampf: ' + str(self.rdampf) + ' VR: ', str(self.vr), ' norm: ', str(self.norm) + '\n')
+
+            oldsol = True
+        else:
+            self.computeSolution()
+            oldsol = False
+
+        #
+        # solution OK, did we change the colormap for GMT?
+        gmtfile = self.storeDir + os.sep + self.data_short + ".gmt"
+
+        if not oldsol or not os.path.exists(gmtfile) or \
+                (self.old_colormap != self.colormap) or not os.path.exists(self.colormap):
+            self.createGMTInput()
+            self.writeInversionLogFile()
         else:
             if self.verbose > 0:
-                print("Matrix made\n")
+                print(gmtfile)
+                print('using old GMT input and colormap\n')
+
+        def createGMTInput(self):
             #
-            # remove solution file, if it exists
-            solfile = self.storeDir + os.sep + self.data_short + ".sol"
-            if os.path.exists(solfile):
-                if self.verbose > 0:
-                    print('removing old solution file\n')
-                os.unlink(solfile)
-
-            self.writeInversionLogFile()
-
-def makeSolution(self):
-    """ for a given matrix file, compute a solution """
-
-    self.readInversionLogFile()
-    #
-    # Does solution exist already?
-    #
-    solfile = self.storeDir + os.sep + self.data_short + ".sol"
-    
-    if os.path.exists(solfile) and \
-            (self.ndamp == self.old_ndamp) and (self.rdamp == self.old_rdamp) and \
-            (self.res == self.old_res) and (self.old_rdampf == self.rdampf) and \
-            (self.ravg == self.old_ravg):
-        if self.verbose > 0:
-            print(solfile)
-            print("Using old solution: ndamp " + str(self.ndamp) + " rdamp: " + str(self.rdamp)  + ' rdampf: ' + str(self.rdampf) + ' VR: ', str(self.vr), ' norm: ', str(self.norm) + '\n')
-
-        oldsol = True
-    else:
-        self.computeSolution()
-        oldsol = False
-
-    #
-    # solution OK, did we change the colormap for GMT?
-    gmtfile = self.storeDir + os.sep + self.data_short + ".gmt"
-
-    if not oldsol or not os.path.exists(gmtfile) or \
-            (self.old_colormap != self.colormap) or not os.path.exists(self.colormap):
-        self.createGMTInput()
-        self.writeInversionLogFile()
-    else:
-        if self.verbose > 0:
-            print(gmtfile)
-            print('using old GMT input and colormap\n')
-
-    def createGMTInput(self):
-        #
-        # Extract a file for plotting and generate a colormap
-        #
-        if self.verbose > 0:
-            print('creating GMT input')
-        solfile = self.storeDir + os.sep + self.data_short + ".sol"
-        if not os.path.exists(solfile):
-            print('error, solution file ' + solfile + ' not found')
-            return
-        if not os.path.exists(self.colormap) or self.myPlotter.adjust:
-            self.colormap = self.storeDir + os.sep + "mytomo.cpt"
+            # Extract a file for plotting and generate a colormap
+            #
             if self.verbose > 0:
-                print("Writing CPT to: " + self.colormap)
-
-            if self.myPlotter.adjust: # determine max and min
-                filename = self.storeDir + os.sep + self.data_short + ".sol"
+                print('creating GMT input')
+            solfile = self.storeDir + os.sep + self.data_short + ".sol"
+            if not os.path.exists(solfile):
+                print('error, solution file ' + solfile + ' not found')
+                return
+            if not os.path.exists(self.colormap) or self.myPlotter.adjust:
+                self.colormap = self.storeDir + os.sep + "mytomo.cpt"
                 if self.verbose > 0:
-                    print('adjusting based on ', filename)
-                with open(filename, 'r') as f:
-                    min_val, max_val = 1e20, -1e20
-                    for line in f:
-                        val = line.split()
-                        if len(val) == 2:
-                            if float(val[1]) > max_val: max_val = float(val[1])
-                            if float(val[1]) < min_val: min_val = float(val[1])
-                tr = self.myPlotter.grdNiceCmpRange(min_val, max_val, cutoff=0.9)
-                self.myPlotter.setColorbarInterval(tr[3])
-            else:
-                tr = -10, 10, 1
-                self.myPlotter.setColorbarInterval(5)
+                    print("Writing CPT to: " + self.colormap)
 
-            self.myPlotter.makeCPT(tr[0], tr[1], tr[2], self.colormap)
+                if self.myPlotter.adjust: # determine max and min
+                    filename = self.storeDir + os.sep + self.data_short + ".sol"
+                    if self.verbose > 0:
+                        print('adjusting based on ', filename)
+                    with open(filename, 'r') as f:
+                        min_val, max_val = 1e20, -1e20
+                        for line in f:
+                            val = line.split()
+                            if len(val) == 2:
+                                if float(val[1]) > max_val: max_val = float(val[1])
+                                if float(val[1]) < min_val: min_val = float(val[1])
+                    tr = self.myPlotter.grdNiceCmpRange(min_val, max_val, cutoff=0.9)
+                    self.myPlotter.setColorbarInterval(tr[3])
+                else:
+                    tr = -10, 10, 1
+                    self.myPlotter.setColorbarInterval(5)
 
-        command = "cat <<EOF | "
-        if self.larryDir:
-            command += self.larryDir + os.sep
-        command += "blk2gmt > " + self.storeDir + os.sep + \
-            "blk.log\n" +  self.data_short + ".sol\n" + \
-            self.data_short + ".gmt\n" + "\"" + self.colormap \
-            + "\"\n" + str(self.res) + "\n" + str(self.refine) + "\nEOF"
-        self.scriptRunner.runScript(command)
-        if self.verbose > 1:
-            print('GMT done \n')
+                self.myPlotter.makeCPT(tr[0], tr[1], tr[2], self.colormap)
+
+            command = "cat <<EOF | "
+            if self.larryDir:
+                command += self.larryDir + os.sep
+            command += "blk2gmt > " + self.storeDir + os.sep + \
+                "blk.log\n" +  self.data_short + ".sol\n" + \
+                self.data_short + ".gmt\n" + "\"" + self.colormap \
+                + "\"\n" + str(self.res) + "\n" + str(self.refine) + "\nEOF"
+            self.scriptRunner.runScript(command)
+            if self.verbose > 1:
+                print('GMT done \n')
 
     def setGMTOptions(self):
         #
@@ -333,7 +337,7 @@ def makeSolution(self):
         self.myPlotter.setColorbarN(50)
         self.myPlotter.setColorbarPos("4.0i", "-.3i")
         self.myPlotter.setColorbarSize("3i", ".25i")
-        self.myPlotter.setColorbarHorizonal(True)
+        self.myPlotter.setColorbarHorizontal(True)
         self.myPlotter.setColorbarTriangles(False)
         self.myPlotter.setColorbarInterval(5)
         self.myPlotter.setColormapInvert(True)

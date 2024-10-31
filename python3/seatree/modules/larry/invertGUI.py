@@ -1,11 +1,12 @@
 import gi
 gi.require_version('Gtk', '4.0')
-from gi.repository import Gtk, GObject, GLib
+from gi.repository import Gtk, GObject, GLib, Gdk
 import seatree.gui.util.guiUtils as guiUtils
 
 class InvertGUI:
     
-    def __init__(self, mainWindow, accel_group, invert):
+    #def __init__(self, mainWindow, accel_group, invert):
+    def __init__(self, mainWindow, invert):
         self.mainWindow = mainWindow        
 
         self.invert = invert
@@ -13,7 +14,7 @@ class InvertGUI:
         self.tooltips = Gtk.Tooltip()
 
         self.vBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.accel_group = accel_group
+        self.accel_group = None #accel_group
         
         # --------------------
         # Calculations Section
@@ -22,7 +23,7 @@ class InvertGUI:
         # Label
         self.computeLabel = Gtk.Label(label="<b>Calculation Settings</b>")
         self.computeLabel.set_use_markup(True)
-        self.vBox.pack_start(self.computeLabel, expand=False)
+        self.vBox.append(self.computeLabel)
         
         # Resolution
         self.resolutionLabel = Gtk.Label(label="Resolution")
@@ -41,38 +42,38 @@ class InvertGUI:
         self.resolutionCombo.connect("changed", self.setSolutionSensitivity)
 
         self.resolutionBox = Gtk.Box(homogeneous=True, spacing=5)
-        self.resolutionBox.pack_start(self.resolutionLabel)
-        self.resolutionBox.pack_end(self.resolutionCombo)
-        self.vBox.pack_start(self.resolutionBox, expand=False)
+        self.resolutionBox.append(self.resolutionLabel)
+        self.resolutionBox.append(self.resolutionCombo)
+        self.vBox.append(self.resolutionBox)
         
         # Norm-Damping
         self.ndampLabel = Gtk.Label(label="Norm Damping")
-        self.ndampScale = guiUtils.LogRangeSelectionBox(initial=self.invert.ndamp, min=0.0, max=100.0, incr=0.5, pageIncr=1, digits=3, buttons=True)
-        self.tooltips.set_tip(self.ndampScale, 'controls how large the solution amplitudes are by damping against the norm of the solution vector')
+        self.ndampScale = guiUtils.LogRangeSelectionBox(initial=self.invert.ndamp, min1=0.0, max1=100.0, incr=0.5, pageIncr=1, digits=3, buttons=True)
+        self.ndampScale.set_tooltip_text('controls how large the solution amplitudes are by damping against the norm of the solution vector')
         self.ndampBox = Gtk.Box(homogeneous=True, spacing=5)
-        self.ndampBox.pack_start(self.ndampLabel)
-        self.ndampBox.pack_end(self.ndampScale)
-        self.vBox.pack_start(self.ndampBox, expand=False)
+        self.ndampBox.append(self.ndampLabel)
+        self.ndampBox.append(self.ndampScale)
+        self.vBox.append(self.ndampBox )
         
         # R Damping
         self.rdampLabel = Gtk.Label(label="Roughness Damping")
-        self.rdampScale = guiUtils.LogRangeSelectionBox(initial=self.invert.ndamp, min=0.0, max=100.0, incr=0.5, pageIncr=1, digits=3, buttons=True)
-        self.tooltips.set_tip(self.rdampScale, 'controls how smooth the solution is by damping against gradients in solution space')
+        self.rdampScale = guiUtils.LogRangeSelectionBox(initial=self.invert.ndamp, min1=0.0, max1=100.0, incr=0.5, pageIncr=1, digits=3, buttons=True)
+        self.rdampScale.set_tooltip_text('controls how smooth the solution is by damping against gradients in solution space')
         self.rdampBox = Gtk.Box(homogeneous=True, spacing=5)
-        self.rdampBox.pack_start(self.rdampLabel)
-        self.rdampBox.pack_end(self.rdampScale)
-        self.vBox.pack_start(self.rdampBox, expand=False)    
+        self.rdampBox.append(self.rdampLabel)
+        self.rdampBox.append(self.rdampScale)
+        self.vBox.append(self.rdampBox )    
         
         # Data File
         self.dataFileLabel = Gtk.Label(label="Data File")
         self.dataFile = guiUtils.FileSelectionBox(initial=self.invert.data, chooseTitle="Select Data File", width=10, mainWindow=self.mainWindow)
         self.dataFileBox = Gtk.Box(homogeneous=True, spacing=5)
-        self.dataFileBox.pack_start(self.dataFileLabel)
-        self.dataFileBox.pack_end(self.dataFile)
-        self.tooltips.set_tip(self.dataFileBox, 'open phase velocity data, L stands for Love, R for Rayleigh waves, numbers indicate period in seconds')
-        self.vBox.pack_start(self.dataFileBox, expand=False)
+        self.dataFileBox.append(self.dataFileLabel)
+        self.dataFileBox.append(self.dataFile)
+        self.dataFileBox.set_tooltip_text('open phase velocity data, L stands for Love, R for Rayleigh waves, numbers indicate period in seconds')
+        self.vBox.append(self.dataFileBox)
         
-        self.vBox.pack_start(Gtk.Separator(), expand=False)
+        self.vBox.append(Gtk.Separator())
         
         # plot buttons
         self.plotsBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, homogeneous=False, spacing=5)
@@ -80,45 +81,50 @@ class InvertGUI:
         self.plotsBottomBox = Gtk.Box(homogeneous=False, spacing=5)
         self.plotSourcesButton = Gtk.Button(label="Plot Sources")
         self.plotSourcesButton.connect("clicked", self.plotSources)
-        self.plotsTopBox.pack_start(self.plotSourcesButton, expand=True)
+        self.plotsTopBox.append(self.plotSourcesButton)
         self.plotRecieversButton = Gtk.Button(label="Plot Receivers")
         self.plotRecieversButton.connect("clicked", self.plotReceivers)
-        self.plotsTopBox.pack_start(self.plotRecieversButton, expand=True)
+        self.plotsTopBox.append(self.plotRecieversButton)
         self.plotPathsButton = Gtk.Button(label="Plot Paths")
-        self.tooltips.set_tip(self.dataFileBox, 'Plot paths from Sources to Receivers')
+        self.dataFileBox.set_tooltip_text('Plot paths from Sources to Receivers')
         self.plotPathsButton.connect("clicked", self.plotPaths)
-        self.plotsBottomBox.pack_start(self.plotPathsButton, expand=True)
+        self.plotsBottomBox.append(self.plotPathsButton)
         self.plotPathsSlideLabel = Gtk.Label(label="Sampling:  ")
-        self.plotsBottomBox.pack_start(self.plotPathsSlideLabel, expand=True)
-        self.plotPathsSlider = guiUtils.RangeSelectionBox(initial=30, min=1, max=50, digits=0, incr=1)
-        self.tooltips.set_tip(self.dataFileBox, 'Adjust the sampling for path plotting to reduce the total number of paths displayed.')
-        self.plotsBottomBox.pack_start(self.plotPathsSlider, expand=True)
-        self.plotsBox.pack_start(self.plotsTopBox, expand=True)
-        self.plotsBox.pack_start(self.plotsBottomBox, expand=True)
-        self.vBox.pack_start(self.plotsBox, expand=False)
+        self.plotsBottomBox.append(self.plotPathsSlideLabel)
+        self.plotPathsSlider = guiUtils.RangeSelectionBox(initial=30, min1=1, max1=50, digits=0, incr=1)
+        self.dataFileBox.set_tooltip_text('Adjust the sampling for path plotting to reduce the total number of paths displayed.')
+        self.plotsBottomBox.append(self.plotPathsSlider)
+        self.plotsBox.append(self.plotsTopBox)
+        self.plotsBox.append(self.plotsBottomBox)
+        self.vBox.append(self.plotsBox )
         
-        self.vBox.pack_start(Gtk.Separator(), expand=False)
+        self.vBox.append(Gtk.Separator() )
 # Compute Buttons
         self.computeButtonBox = Gtk.Box(homogeneous=True, spacing=5)
         self.computeMatrixButton = Gtk.Button(label="Compute DMatrix")
-        self.tooltips.set_tip(self.computeMatrixButton, 'compute the design matrix for the inverse problem. needs to be computed for each new resolution setting or new dataset')
+        self.computeMatrixButton.set_tooltip_text('compute the design matrix for the inverse problem. needs to be computed for each new resolution setting or new dataset')
 
         self.computeMatrixButton.connect("clicked", self.computeMatrix)
-        self.computeMatrixButton.add_accelerator("clicked", self.accel_group, ord('M'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
+        #self.computeMatrixButton.add_accelerator("clicked", self.accel_group, ord('M'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
+        
+        # not working with the following gtk4 method
+        #trigger = Gtk.ShortcutTrigger.newv([Gdk.KEY_m], Gdk.ModifierType.CONTROL_MASK)
+        #shortcut = Gtk.Shortcut.new(trigger)
+        #self.computeMatrixButton.add_shortcut(shortcut)
 
         self.computeSolButton = Gtk.Button(label="Compute solution")
         self.computeSolButton.connect("clicked", self.computeSolution)
-        self.tooltips.set_tip(self.computeSolButton, 'compute the solution for the inverse problem. needs to be computed for each new damping setting')
-        self.computeSolButton.add_accelerator("clicked", self.accel_group, ord('S'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
+        self.computeSolButton.set_tooltip_text('compute the solution for the inverse problem. needs to be computed for each new damping setting')
+        #self.computeSolButton.add_accelerator("clicked", self.accel_group, ord('S'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
         self.computeSolButton.set_sensitive(False)
 
-        self.computeButtonBox.pack_start(self.computeMatrixButton, expand=False)
-        self.computeButtonBox.pack_end(self.computeSolButton, expand=False)
-        self.vBox.pack_start(self.computeButtonBox, expand=False)
+        self.computeButtonBox.append(self.computeMatrixButton )
+        self.computeButtonBox.append(self.computeSolButton )
+        self.vBox.append(self.computeButtonBox )
         
-        self.vBox.pack_start(Gtk.Separator(), expand=False)
+        self.vBox.append(Gtk.Separator() )
         
-        self.vBox.show_all()
+        self.vBox.show()
     
     def deactivatePlotButton(self, widget=None):
         self.computeSolButton.set_sensitive(False)
