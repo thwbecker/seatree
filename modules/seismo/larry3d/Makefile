@@ -1,6 +1,6 @@
 include makefile.system
 
-USE_FLAGS = -O2 $(F_EXT_SOURCE_FLAG)  -fdollar-ok
+USE_FLAGS = -O2 $(F_EXT_SOURCE_FLAG) -fallow-argument-mismatch -fdollar-ok
 
 all:	dirs progs
 
