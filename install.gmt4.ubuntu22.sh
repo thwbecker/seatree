@@ -3,27 +3,32 @@
 # GMT 4.5.18 Installation Script for Ubuntu 22.04
 
 # Define installation directory
-GMT_INSTALL_DIR=$(pwd)"/gmt-4.5.18"
-
-# Update system and install required dependencies
-echo "Updating system and installing dependencies..."
-#sudo apt update
-#sudo apt install -y build-essential gfortran cmake libx11-dev libnetcdf-dev libgdal-dev \
-#libpcre3-dev libcurl4-openssl-dev libfftw3-dev liblapack-dev libblas-dev wget
+SEATREEROOT=$(pwd)
+GMT_INSTALL_DIR=$SEATREEROOT"/gmt-4.5.18"
+GSHHG_DIR=$GMT_INSTALL_DIR"/gshhg-gmt-2.3.7"
 
 rm -rf gmt-4.5.18
-echo "Downloading GMT 4.5.18 source code..."
-wget ftp://ftp.soest.hawaii.edu/gmt/gmt-4.5.18-src.tar.bz2
+if [ -e "gmt-4.5.18-src.tar.bz2" ]; then
+    echo "gmt-4.5.18-src.tar.bz2 exists."
+else
+    echo "Downloading GMT 4.5.18 source code..."
+    wget ftp://ftp.soest.hawaii.edu/gmt/gmt-4.5.18-src.tar.bz2
+fi
+
 echo "Extracting GMT 4.5.18 source..."
 tar -xvf gmt-4.5.18-src.tar.bz2
 cd gmt-4.5.18
 
-# Set NETCDF_HOME environment variable
-export NETCDF_HOME=/usr
+# Downloading GSHHG dataset
+wget http://www.soest.hawaii.edu/pwessel/gshhg/gshhg-gmt-2.3.7.tar.gz
+tar -zxvf gshhg-gmt-2.3.7.tar.gz
 
+# Set NETCDFHOME environment variable
+export NETCDFHOME=$SEATREEROOT"/netcdf-c-4.9.3-rc1"
+echo $NETCDFHOME
 # Configure the GMT build
 echo "Configuring GMT 4.5.18..."
-./configure --prefix=$GMT_INSTALL_DIR
+./configure --prefix=$GMT_INSTALL_DIR --enable-netcdf=$NETCDFHOME --with-gshhg-dir=$GSHHG_DIR
 
 # Compile the GMT source code
 echo "Compiling GMT 4.5.18..."

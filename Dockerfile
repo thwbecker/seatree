@@ -21,8 +21,8 @@ RUN apt-get update && apt-get install -y \
     libgtk-4-dev \
     build-essential \
     gfortran \
-    x11-apps \
-    libhdf5-dev
+    x11-apps libx11-dev libxt-dev libxaw7-dev\
+    libhdf5-dev 
 
 # Install the specific version of matplotlib using pip
 RUN pip3 install --user matplotlib==3.9.2 --break-system-packages
@@ -33,9 +33,9 @@ RUN git clone https://github.com/dunyuliu/seatree.dev.git /home/seatree
 # Set working directory
 WORKDIR /home/seatree
 
-RUN bash install.gmt4.ubuntu22.sh
-
 RUN bash install.netcdf.ubuntu22.sh
+
+RUN bash install.gmt4.ubuntu22.sh
 
 # Set environment variables
 ENV SEATREE=/home/seatree \
@@ -49,10 +49,8 @@ ENV SEATREE=/home/seatree \
 # Create symbolic link
 RUN ln -s $NETCDFHOME/lib/libnetcdf.so.22 $NETCDFHOME/lib/libnetcdf.so.7
 
-
-
 # Run the configuration script
 RUN yes '' | ./configure.python3.gtk4
 
 # Set the default command to run when starting the container
-CMD ["bash", "-c", "cd /home/seatree && python3 run.seatree.python3.gtk4.py"]
+CMD ["bash", "-c", "cd /home/seatree"]
