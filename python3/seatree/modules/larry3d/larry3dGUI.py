@@ -50,7 +50,7 @@ class larry3dGUI:
         
         # Norm-Damping
         self.ndampLabel = Gtk.Label(label="Norm Damping")
-        self.ndampScale = guiUtils.LogRangeSelectionBox(initial=0.0, min=0.0, max=10000.0, incr=0.5, pageIncr=1, digits=3, buttons=False)
+        self.ndampScale = guiUtils.LogRangeSelectionBox(initial=0.0, min1=0.0, max1=10000.0, incr=0.5, pageIncr=1, digits=3, buttons=False)
         self.ndampScale.set_tooltip_text('controls how large the solution amplitudes are by damping against the norm of the solution vector')
         self.ndampBox = Gtk.Box(homogeneous=True, spacing=5)
         self.ndampBox.append(self.ndampLabel)
@@ -59,7 +59,7 @@ class larry3dGUI:
         
         # R Damping
         self.rdampLabel = Gtk.Label(label="Roughness Damping")
-        self.rdampScale = guiUtils.LogRangeSelectionBox(initial=100.0, min=0.0, max=10000.0, incr=0.5, pageIncr=1, digits=3, buttons=False)
+        self.rdampScale = guiUtils.LogRangeSelectionBox(initial=100.0, min1=0.0, max1=10000.0, incr=0.5, pageIncr=1, digits=3, buttons=False)
         self.rdampScale.set_tooltip_text('controls how smooth the solution is by damping against gradients in solution space')
         self.rdampBox = Gtk.Box(homogeneous=True, spacing=5)
         self.rdampBox.append(self.rdampLabel)
@@ -68,7 +68,7 @@ class larry3dGUI:
         
         # number of layers
         self.nlayLabel = Gtk.Label(label="Number of Layers")
-        self.nlayScale = guiUtils.RangeSelectionBox(initial=15, min=1, max=50, incr=1, pageIncr=1, digits=0, buttons=False)
+        self.nlayScale = guiUtils.RangeSelectionBox(initial=15, min1=1, max1=50, incr=1, pageIncr=1, digits=0, buttons=False)
         self.nlayScale.set_tooltip_text('number of layers in model')
         self.nlayScale.connect("changed", self.setSolutionSensitivity)
         self.nlayBox = Gtk.Box(homogeneous=True, spacing=5)
@@ -124,7 +124,7 @@ class larry3dGUI:
         self.plotsBottomBox.append(self.plotPathsButton)
         self.plotPathsSlideLabel = Gtk.Label(label="Sampling:  ")
         self.plotsBottomBox.append(self.plotPathsSlideLabel)
-        self.plotPathsSlider = guiUtils.RangeSelectionBox(initial=30, min=1, max=50, digits=0, incr=1, buttons=False)
+        self.plotPathsSlider = guiUtils.RangeSelectionBox(initial=30, min1=1, max1=50, digits=0, incr=1, buttons=False)
         self.plotPathsSlider.set_tooltip_text('Adjust the sampling for path plotting to reduce the total number of paths displayed. - Not implemented yet')
         self.plotsBottomBox.append(self.plotPathsSlider)
         self.plotsBox.append(self.plotsTopBox)
