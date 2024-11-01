@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y \
     libgtk-4-dev \
     build-essential \
     gfortran \
-    x11-apps libx11-dev libxt-dev libxaw7-dev\
+    x11-apps libx11-dev libxt-dev libxaw7-dev ghostscript\
     libhdf5-dev 
 
 # Install the specific version of matplotlib using pip
