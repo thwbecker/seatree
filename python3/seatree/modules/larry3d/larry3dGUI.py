@@ -160,7 +160,7 @@ class larry3dGUI:
         # Plot buttons
         # choose layer to plot for GMT
         self.nlayplotLabel = Gtk.Label(label="Layer to Plot:  ")
-        self.nlayplotScale = guiUtils.RangeSelectionBox(initial=1, min=1, max=50, incr=1, pageIncr=1, digits=0, buttons=False)
+        self.nlayplotScale = guiUtils.RangeSelectionBox(initial=1, min1=1, max1=50, incr=1, pageIncr=1, digits=0, buttons=False)
         self.nlayplotScale.set_tooltip_text('controls which layer to plot using GMT: 1 is deepest, N is topmost.')
         self.nlayplotBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         self.nlayplotBox.append(self.nlayplotLabel)
