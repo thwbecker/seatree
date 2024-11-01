@@ -498,7 +498,7 @@ class larry3d(Module):
         self.myPlotter.setColorbarN(50)
         self.myPlotter.setColorbarPos("4.0i", "-.3i")
         self.myPlotter.setColorbarSize("3i", ".25i")
-        self.myPlotter.setColorbarHorizonal(True)
+        self.myPlotter.setColorbarHorizontal(True)
         self.myPlotter.setColorbarTriangles(False)
         self.myPlotter.setColorbarInterval(5)
         self.myPlotter.setColormapInvert(True)
