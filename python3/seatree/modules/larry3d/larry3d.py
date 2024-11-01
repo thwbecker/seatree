@@ -85,8 +85,8 @@ class larry3d(Module):
         self.prevPlot = None
         self.prevFName = None
 
-    def getPanel(self, mainWindow, accel_group):
-        self.gui = larry3dGUI(mainWindow, accel_group, self)
+    def getPanel(self, mainWindow):
+        self.gui = larry3dGUI(mainWindow, self)
         return self.gui.getPanel()
 
     def cleanPanel(self, accel_group):

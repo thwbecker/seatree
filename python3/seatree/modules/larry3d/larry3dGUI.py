@@ -6,13 +6,13 @@ import time, os
 
 class larry3dGUI:
     
-    def __init__(self, mainWindow, accel_group, larry3d):
+    def __init__(self, mainWindow, larry3d):
         self.mainWindow = mainWindow
 
         self.larry3d = larry3d
 
         self.vBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
-        self.accel_group = accel_group
+        self.accel_group = None # accel_group depreciated in GTK4
         
         # --------------------
         # Calculations Section
@@ -144,12 +144,12 @@ class larry3dGUI:
         self.computeMatrixButton = Gtk.Button(label="Compute DMatrix")
         self.computeMatrixButton.set_tooltip_text('compute the design matrix for the inverse problem.')
         self.computeMatrixButton.connect("clicked", self.computeMatrix)
-        self.computeMatrixButton.add_accelerator("clicked", self.accel_group, ord('M'), Gtk.AccelFlags.VISIBLE)
+        #self.computeMatrixButton.add_accelerator("clicked", self.accel_group, ord('M'), Gtk.AccelFlags.VISIBLE)
 
         self.computeSolButton = Gtk.Button(label="Compute solution")
         self.computeSolButton.connect("clicked", self.computeSolution)
         self.computeSolButton.set_tooltip_text('compute the solution for the inverse problem.')
-        self.computeSolButton.add_accelerator("clicked", self.accel_group, ord('S'), Gtk.AccelFlags.VISIBLE)
+        #self.computeSolButton.add_accelerator("clicked", self.accel_group, ord('S'), Gtk.AccelFlags.VISIBLE)
 
         self.computeButtonBox.append(self.computeMatrixButton)
         self.computeButtonBox.append(self.computeSolButton)
