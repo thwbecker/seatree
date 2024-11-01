@@ -53,4 +53,4 @@ RUN ln -s $NETCDFHOME/lib/libnetcdf.so.22 $NETCDFHOME/lib/libnetcdf.so.7
 RUN yes '' | ./configure.python3.gtk4
 
 # Set the default command to run when starting the container
-CMD ["bash", "-c", "cd /home/seatree"]
+CMD ["bash", "-c", "cd /home/seatree && exec bash"]
