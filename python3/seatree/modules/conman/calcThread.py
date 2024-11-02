@@ -191,7 +191,7 @@ class CalcThread(threading.Thread):
         if newStep > step:
             if self.__debug:
                 print("emitting 'data-changed' signal")
-            GLib.idle_add(self.gui.emit, conmanGUI.CHANGED_SIGNAL)
+            GLib.idle_add(self.gui.emit, CHANGED_SIGNAL)
             step = newStep
         return step
 
@@ -227,20 +227,26 @@ class CalcThread(threading.Thread):
 
             print("Starting calculation")
             self.__initData()
-            start = datetime.now()
-            command = [self.executable]
+            start = -1 #datetime.now()
+            command = [self.executable + self.stdin]
             print(f"Command: {command}")
 
             if self.shouldKill():
                 return
 
-            if self.stdin is not None and len(self.stdin) > 0:
-                proc = subprocess.Popen(command, shell=False, stdin=subprocess.PIPE,
-                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                proc.stdin.write(self.stdin)
-                proc.stdin.close()
-            else:
-                proc = subprocess.Popen(command, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            #if self.stdin is not None and len(self.stdin) > 0:
+            #    proc = subprocess.Popen(command, shell=False, stdin=subprocess.PIPE,
+            #                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            #    proc.stdin.write(self.stdin.encode())
+            #    proc.stdin.close()
+            #else:
+            #    proc = subprocess.Popen(command, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            # depreciate the above block because of change of conman command to "conman < input_file"
+            # "<" cannot be passed to subprocess.
+            proc = subprocess.Popen(command, shell=True, 
+                                    stdout=subprocess.PIPE, 
+                                    stderr=subprocess.PIPE)
 
             print(f"Launched process, pid={proc.pid}")
 
@@ -270,7 +276,7 @@ class CalcThread(threading.Thread):
             killed = False  # Update this to actual logic if needed
             step = self.__loadAllAvailableData(step)
 
-            end = datetime.now()
+            end = 0 #datetime.now()
             if killed:
                 print(f"Thread killed after {end - start}")
             else:
@@ -287,9 +293,10 @@ class CalcThread(threading.Thread):
                             print(line.decode('utf-8').strip())
 
             if not killed:
-                Gtk.threads_enter()
-                self.gui.emit(conmanGUI.DONE_SIGNAL)
-                Gtk.threads_leave()
+                #Gtk.threads_enter()
+                #self.gui.emit(conmanGUI.DONE_SIGNAL)
+                #Gtk.threads_leave()
+                GLib.idle_add(self.gui.emit, DONE_SIGNAL)
 
             try:
                 self.stdout.close()
@@ -300,9 +307,10 @@ class CalcThread(threading.Thread):
             print("Finished!")
         except:
             traceback.print_exception(*sys.exc_info())
-            Gtk.threads_enter()
-            self.gui.emit(conmanGUI.ERROR_SIGNAL)
-            Gtk.threads_leave()
+            #Gtk.threads_enter()
+            #self.gui.emit(conmanGUI.ERROR_SIGNAL)
+            #Gtk.threads_leave()
+            GLib.idle_add(self.gui.emit, ERROR_SIGNAL)
 
 if __name__ == "__main__":
     calc = CalcThread(None, "", "", "")

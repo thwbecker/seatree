@@ -114,21 +114,31 @@ class ConMan(Module):
         print("ConMan path: " + self.conmanPath)
     
     def gawk(self, steps, saveSteps, rayleigh, nelz, aspect, heating, activation):
+        model = "bm1a50"
 
-        input_gen_dir = os.path.join(self.conmanPath, "input_gen")
-        conman_exe_path = os.path.join(self.conmanPath, "conman")
+        conmanRootPath = os.path.abspath(os.path.join(self.conmanPath, ".."))
+        print('conman root path is ', conmanRootPath)
+
+        os.system("cp -r "+conmanRootPath+"/Cookbook1/run.bm1a50 "+self.tempDir)
+        self.runFile = self.tempDir + "run."+model
+        print(self.runFile)
+
+        input_gen_dir = os.path.join(conmanRootPath, "input_gen")
+        conman_exe_path = os.path.join(conmanRootPath, "conman")
         input = " -v print_geom=1 -f"
-        input += " "+input_gen_dir+"/make_conman_thermal_in.awk > geom.in"
+        input += " "+input_gen_dir+"/make_conman_thermal_in.awk > "+self.tempDir+"/geom.50"
 
-        result = self.scriptRunner.runScript("gawk", stdinStr=input)
-        retval = result.getReturnValue()
-        
+        os.system("gawk "+input)
+        #result = self.scriptRunner.runScript("gawk", stdinStr=input)
+        #retval = result.getReturnValue()
+
         input = " -v print_geom=0 -f"
-        input += " "+input_gen_dir+"/make_conman_thermal_in.awk > par.in"
-
-        result = self.scriptRunner.runScript("gawk", stdinStr=input)
-        retval = result.getReturnValue()
-
+        input += " "+input_gen_dir+"/make_conman_thermal_in.awk > "+self.tempDir+"/in."+model
+        os.system("gawk "+input)
+        retval = 0
+        #result = self.scriptRunner.runScript("gawk", stdinStr=input)
+        #retval = result.getReturnValue()
+        
         if retval != 0:
             print("********* INPUT *********")
             print(input)
@@ -276,10 +286,12 @@ class ConMan(Module):
     def startCalc(self):
         if self.calcThread is not None and self.calcThread.is_alive():
             self.killThread()
-        stdin = ""
-        with open(self.runFile, "r") as file:
-            for line in file:
-                stdin += line
+        #stdin = ""
+        #with open(self.runFile, "r") as file:
+        #    for line in file:
+        #        stdin += line
+        stdin = " < "+self.runFile
+        print("stdin is", stdin)
         self.makeCalcThread(stdin=stdin)
         self.calcThread.start()
 
