@@ -132,11 +132,15 @@ class ConManGUI(Gtk.Box):
         self.activationBox.append(self.activationEntry )
         self.append(self.activationBox )
         
-        ### Generate Deck Button ###
-        self.gendeckButton = Gtk.Button(label="Prepare input file")
-        self.gendeckButton.connect("clicked", self.genDeck)
-        self.append(self.gendeckButton )
-        
+        # depreciate this block and replace with gawk button.
+        #### Generate Deck Button ###
+        #self.gendeckButton = Gtk.Button(label="Prepare input file")
+        #self.gendeckButton.connect("clicked", self.genDeck)
+        #self.append(self.gendeckButton )
+        self.gawkButton = Gtk.Button(label="Prepare input file")
+        self.gawkButton.connect("clicked", self.GUIgawk)
+        self.append(self.gawkButton)        
+
         ### Plot Check Boxes ###
         self.plotChoicesBox = Gtk.Box(homogeneous=True, spacing=5)
         self.plotChoicesLabel = Gtk.Label(label="Plot Elements")
@@ -258,6 +262,7 @@ class ConManGUI(Gtk.Box):
         active = self.aspectSelect.get_active()
         return self.aspect_ratios[active]
 
+    # depreciated but kept with ConMan v3.0.0
     def genDeck(self, *args):
         steps = int(self.stepsEntry. getValue())
         saveSteps = int(self.stepsSavedEntry. getValue())
@@ -268,6 +273,23 @@ class ConManGUI(Gtk.Box):
         activation = int(self.activationEntry. getValue())
         
         success = self.conman.genDeck(steps, saveSteps, rayleigh, nelz, aspect, heating, activation)
+        self.startButton.set_sensitive(success)
+
+    def GUIgawk(self, *args):
+        steps = int(self.stepsEntry. getValue())
+        saveSteps = int(self.stepsSavedEntry. getValue())
+        rayleigh = int(self.rayleighEntry. getValue())
+        nelz = self.getNelz()
+        aspect = self.getAspect()
+        heating = int(self.heatingEntry. getValue())
+        activation = int(self.activationEntry. getValue())
+        print('In GUIgawk, changed values are ')
+        print('steps:', steps)
+        print('saveSteps', saveSteps)
+        print('rayleigh', rayleigh)
+
+        #success = self.conman.genDeck(steps, saveSteps, rayleigh, nelz, aspect, heating, activation)
+        success = self.conman.gawk(steps, saveSteps, rayleigh, nelz, aspect, heating, activation)
         self.startButton.set_sensitive(success)
 
     def loadResultFile(self, *args):

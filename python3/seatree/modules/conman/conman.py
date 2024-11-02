@@ -30,7 +30,7 @@ class ConMan(Module):
         longName =  "ConMan"
         
         # version number
-        version = 0.1
+        version = 3.0.0
         
         # name of the directory that should be created inside of the users
         # home directory, inside of the .seatree folder. this folder should
@@ -112,6 +112,31 @@ class ConMan(Module):
             conmanPath = ""
         self.conmanPath = conmanPath
         print("ConMan path: " + self.conmanPath)
+    
+    def gawk(self, steps, saveSteps, rayleigh, nelz, aspect, heating, activation):
+
+        input_gen_dir = os.path.join(self.conmanPath, "input_gen")
+        conman_exe_path = os.path.join(self.conmanPath, "conman")
+        input = "-v print_geom=1 -f"
+        input += " "+input_gen_dir+"/make_conman_thermal_in.awk > geom.in"
+
+        result = self.scriptRunner.runScript("gawk", stdinStr=input)
+        retval = result.getReturnValue()
+        
+        input = "-v print_geom=0 -f"
+        input += " "+input_gen_dir+"/make_conman_thermal_in.awk > par.in"
+
+        result = self.scriptRunner.runScript("gawk", stdinStr=input)
+        retval = result.getReturnValue()
+
+        if retval != 0:
+            print("********* INPUT *********")
+            print(input)
+            print("*************************")
+            print(result.getStandardOutput())
+            print(result.getStandardError())
+        print("retval: " + str(retval))
+        return retval == 0
     
     def genDeck(self, steps, saveSteps, rayleigh, nelz, aspect, heating, activation):
         input = self.getGenDeckInput(steps, saveSteps, rayleigh, nelz, aspect, heating, activation)
