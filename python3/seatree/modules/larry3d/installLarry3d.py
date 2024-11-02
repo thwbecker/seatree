@@ -10,6 +10,7 @@ class Larry3dInstaller:
 		self.main = main
 		self.path = main.getPythonRootDir()
 		self.arch = self.main.arch
+		print('self.arch for Larry3d is', self.arch) 
 		# setup/build Larry3d
 		if (self.checkBuildLarry3d()):
 			if (not self.setupMakefile()):
@@ -76,14 +77,15 @@ class Larry3dInstaller:
 			
 			if (self.arch):
 				self.main.arch = self.arch
-		
+		print('in setupMakefile, self.arch is set to be ', self.arch) 
+
 		f77 = self.sys_var("F77")
 		fflags = self.sys_var("FFLAGS")
 		f_ext = self.sys_var("F_EXT_SOURCE_FLAG")
 		
 		makes = []
-		#makes.append("ARCH=" + self.arch + "\n")
-		makes.append("ARCH=bin \n")
+		makes.append("ARCH=" + self.arch + "\n")
+		#makes.append("ARCH=bin \n")
 
 		if f77.find("gfortran") >= 0:
 			if fflags.find("ffixed-line") < 0 and f_ext.find("ffixed-line") < 0:
@@ -205,15 +207,15 @@ class Larry3dInstaller:
 		myXml.writeToXml()
 	
 	def getLarry3dBuildPath(self):
-		#if (self.arch):
-		#	return self.larry3dDir + os.sep + self.arch
-		#path = self.larry3dDir + os.sep + "x86"
-		#if self.isDir(path):
-		#	return path
-		#path = self.larry3dDir + os.sep + "x86_64"
-		#if self.isDir(path):
-		#	return path
-		return self.larry3dDir + "/bin"
+		if (self.arch):
+			return self.larry3dDir + os.sep + self.arch
+		path = self.larry3dDir + os.sep + "x86"
+		if self.isDir(path):
+			return path
+		path = self.larry3dDir + os.sep + "x86_64"
+		if self.isDir(path):
+			return path
+		return ""
 	
 	def isDir(self, path):
 		return os.path.exists(path) and os.path.isdir(path)
