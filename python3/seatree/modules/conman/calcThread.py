@@ -77,8 +77,10 @@ class CalcThread(threading.Thread):
         if append:
             if self.data is None:
                 self.__initData()
-            data = self.data
-            start = len(data)
+                start = 0
+            else:
+                data = self.data
+                start = len(data)
         else:
             data = []
             start = 0
@@ -199,14 +201,6 @@ class CalcThread(threading.Thread):
         if os.path.exists(self.outFile):
             print(f"Deleting {self.outFile}")
             os.remove(self.outFile)
-
-    def shouldKill(self):
-        # Placeholder for actual logic to determine if the thread should be killed
-        return False
-
-    def __initData(self):
-        # Placeholder for initialization logic
-        pass
 
     def run(self):
         try:

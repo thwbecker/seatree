@@ -1,7 +1,7 @@
 #! /bin/bash
 export SEATREEROOT=$(pwd)
 cd modules/mc
-if [ -e "ConMan.legacy"]; then 
+if [ -e "ConMan.legacy" ]; then 
     rm -rf ConMan.legacy
 fi
 
