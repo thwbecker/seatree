@@ -121,7 +121,14 @@ class ConMan(Module):
 
         os.system("cp -r "+conmanRootPath+"/Cookbook1/run.bm1a50 "+self.tempDir)
         self.runFile = self.tempDir + "run."+model
-        print(self.runFile)
+        print('ConMan input file is '+self.runFile)
+        
+        # Add temp dir path to each input files
+        with open(self.runFile, 'r') as fr:
+            full_paths = [self.tempDir + line.strip() for line in fr]
+        with open(self.runFile, 'w') as fw:
+            for full_path in full_paths:
+                fw.write(full_path + '\n')
 
         input_gen_dir = os.path.join(conmanRootPath, "input_gen")
         conman_exe_path = os.path.join(conmanRootPath, "conman")
@@ -138,7 +145,7 @@ class ConMan(Module):
         retval = 0
         #result = self.scriptRunner.runScript("gawk", stdinStr=input)
         #retval = result.getReturnValue()
-        
+
         if retval != 0:
             print("********* INPUT *********")
             print(input)
