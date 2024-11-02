@@ -75,6 +75,7 @@ if [ -n "$MACH" ]; then
     export GMTHOME=$GMT4HOME
     export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1
     yes '' | ./configure.python3.gtk4 
+    bash install.conman.sh
 fi
 
 export SEATREE=$(pwd)
