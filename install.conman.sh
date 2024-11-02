@@ -7,6 +7,7 @@ git clone https://github.com/geodynamics/conman.git ConMan
 cd ConMan
 cd src
 make
+cp ../conman conman.exp # make a copy of exe in the name of conman.exp
 cd $SEATREEROOT
 
 
