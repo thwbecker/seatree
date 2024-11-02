@@ -709,7 +709,7 @@ class larry3d(Module):
                 
     def extractInversionResults(self):
         # Variance and Norm
-        with open(self.sol_file + '.log', 'r+') as f:
+        with open(self.sol_file + '.log', 'r+', encoding='utf-8', errors='ignore') as f:
             listOfFile = f.readlines()
             if len(listOfFile) >= 2:
                 # get variance reduction and norm from last line of file

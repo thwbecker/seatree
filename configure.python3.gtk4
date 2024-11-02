@@ -8,6 +8,7 @@ echo
 
 export CC=gcc
 export F77=gfortran
+export F90=gfortran # used by larry3d; later in Makefile.
 
 # -fcommon
 export CFLAGS=-fcommon
