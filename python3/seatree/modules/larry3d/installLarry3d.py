@@ -82,7 +82,8 @@ class Larry3dInstaller:
 		f_ext = self.sys_var("F_EXT_SOURCE_FLAG")
 		
 		makes = []
-		makes.append("ARCH=" + self.arch + "\n")
+		#makes.append("ARCH=" + self.arch + "\n")
+		makes.append("ARCH= \n")
 		
 		if f77.find("gfortran") >= 0:
 			if fflags.find("ffixed-line") < 0 and f_ext.find("ffixed-line") < 0:
@@ -119,7 +120,7 @@ class Larry3dInstaller:
 			print("Possible causes:")
 			print("  * You don't have build programs installed such as make and gcc")
 			f = open(errorFile, 'w')
-			f.write(str(output[1]))
+			f.write(output[1].decode('utf-8'))
 			f.close()
 			return False
 		else:
@@ -177,7 +178,7 @@ class Larry3dInstaller:
 					errorFile = d + "error.log"
 					print("Error converting " + sdata + " to binary " + errorFile)
 					f = open(errorFile, 'w')
-					f.write(output[1])
+					f.write(output[1].decode('utf-8'))
 					f.close()
 #						return False
 				else:
@@ -204,15 +205,15 @@ class Larry3dInstaller:
 		myXml.writeToXml()
 	
 	def getLarry3dBuildPath(self):
-		if (self.arch):
-			return self.larry3dDir + os.sep + self.arch
-		path = self.larry3dDir + os.sep + "x86"
-		if self.isDir(path):
-			return path
-		path = self.larry3dDir + os.sep + "x86_64"
-		if self.isDir(path):
-			return path
-		return ""
+		#if (self.arch):
+		#	return self.larry3dDir + os.sep + self.arch
+		#path = self.larry3dDir + os.sep + "x86"
+		#if self.isDir(path):
+		#	return path
+		#path = self.larry3dDir + os.sep + "x86_64"
+		#if self.isDir(path):
+		#	return path
+		return self.larry3dDir
 	
 	def isDir(self, path):
 		return os.path.exists(path) and os.path.isdir(path)
