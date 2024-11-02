@@ -117,13 +117,13 @@ class ConMan(Module):
 
         input_gen_dir = os.path.join(self.conmanPath, "input_gen")
         conman_exe_path = os.path.join(self.conmanPath, "conman")
-        input = "-v print_geom=1 -f"
+        input = " -v print_geom=1 -f"
         input += " "+input_gen_dir+"/make_conman_thermal_in.awk > geom.in"
 
         result = self.scriptRunner.runScript("gawk", stdinStr=input)
         retval = result.getReturnValue()
         
-        input = "-v print_geom=0 -f"
+        input = " -v print_geom=0 -f"
         input += " "+input_gen_dir+"/make_conman_thermal_in.awk > par.in"
 
         result = self.scriptRunner.runScript("gawk", stdinStr=input)
