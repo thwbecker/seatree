@@ -83,8 +83,8 @@ class Larry3dInstaller:
 		
 		makes = []
 		#makes.append("ARCH=" + self.arch + "\n")
-		makes.append("ARCH= \n")
-		
+		makes.append("ARCH=bin \n")
+
 		if f77.find("gfortran") >= 0:
 			if fflags.find("ffixed-line") < 0 and f_ext.find("ffixed-line") < 0:
 				makes.append("F_EXT_SOURCE_FLAG=-ffixed-line-length-132\n")
@@ -213,7 +213,7 @@ class Larry3dInstaller:
 		#path = self.larry3dDir + os.sep + "x86_64"
 		#if self.isDir(path):
 		#	return path
-		return self.larry3dDir
+		return self.larry3dDir + "/bin"
 	
 	def isDir(self, path):
 		return os.path.exists(path) and os.path.isdir(path)
