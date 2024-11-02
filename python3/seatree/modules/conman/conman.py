@@ -114,13 +114,13 @@ class ConMan(Module):
         print("ConMan path: " + self.conmanPath)
     
     def gawk(self, steps, saveSteps, rayleigh, nelz, aspect, heating, activation):
-        model = "bm1a50"
+        self.model = "bm1a50"
 
         conmanRootPath = os.path.abspath(os.path.join(self.conmanPath, ".."))
         print('conman root path is ', conmanRootPath)
 
         os.system("cp -r "+conmanRootPath+"/Cookbook1/run.bm1a50 "+self.tempDir)
-        self.runFile = self.tempDir + "run."+model
+        self.runFile = self.tempDir + "run."+self.model
         print('ConMan input file is '+self.runFile)
         
         # Add temp dir path to each input files
@@ -140,7 +140,7 @@ class ConMan(Module):
         #retval = result.getReturnValue()
 
         input = " -v print_geom=0 -f"
-        input += " "+input_gen_dir+"/make_conman_thermal_in.awk > "+self.tempDir+"/in."+model
+        input += " "+input_gen_dir+"/make_conman_thermal_in.awk > "+self.tempDir+"/in."+self.model
         os.system("gawk "+input)
         retval = 0
         #result = self.scriptRunner.runScript("gawk", stdinStr=input)
@@ -286,7 +286,7 @@ class ConMan(Module):
 
     def makeCalcThread(self, stdin=""):
         executable = self.conmanPath + "conman.exp"
-        oufFile = self.tempDir + "field.new"
+        oufFile = self.tempDir + "temp."+self.model
         self.calcThread = CalcThread(self.gui, executable, self.mainWindow.getTempFileDir(), oufFile,
                                      stdin=stdin)
 
