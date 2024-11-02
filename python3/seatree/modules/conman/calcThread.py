@@ -162,7 +162,7 @@ class CalcThread(threading.Thread):
                     x += 1
                 
                 tokens = line.split()
-                if len(tokens) != 6:
+                if len(tokens) != 7:
                     return None
                 
                 x1[x, z] = float(tokens[1])
@@ -183,7 +183,7 @@ class CalcThread(threading.Thread):
         if self.__debug:
             print("loading all available data!")
         with self.dataLock:
-            self.loadDataFromFile(self.outFile, True)
+            self.data = self.loadDataFromFile(self.outFile, True)
             newStep = len(self.data)
         
         if self.shouldKill():
@@ -207,10 +207,6 @@ class CalcThread(threading.Thread):
     def __initData(self):
         # Placeholder for initialization logic
         pass
-
-    def __loadAllAvailableData(self, step):
-        # Placeholder for actual data loading logic
-        return step + 1
 
     def run(self):
         try:
@@ -260,6 +256,9 @@ class CalcThread(threading.Thread):
                     return
 
                 time.sleep(pollInterval)
+
+                print('Process time step', step)
+                print(' for output file', self.outFile)
 
                 if os.path.exists(self.outFile):
                     newSize = os.path.getsize(self.outFile)
