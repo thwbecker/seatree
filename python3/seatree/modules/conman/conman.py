@@ -30,7 +30,7 @@ class ConMan(Module):
         longName =  "ConMan"
         
         # version number
-        version = 3.0.0
+        version = 3.00
         
         # name of the directory that should be created inside of the users
         # home directory, inside of the .seatree folder. this folder should
