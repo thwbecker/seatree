@@ -1,7 +1,11 @@
 #! /bin/bash
 export SEATREEROOT=$(pwd)
 cd modules/mc
-mv ConMan ConMan.legacy #rename existing legacy version
+if [ -e "ConMan.legacy"]; then 
+    rm -rf ConMan
+else
+    mv ConMan ConMan.legacy #rename existing legacy version
+fi 
 # Fetching the latest ConMan from CIG
 git clone https://github.com/geodynamics/conman.git ConMan
 cd ConMan
