@@ -171,7 +171,7 @@ class NonLinLoc(Module):
         # reading in bin file as single precision floating points
         with open(binFile, mode="rb") as rdBinFile:
             binValues = array.array('f') 
-            binValues.read(rdBinFile, self.xModelDim * self.yModelDim * self.zModelDim)
+            binValues.fromfile(rdBinFile, self.xModelDim * self.yModelDim * self.zModelDim)
         
         # converting into a numpy array and reshaping
         data = np.array(binValues, dtype=np.float32)
