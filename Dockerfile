@@ -7,13 +7,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Update the package list and install required packages
 RUN apt-get update && apt-get install -y \
     git \
-    vim \
     wget \
     cmake \
     python3 \
     python3-pip \
-    python3-matplotlib \
-    gmt \
     python3-numpy \
     python3-gi \
     python3-gi-cairo \
@@ -22,7 +19,8 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     gfortran \
     x11-apps libx11-dev libxt-dev libxaw7-dev ghostscript\
-    libhdf5-dev 
+    libhdf5-dev \ 
+    gawk
 
 # Install the specific version of matplotlib using pip
 RUN pip3 install --user matplotlib==3.9.2 --break-system-packages
@@ -52,5 +50,9 @@ RUN ln -s $NETCDFHOME/lib/libnetcdf.so.22 $NETCDFHOME/lib/libnetcdf.so.7
 # Run the configuration script
 RUN yes '' | ./configure.python3.gtk4
 
+RUN bash install.conman.sh 
+
+RUN apt-get autoremove
+RUN apt-get remove -y git wget cmake
 # Set the default command to run when starting the container
 CMD ["bash", "-c", "cd /home/seatree && exec bash"]
