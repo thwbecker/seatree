@@ -52,7 +52,7 @@ def sleep(seconds):
 
 def main():
     container_name = "seatree"
-    image_name = "dunyuliu/seatree:v1.0.0"
+    image_name = "dunyuliu/seatree:v1.0.0.arm64"
 
     x_display = check_x_server()
     if not x_display:
