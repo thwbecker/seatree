@@ -130,6 +130,7 @@ class ConMan(Module):
         print(f"rayleigh #: {rayleigh}")
         print(f"nelz: {nelz}")
         print(f"nsteps: {nsteps}")
+        print(f"saveSteps: {saveSteps}")
         print(f"aspect: {aspect}")
         print(f"heating: {heating}")
         print(f"activationE: {activationE}")
@@ -157,6 +158,7 @@ class ConMan(Module):
         input0 = input0 + " -v heating="+str(heating)
         input0 = input0 + " -v viscosityE="+str(activationE)
         input0 = input0 + " -v ntimestep="+str(nsteps)
+        input0 = input0 + " -v nprintstep="+str(saveSteps)
 
         input = input0 + " -v print_geom=1 -f"
         input += " "+input_gen_dir+"/make_conman_thermal_in.awk > "+self.tempDir+"/geom.50"
