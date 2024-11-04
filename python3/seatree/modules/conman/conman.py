@@ -114,12 +114,30 @@ class ConMan(Module):
         print("ConMan path: " + self.conmanPath)
     
     def gawk(self, steps, saveSteps, rayleigh, nelz, aspect, heating, activation):
+        def run_cmd(cmd):
+            print(cmd)
+            os.system(cmd)
+
         self.model = "bm1a50"
+        rayleigh = rayleigh
+        nelz = nelz
+        nsteps = steps
+        aspect = aspect
+        heating = heating
+        activationE = activation
+        
+        print(f"model name: {self.model}")
+        print(f"rayleigh #: {rayleigh}")
+        print(f"nelz: {nelz}")
+        print(f"nsteps: {nsteps}")
+        print(f"aspect: {aspect}")
+        print(f"heating: {heating}")
+        print(f"activationE: {activationE}")
 
         conmanRootPath = os.path.abspath(os.path.join(self.conmanPath, ".."))
         print('conman root path is ', conmanRootPath)
 
-        os.system("cp -r "+conmanRootPath+"/Cookbook1/run.bm1a50 "+self.tempDir)
+        run_cmd("cp -r "+conmanRootPath+"/Cookbook1/run.bm1a50 "+self.tempDir)
         self.runFile = self.tempDir + "run."+self.model
         print('ConMan input file is '+self.runFile)
         
@@ -132,19 +150,23 @@ class ConMan(Module):
 
         input_gen_dir = os.path.join(conmanRootPath, "input_gen")
         conman_exe_path = os.path.join(conmanRootPath, "conman")
-        input = " -v print_geom=1 -f"
+        input0 = " "
+        input0 = " -v nel="+str(nelz)
+        input0 = " -v aspect="+str(aspect)
+        input0 = " -v rayleigh="+str(rayleigh)
+        input0 = " -v heating="+str(heating)
+        input0 = " -v viscosityE="+str(activationE)
+        input0 = " -v ntimestep="+str(nsteps)
+
+        input = input0 + " -v print_geom=1 -f"
         input += " "+input_gen_dir+"/make_conman_thermal_in.awk > "+self.tempDir+"/geom.50"
-
-        os.system("gawk "+input)
-        #result = self.scriptRunner.runScript("gawk", stdinStr=input)
-        #retval = result.getReturnValue()
-
-        input = " -v print_geom=0 -f"
+        run_cmd("gawk "+input)
+        
+        input = input0 + " -v print_geom=0 -f"
         input += " "+input_gen_dir+"/make_conman_thermal_in.awk > "+self.tempDir+"/in."+self.model
-        os.system("gawk "+input)
+        run_cmd("gawk "+input)
+
         retval = 0
-        #result = self.scriptRunner.runScript("gawk", stdinStr=input)
-        #retval = result.getReturnValue()
 
         if retval != 0:
             print("********* INPUT *********")
