@@ -151,12 +151,12 @@ class ConMan(Module):
         input_gen_dir = os.path.join(conmanRootPath, "input_gen")
         conman_exe_path = os.path.join(conmanRootPath, "conman")
         input0 = " "
-        input0 = " -v nel="+str(nelz)
-        input0 = " -v aspect="+str(aspect)
-        input0 = " -v rayleigh="+str(rayleigh)
-        input0 = " -v heating="+str(heating)
-        input0 = " -v viscosityE="+str(activationE)
-        input0 = " -v ntimestep="+str(nsteps)
+        input0 = input0 + " -v nel="+str(nelz)
+        input0 = input0 + " -v aspect="+str(aspect)
+        input0 = input0 + " -v rayleigh="+str(rayleigh)
+        input0 = input0 + " -v heating="+str(heating)
+        input0 = input0 + " -v viscosityE="+str(activationE)
+        input0 = input0 + " -v ntimestep="+str(nsteps)
 
         input = input0 + " -v print_geom=1 -f"
         input += " "+input_gen_dir+"/make_conman_thermal_in.awk > "+self.tempDir+"/geom.50"
