@@ -43,11 +43,12 @@ if [ -n "$MACH" ]; then
     export MACHINE=$MACH
     if [ $MACHINE == "ubuntu" ]; then 
         if [ -n "$ENV" ]; then
+          sudo apt-get update
           sudo apt-get install git wget cmake python3 python3-pip python3-numpy
           sudo apt-get install python3-gi python3-gi-cairo gir1.2-gtk-4.0 libgtk-4-dev
           sudo apt-get install build-essential gfortran
           sudo apt-get install x11-apps libx11-dev libxt-dev libxaw7-dev ghostscript libhdf5-dev gawk
-          pip3 install --user matplotlib==3.9.2 --break-system-packages # needs newer version of matplotlib to work.
+          pip3 install --user matplotlib==3.9.2 #--break-system-packages # needs newer version of matplotlib to work.
         fi 
     elif [ $MACHINE == "macos" ]; then 
         echo "Installing SEATREE on MacOS 14 ... ..."
