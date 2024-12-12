@@ -1,0 +1,5 @@
+git clone https://github.com/dunyuliu/seatree.dev
+cd seatree.dev
+./install.seatree.python3.gtk4.sh -e ubuntu # to install packages 
+./install.seatree.python3.gtk4.sh -m ubuntu # to install netcdf, gmt4, and seatree
+python3 run.python3.gtk4.py # to start the SEATREE APP
