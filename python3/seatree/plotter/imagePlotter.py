@@ -95,11 +95,34 @@ class ImagePlotter(Plotter):
     def displayImage(self, imageFile, default=False):
         """
         This method will display an image file
-        
+
         imageFile - the file name of the image to be displayed
         """
-        self.imageFile = imageFile
-        self.image.set_from_file(self.imageFile)
+        print(f"displayImage called with: {imageFile}")
+
+        if not imageFile:
+            print("ERROR: imageFile is None or empty!")
+            return
+
+        if not os.path.isfile(imageFile):
+            print(f"ERROR: Image file does not exist: {imageFile}")
+            return
+
+        file_size = os.path.getsize(imageFile)
+        print(f"Image file exists: {imageFile}, size: {file_size} bytes")
+
+        if file_size == 0:
+            print(f"ERROR: Image file is empty: {imageFile}")
+            return
+
+        try:
+            self.imageFile = imageFile
+            self.image.set_from_file(self.imageFile)
+            print(f"Successfully loaded image: {imageFile}")
+        except Exception as e:
+            print(f"ERROR loading image {imageFile}: {e}")
+            return
+
 #        scaleFactor=1.3
 #        pixbuf = GdkPixbuf.Pixbuf.new_from_file(imageFile)
 #        scaled_pixbuf = pixbuf.scale_simple(self.imageWidth*scaleFactor, self.imageHeight*scaleFactor, GdkPixbuf.InterpType.BILINEAR)

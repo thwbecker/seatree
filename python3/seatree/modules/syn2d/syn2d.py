@@ -178,6 +178,16 @@ class Syn2D(Gtk.ApplicationWindow, Module):
         chkbdNode = doc.getElementsByTagName("chkbdPath")
         if chkbdNode and chkbdNode[0].firstChild:
             chkbdpath = chkbdNode[0].firstChild.nodeValue.strip()
+            # Handle APPIMAGE_ROOT token replacement
+            if chkbdpath.startswith("APPIMAGE_ROOT"):
+                appimage_root = os.environ.get("APPIMAGE_ROOT", "")
+                if appimage_root:
+                    chkbdpath = chkbdpath.replace("APPIMAGE_ROOT", appimage_root)
+
+            # Convert relative paths to absolute paths
+            if chkbdpath and not os.path.isabs(chkbdpath):
+                chkbdpath = os.path.abspath(os.path.join(self.seatreePath, chkbdpath))
+
             if not chkbdpath:
                 chkbdpath = ""
             elif not chkbdpath.endswith(os.sep):
@@ -189,6 +199,16 @@ class Syn2D(Gtk.ApplicationWindow, Module):
         makedataBinNode = doc.getElementsByTagName("makedataBinPath")
         if makedataBinNode and makedataBinNode[0].firstChild:
             makedataBinPath = makedataBinNode[0].firstChild.nodeValue.strip()
+            # Handle APPIMAGE_ROOT token replacement
+            if makedataBinPath.startswith("APPIMAGE_ROOT"):
+                appimage_root = os.environ.get("APPIMAGE_ROOT", "")
+                if appimage_root:
+                    makedataBinPath = makedataBinPath.replace("APPIMAGE_ROOT", appimage_root)
+
+            # Convert relative paths to absolute paths
+            if makedataBinPath and not os.path.isabs(makedataBinPath):
+                makedataBinPath = os.path.abspath(os.path.join(self.seatreePath, makedataBinPath))
+
             if not makedataBinPath:
                 makedataBinPath = ""
             elif not makedataBinPath.endswith(os.sep):
@@ -200,6 +220,16 @@ class Syn2D(Gtk.ApplicationWindow, Module):
         invertBinNode = doc.getElementsByTagName("invertBinPath")
         if invertBinNode and invertBinNode[0].firstChild:
             invertBinPath = invertBinNode[0].firstChild.nodeValue.strip()
+            # Handle APPIMAGE_ROOT token replacement
+            if invertBinPath.startswith("APPIMAGE_ROOT"):
+                appimage_root = os.environ.get("APPIMAGE_ROOT", "")
+                if appimage_root:
+                    invertBinPath = invertBinPath.replace("APPIMAGE_ROOT", appimage_root)
+
+            # Convert relative paths to absolute paths
+            if invertBinPath and not os.path.isabs(invertBinPath):
+                invertBinPath = os.path.abspath(os.path.join(self.seatreePath, invertBinPath))
+
             if not invertBinPath:
                 invertBinPath = ""
             elif not invertBinPath.endswith(os.sep):

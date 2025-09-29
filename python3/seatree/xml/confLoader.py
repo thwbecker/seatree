@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 
 import xml.dom.minidom
+import os
 
 class ConfLoader:
     
     def __init__(self, doc):
         print("Loading configuration from: " + doc)
         self.doc = xml.dom.minidom.parse(doc)
+        # Base path should be the python3 directory (parent of conf directory)
+        conf_dir = os.path.dirname(doc)
+        self.base_path = os.path.dirname(conf_dir)
     
     def loadModules(self):
         modulesNode = self.doc.getElementsByTagName("modules")
@@ -28,11 +32,21 @@ class ConfLoader:
         pathNode = self.doc.getElementsByTagName("gmtPath")
         if pathNode and pathNode[0].firstChild:
             path = pathNode[0].firstChild.nodeValue.strip()
+            # Handle APPIMAGE_ROOT token replacement
+            if path.startswith("APPIMAGE_ROOT"):
+                appimage_root = os.environ.get("APPIMAGE_ROOT", "")
+                if appimage_root:
+                    path = path.replace("APPIMAGE_ROOT", appimage_root)
+
+            # Convert relative paths to absolute paths
+            if path and not os.path.isabs(path):
+                path = os.path.abspath(os.path.join(self.base_path, path))
+
             if not path:
                 path = ""
         else:
             path = ""
-        
+
         if path:
             print("GMT Path: " + path)
         return path

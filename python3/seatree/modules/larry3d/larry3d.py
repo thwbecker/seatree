@@ -5,7 +5,7 @@ from seatree.xml.writeXml import WriteXml
 from seatree.xml.readXml import ReadXml
 from seatree.plotter.gmt.gmtPlotter import GMTPlotter
 from seatree.modules.module import *
-from larry3dGUI import larry3dGUI
+from .larry3dGUI import larry3dGUI
 from seatree.util.scriptRunner import ScriptRunner
 
 class larry3d(Module):
@@ -214,6 +214,16 @@ class larry3d(Module):
         pathNode = doc.getElementsByTagName("larry3dPath")
         if pathNode and pathNode[0].firstChild:
             larry3dpath = pathNode[0].firstChild.nodeValue.strip()
+            # Handle APPIMAGE_ROOT token replacement
+            if larry3dpath.startswith("APPIMAGE_ROOT"):
+                appimage_root = os.environ.get("APPIMAGE_ROOT", "")
+                if appimage_root:
+                    larry3dpath = larry3dpath.replace("APPIMAGE_ROOT", appimage_root)
+
+            # Convert relative paths to absolute paths
+            if larry3dpath and not os.path.isabs(larry3dpath):
+                larry3dpath = os.path.abspath(os.path.join(self.seatreePath, larry3dpath))
+
             if not larry3dpath:
                 larry3dpath = ""
         else:

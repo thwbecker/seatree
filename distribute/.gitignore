@@ -1,0 +1,26 @@
+# SEATREE AppImage Build - .gitignore
+#
+# COMMIT these files:
+#   ✓ build-appimage-gtk.sh
+#   ✓ build-appimage-gtk-portable.sh
+#   ✓ linuxdeploy-plugin-gtk.sh
+#   ✓ clean.sh
+#   ✓ .gitignore
+#
+# IGNORE these (generated/downloaded):
+
+# AppImage build tools (downloaded automatically)
+appimagetool-x86_64.AppImage
+linuxdeploy-x86_64.AppImage
+linuxdeploy-plugin-gtk-x86_64.AppImage
+
+# Build directories (regenerated each build)
+SEATREE*.AppDir/
+
+# Output AppImages
+*.exe
+*.AppImage
+
+# Temporary files
+*.tmp
+*.log

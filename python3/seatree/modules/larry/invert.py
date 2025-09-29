@@ -155,9 +155,19 @@ class Invert(Module):
         pathNode = doc.getElementsByTagName("larryPath")
         if pathNode and pathNode[0].firstChild:
             larrypath = pathNode[0].firstChild.nodeValue.strip()
+            # Handle APPIMAGE_ROOT token replacement
+            if larrypath.startswith("APPIMAGE_ROOT"):
+                appimage_root = os.environ.get("APPIMAGE_ROOT", "")
+                if appimage_root:
+                    larrypath = larrypath.replace("APPIMAGE_ROOT", appimage_root)
+
+            # Convert relative paths to absolute paths
+            if larrypath and not os.path.isabs(larrypath):
+                larrypath = os.path.abspath(os.path.join(self.seatreePath, larrypath))
+
             if not larrypath:
                 larrypath = ""
-        else: 
+        else:
             larrypath = ""
         self.larryDir = larrypath
         if self.verbose > 0:

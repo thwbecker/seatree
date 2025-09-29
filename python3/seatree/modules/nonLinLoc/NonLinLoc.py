@@ -94,7 +94,16 @@ class NonLinLoc(Module):
         binNode = doc.getElementsByTagName("binPath")
         if binNode and binNode[0].firstChild:
             binPath = binNode[0].firstChild.nodeValue.strip()
-            
+            # Handle APPIMAGE_ROOT token replacement
+            if binPath.startswith("APPIMAGE_ROOT"):
+                appimage_root = os.environ.get("APPIMAGE_ROOT", "")
+                if appimage_root:
+                    binPath = binPath.replace("APPIMAGE_ROOT", appimage_root)
+
+            # Convert relative paths to absolute paths
+            if binPath and not os.path.isabs(binPath):
+                binPath = os.path.abspath(os.path.join(self.seatreePath, binPath))
+
             if not binPath:
                 binPath = ""
             elif not binPath.endswith(os.sep):

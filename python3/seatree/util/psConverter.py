@@ -99,7 +99,12 @@ class PSConverter:
                 pngfile = self.psfile.replace(".PS", ".png")
             else:
                 pngfile = self.psfile + ".png"
-        
+
+        # Check if input PostScript file exists
+        if not os.path.isfile(self.psfile):
+            print(f'ERROR: PostScript file {self.psfile} does not exist!')
+            return None
+
         # run a eps2eps to fix the bounding box
         if self.use_eps2eps:
             tmp_file = self.psfile.replace(".ps", ".tmp.ps")
@@ -108,21 +113,69 @@ class PSConverter:
         else:
             use_ps = self.psfile
 
-        cmd = ""
-        if self.convertPath:
-            cmd += self.convertPath + os.sep
-        cmd += f"convert -density {self.density} "
-        if self.antialias:
-            cmd += "-antialias "
+        # Build ps2raster command with better error checking
+        gmt4home = os.environ.get("GMT4HOME", "")
+        if not gmt4home:
+            print("ERROR: GMT4HOME environment variable not set!")
+            return None
+
+        ps2raster_path = os.path.join(gmt4home, "bin", "ps2raster")
+        if not os.path.isfile(ps2raster_path):
+            print(f"ERROR: ps2raster not found at {ps2raster_path}")
+            return None
+
+        # Change to a writable directory before running ps2raster
+        # ps2raster creates temporary .bb files in the current directory
+        original_cwd = os.getcwd()
+        temp_dir = os.path.dirname(use_ps)  # Use the same directory as the PS file
+
+        try:
+            os.chdir(temp_dir)
+            print(f'Changed to writable directory: {temp_dir}')
+
+            cmd = f"{ps2raster_path} {use_ps} -A -P -Tg"
+            print(f'Running ps2raster command: {cmd}')
+
+            # Run command and check return code
+            ret_code = self.command(cmd)
+        finally:
+            # Always restore original working directory
+            os.chdir(original_cwd)
+        if ret_code != 0:
+            print(f"ERROR: ps2raster failed with return code {ret_code}")
+            if self.error:
+                print(f"Error output: {self.error}")
+            return None
+
+        # Check if output PNG file was created
+        expected_png = use_ps.replace('.ps', '.png').replace('.PS', '.png')
+        if os.path.isfile(expected_png):
+            # Check file size to ensure it's not empty
+            file_size = os.path.getsize(expected_png)
+            print(f'PNG file created: {expected_png}, size: {file_size} bytes')
+
+            if file_size == 0:
+                print(f'ERROR: PNG file {expected_png} is empty!')
+                return None
+
+            # Move to desired location if different
+            if expected_png != pngfile:
+                import shutil
+                shutil.move(expected_png, pngfile)
+                print(f'Moved PNG from {expected_png} to {pngfile}')
+
+            # Final verification
+            final_size = os.path.getsize(pngfile)
+            print(f'Final PNG ready: {pngfile}, size: {final_size} bytes')
+            return pngfile
         else:
-            cmd += "+antialias "
-        cmd += f"{use_ps} {pngfile}"
-        #cmd = "gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pngalpha -r96 -sOutputFile="+str(pngfile)+' '+str(use_ps)
-        cmd = os.environ["GMT4HOME"]+"/bin/ps2raster "+str(use_ps)+" -A -P -Tg" 
-        print('Running cmd', cmd, 'to create png files.')
-        self.command(cmd)
-        
-        return pngfile
+            print(f'ERROR: Expected PNG file {expected_png} was not created!')
+            # List files in the directory to debug
+            import glob
+            ps_dir = os.path.dirname(use_ps)
+            png_files = glob.glob(os.path.join(ps_dir, "*.png"))
+            print(f'PNG files in {ps_dir}: {png_files}')
+            return None
 
     def getCommandString(self):
         temp = self.commandString

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
     <Syn2DConfiguration>
-     <chkbdPath>/home/utig5/dliu/seatree.dev/seatree.dev/modules/seismo/syn2d/makemodel/bin</chkbdPath>
-     <makedataBinPath>/home/utig5/dliu/seatree.dev/seatree.dev/modules/seismo/syn2d/makedata/bin</makedataBinPath>
-     <invertBinPath>/home/utig5/dliu/seatree.dev/seatree.dev/modules/seismo/syn2d/inversion/bin</invertBinPath>
+     <chkbdPath>../modules/seismo/syn2d/makemodel/bin</chkbdPath>
+     <makedataBinPath>../modules/seismo/syn2d/makedata/bin</makedataBinPath>
+     <invertBinPath>../modules/seismo/syn2d/inversion/bin</invertBinPath>
     </Syn2DConfiguration>

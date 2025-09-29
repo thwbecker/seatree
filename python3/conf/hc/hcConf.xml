@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
     <FlowConfiguration>
-     <hcPath>/home/utig5/dliu/seatree.dev/seatree.dev/modules/mc/hc/bin/x86_64</hcPath>
+     <hcPath>../modules/mc/hc/bin</hcPath>
     </FlowConfiguration>

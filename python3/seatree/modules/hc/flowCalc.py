@@ -213,7 +213,17 @@ class FlowCalc(Module):
         pathNode = doc.getElementsByTagName("hcPath")
         if pathNode and pathNode[0].firstChild:
             hcpath = pathNode[0].firstChild.nodeValue.strip()
-            
+            # Handle APPIMAGE_ROOT token replacement
+            if hcpath.startswith("APPIMAGE_ROOT"):
+                appimage_root = os.environ.get("APPIMAGE_ROOT", "")
+                if appimage_root:
+                    hcpath = hcpath.replace("APPIMAGE_ROOT", appimage_root)
+
+            # Convert relative paths to absolute paths
+            if hcpath and not os.path.isabs(hcpath):
+                # Relative path from the seatree python3 directory
+                hcpath = os.path.abspath(os.path.join(path, hcpath))
+
             if not hcpath:
                 hcpath = ""
         else:

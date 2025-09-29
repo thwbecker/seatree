@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
     <LarryConfiguration>
-     <larryPath>/home/utig5/dliu/seatree.dev/seatree.dev/modules/seismo/larry/x86_64</larryPath>
+     <larryPath>../modules/seismo/larry/x86_64</larryPath>
     </LarryConfiguration>

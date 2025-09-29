@@ -101,7 +101,16 @@ class ConMan(Module):
             conmanNode = doc.getElementsByTagName("conmanPath")
             if conmanNode and conmanNode[0].firstChild:
                 conmanPath = conmanNode[0].firstChild.nodeValue.strip()
-                
+                # Handle APPIMAGE_ROOT token replacement
+                if conmanPath.startswith("APPIMAGE_ROOT"):
+                    appimage_root = os.environ.get("APPIMAGE_ROOT", "")
+                    if appimage_root:
+                        conmanPath = conmanPath.replace("APPIMAGE_ROOT", appimage_root)
+
+                # Convert relative paths to absolute paths
+                if conmanPath and not os.path.isabs(conmanPath):
+                    conmanPath = os.path.abspath(os.path.join(self.seatreePath, conmanPath))
+
                 if not conmanPath:
                     conmanPath = ""
                 elif not conmanPath.endswith(os.sep):
