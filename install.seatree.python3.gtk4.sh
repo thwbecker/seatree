@@ -54,6 +54,7 @@ if [ -n "$MACH" ]; then
         echo "Installing SEATREE on MacOS 14 ... ..."
         if [ -n "$ENV" ]; then
             brew install gtk4
+            brew install ghostscript
             pip3 install --break-system-packages matplotlib==3.9.2 pygobject       
         fi   
     fi 
