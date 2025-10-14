@@ -11,7 +11,8 @@ ADD_FLAGS = -DHC_PRECISION=32
 # double precision
 #ADD_FLAGS = 
 
-# GMT4 
+# Local installed GMT4 and NETCDF support 
 GGRD_INC_FLAGS = -I$(GMT4HOME)/include -I$(NETCDFHOME)/include 
 GGRD_LIBS_LINKLINE = -lggrd -L$(GMT4HOME)/lib/ -lgmt -lpsl -lnetcdf 
 LDFLAGS = -L$(NETCDFHOME)/lib -lnetcdf
+LDFLAGS += -Wl,-rpath,$(NETCDFHOME)/lib
