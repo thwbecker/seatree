@@ -12,15 +12,25 @@ check_tools() {
     echo "Checking required tools..."
 
     if [ ! -f "linuxdeploy-x86_64.AppImage" ]; then
-        echo "Error: linuxdeploy-x86_64.AppImage not found. Please download it first."
-        echo "wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
-        exit 1
+        echo "linuxdeploy-x86_64.AppImage not found. Downloading..."
+        wget -q --show-progress https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+        if [ $? -ne 0 ]; then
+            echo "Error: Failed to download linuxdeploy-x86_64.AppImage"
+            exit 1
+        fi
+        chmod +x linuxdeploy-x86_64.AppImage
+        echo "Downloaded and made executable: linuxdeploy-x86_64.AppImage"
     fi
 
     if [ ! -f "linuxdeploy-plugin-gtk.sh" ]; then
-        echo "Error: linuxdeploy-plugin-gtk.sh not found. Please download it first."
-        echo "wget https://raw.githubusercontent.com/linuxdeploy/linuxdeploy-plugin-gtk/master/linuxdeploy-plugin-gtk.sh"
-        exit 1
+        echo "linuxdeploy-plugin-gtk.sh not found. Downloading..."
+        wget -q --show-progress https://raw.githubusercontent.com/linuxdeploy/linuxdeploy-plugin-gtk/master/linuxdeploy-plugin-gtk.sh
+        if [ $? -ne 0 ]; then
+            echo "Error: Failed to download linuxdeploy-plugin-gtk.sh"
+            exit 1
+        fi
+        chmod +x linuxdeploy-plugin-gtk.sh
+        echo "Downloaded and made executable: linuxdeploy-plugin-gtk.sh"
     fi
 
     # Check if system has GTK4 installed
@@ -107,8 +117,15 @@ prepare_appdir() {
     # Update configuration paths for AppImage
     echo "Updating configuration paths..."
     if [ -d "$appdir/usr/share/seatree/python3/conf" ]; then
-        find "$appdir/usr/share/seatree/python3/conf" -name "*.xml" -exec sed -i 's|/home/utig5/dliu/seatree.dev/seatree.dev|APPIMAGE_ROOT|g' {} \;
-        find "$appdir/usr/share/seatree/python3/conf" -name "*.xml" -exec sed -i 's|/home/staff/dliu/seatree.dev/seatree.dev|APPIMAGE_ROOT|g' {} \;
+        # Replace paths using suffix matching - works regardless of installation location
+        # This matches paths like /any/path/seatree.dev/seatree.dev/... regardless of prefix
+        for xmlfile in "$appdir/usr/share/seatree/python3/conf"/*.xml "$appdir/usr/share/seatree/python3/conf"/*/*.xml; do
+            if [ -f "$xmlfile" ]; then
+                sed -i 's|[^<>]*seatree\.dev/seatree\.dev/python3/seatree/modules/|/tmp/__APPIMAGE_RUNTIME__/python3/seatree/modules/|g; s|[^<>]*seatree\.dev/seatree\.dev/modules/|/tmp/__APPIMAGE_RUNTIME__/modules/|g; s|[^<>]*seatree\.dev/seatree\.dev/gmt-[^<>/]*/bin|/tmp/__APPIMAGE_RUNTIME__/gmt-4.5.18/bin|g' "$xmlfile"
+            fi
+        done
+
+        echo "Replaced hardcoded paths with placeholders using suffix matching"
     fi
 
     # Create the netcdf symlinks during build
@@ -141,9 +158,9 @@ export GMT_SHAREDIR="$GMT4HOME/share"
 export GMT_DATADIR="$GMT4HOME/share"
 export GMT_FONTPATH="$GMT4HOME/share/pslib"
 
-# Set up library paths
-export LD_LIBRARY_PATH="$HERE/usr/lib:$NETCDFHOME/lib:$LD_LIBRARY_PATH"
-export PATH="$HERE/usr/bin:$NETCDFHOME/lib:$GMT_GSHHG_DATA:$PATH"
+# Set up library paths - NetCDF lib MUST come first for GMT binaries to find libnetcdf.so.19
+export LD_LIBRARY_PATH="$NETCDFHOME/lib:$GMT4HOME/lib:$HERE/usr/lib:$LD_LIBRARY_PATH"
+export PATH="$HERE/usr/bin:$GMT4HOME/bin:$NETCDFHOME/bin:$PATH"
 
 # Set up Python path
 PYTHON_VERSION=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
@@ -151,6 +168,19 @@ export PYTHONPATH="$HERE/usr/lib/python$PYTHON_VERSION/site-packages:$HERE/usr/s
 
 # Set APPIMAGE_ROOT for path resolution in config files
 export APPIMAGE_ROOT="$HERE/usr/share/seatree"
+
+# Replace placeholder paths in config files at runtime
+if [ -d "$HERE/usr/share/seatree/python3/conf" ]; then
+    # Replace the placeholder
+    find "$HERE/usr/share/seatree/python3/conf" -name "*.xml" -exec sed -i \
+        "s|/tmp/__APPIMAGE_RUNTIME__|$HERE/usr/share/seatree|g" {} \; 2>/dev/null || true
+    # Replace ANY absolute path that ends with the expected directory structure
+    # This catches paths regardless of where they were installed on build machine
+    find "$HERE/usr/share/seatree/python3/conf" -name "*.xml" -exec sed -i \
+        "s|[^<>]*seatree\\.dev/seatree\\.dev/python3/seatree/modules/|$HERE/usr/share/seatree/python3/seatree/modules/|g; \
+         s|[^<>]*seatree\\.dev/seatree\\.dev/modules/|$HERE/usr/share/seatree/modules/|g; \
+         s|[^<>]*seatree\\.dev/seatree\\.dev/gmt-[^<>/]*/bin|$HERE/usr/share/seatree/gmt-4.5.18/bin|g" {} \; 2>/dev/null || true
+fi
 
 # Ensure GTK can find its modules and themes
 export GTK_PATH="$HERE/usr/lib/gtk-4.0"
@@ -243,9 +273,9 @@ export GMT_SHAREDIR="$GMT4HOME/share"
 export GMT_DATADIR="$GMT4HOME/share"
 export GMT_FONTPATH="$GMT4HOME/share/pslib"
 
-# Set up library paths
-export LD_LIBRARY_PATH="$HERE/usr/lib:$NETCDFHOME/lib:$LD_LIBRARY_PATH"
-export PATH="$HERE/usr/bin:$NETCDFHOME/lib:$GMT_GSHHG_DATA:$PATH"
+# Set up library paths - NetCDF lib MUST come first for GMT binaries to find libnetcdf.so.19
+export LD_LIBRARY_PATH="$NETCDFHOME/lib:$GMT4HOME/lib:$HERE/usr/lib:$LD_LIBRARY_PATH"
+export PATH="$HERE/usr/bin:$GMT4HOME/bin:$NETCDFHOME/bin:$PATH"
 
 # Set up Python path
 PYTHON_VERSION=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
@@ -253,6 +283,19 @@ export PYTHONPATH="$HERE/usr/lib/python$PYTHON_VERSION/site-packages:$HERE/usr/s
 
 # Set APPIMAGE_ROOT for path resolution in config files
 export APPIMAGE_ROOT="$HERE/usr/share/seatree"
+
+# Replace placeholder paths in config files at runtime
+if [ -d "$HERE/usr/share/seatree/python3/conf" ]; then
+    # Replace the placeholder
+    find "$HERE/usr/share/seatree/python3/conf" -name "*.xml" -exec sed -i \
+        "s|/tmp/__APPIMAGE_RUNTIME__|$HERE/usr/share/seatree|g" {} \; 2>/dev/null || true
+    # Replace ANY absolute path that ends with the expected directory structure
+    # This catches paths regardless of where they were installed on build machine
+    find "$HERE/usr/share/seatree/python3/conf" -name "*.xml" -exec sed -i \
+        "s|[^<>]*seatree\\.dev/seatree\\.dev/python3/seatree/modules/|$HERE/usr/share/seatree/python3/seatree/modules/|g; \
+         s|[^<>]*seatree\\.dev/seatree\\.dev/modules/|$HERE/usr/share/seatree/modules/|g; \
+         s|[^<>]*seatree\\.dev/seatree\\.dev/gmt-[^<>/]*/bin|$HERE/usr/share/seatree/gmt-4.5.18/bin|g" {} \; 2>/dev/null || true
+fi
 
 # Ensure GTK can find its modules and themes
 export GTK_PATH="$HERE/usr/lib/gtk-4.0"
