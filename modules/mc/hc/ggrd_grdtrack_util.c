@@ -24,6 +24,9 @@
 #define irint(x) ((int)rint(x))
 #endif
 
+#ifdef __APPLE__
+#define finite isfinite
+#endif
 
 void ggrd_init_master(struct ggrd_master *ggrd)
 {

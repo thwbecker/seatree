@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <NonLinLocConfiguration>
+     <binPath>../modules/seismo/nonlinloc/nll/bin</binPath>
+    </NonLinLocConfiguration>

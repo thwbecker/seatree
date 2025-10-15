@@ -9,7 +9,7 @@
 BINDIR=../bin/
 
 INCLUDE_DIR=./
-CCFLAGS = $(CFLAGS) -fgnu89-inline
+CCFLAGS = $(CFLAGS) -fgnu89-inline -Wl,--allow-multiple-definition
 #CCFLAGS=-O3 -Wall
 #CCFLAGS=-O3 -pg -Wall
 #CCFLAGS=-g  -Wall

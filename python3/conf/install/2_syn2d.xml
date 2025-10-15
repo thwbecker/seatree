@@ -1,0 +1,11 @@
+<SEATREEConfiguration>
+  <modules>
+    <module>
+      <importName>seatree.modules.syn2d.syn2d</importName>
+      <className>Syn2D</className>
+      <directory>syn2d</directory>
+      <installImportName>syn2dInstaller</installImportName>
+      <installClassName>Syn2DInstaller</installClassName>
+    </module>
+  </modules>
+</SEATREEConfiguration>

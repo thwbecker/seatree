@@ -1,0 +1,35 @@
+#!/bin/bash
+bn=`basename $0`
+echo 
+echo $bn: SEATREE installation process
+echo
+echo $bn: This script assumes you have C and F77 compilers and the regular flags set to usable values
+echo
+
+export CC=gcc
+export F77=gfortran
+export F90=gfortran # used by larry3d; later in Makefile.
+
+# -fcommon
+export CFLAGS=-fcommon
+
+# -fallow-argument-mismatch helps compile larry(invert)
+export FFLAGS=-fallow-argument-mismatch 
+echo $bn: CC: $CC CFLAGS: $CFLAGS 
+echo $bn: F77: $F77 FFLAGS: $FFLAGS
+echo
+echo $bn: running install.py in python/seatree/install subdirectory
+echo
+#export PYTHONPATH=/home/dliu/seatree.dev/python
+
+python3 python3/seatree/install/install.py
+echo
+echo $bn: SEATREE installation done. type "seatree" in current directory 
+echo $bn: `pwd` 
+echo $bn: for GUI interface. If you did not install globally, you might want to set an alias
+echo $bn: such as
+echo
+echo alias seatree `pwd`/seatree
+echo
+echo $bn: done
+echo
