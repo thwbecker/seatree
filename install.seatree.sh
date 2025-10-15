@@ -6,6 +6,29 @@
 # 2. docker: please see Dockerfile.
 # 3. macos: MacOS 14
 
+# Set up logging
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+LOGDIR="tmp"
+mkdir -p "$LOGDIR"
+LOGFILE="$LOGDIR/install_seatree_${TIMESTAMP}.log"
+
+# Function to log messages to both screen and file
+log_info() {
+    echo "$@" | tee -a "$LOGFILE"
+}
+
+# Function to log only to file (suppress screen output)
+log_verbose() {
+    echo "$@" >> "$LOGFILE"
+}
+
+log_info "=========================================="
+log_info "SEATREE Installation Log"
+log_info "Started: $(date)"
+log_info "Log file: $LOGFILE"
+log_info "=========================================="
+log_info ""
+
 while getopts "m:e:c:h" OPTION; do
     case $OPTION in 
         m)
@@ -62,30 +85,70 @@ if [ -n "$MACH" ]; then
     export GMT4HOME=$(pwd)/gmt-4.5.18
     export GMTHOME=$GMT4HOME
     export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1
+    export ARCH=$(uname -m)
 
+    log_info "[STEP 1/4] Checking NetCDF installation..."
     if [ -e "netcdf-c-4.9.3-rc1" ]; then
-        echo "Seems netcdf-c-4.9.3-rc1 has been installed."
+        log_info "  -> NetCDF already installed, skipping."
     else
-        echo "Local netcdf is not available, installing netcdf-c-4.9.3-rc1 ..."
-        bash install/install.netcdf.ubuntu22.sh
-    fi 
-    if [ -e "gmt-4.5.18" ]; then
-        echo "Seems gmt-4.5.18 has been installed."
-    else
-        echo "Local gmt4 is not available, installing gmt4-5.18 ..."
-        bash install/install.gmt4.ubuntu22.sh
-    fi 
-    yes '' | ./install/configure.python3.gtk4 
+        log_info "  -> Installing netcdf-c-4.9.3-rc1 (output logged to $LOGFILE)..."
+        bash install/install.netcdf.ubuntu22.sh >> "$LOGFILE" 2>&1
+        if [ $? -eq 0 ]; then
+            log_info "  -> NetCDF installation completed successfully."
+        else
+            log_info "  -> ERROR: NetCDF installation failed. Check $LOGFILE for details."
+        fi
+    fi
 
-    echo "Installing new ConMan v3.0.0 from CIG ConMan GitHub ..."
-    bash install/install.conman.sh
+    log_info "[STEP 2/4] Checking GMT installation..."
+    if [ -e "gmt-4.5.18" ]; then
+        log_info "  -> GMT already installed, skipping."
+    else
+        log_info "  -> Installing gmt-4.5.18 (output logged to $LOGFILE)..."
+        bash install/install.gmt4.ubuntu22.sh >> "$LOGFILE" 2>&1
+        if [ $? -eq 0 ]; then
+            log_info "  -> GMT installation completed successfully."
+        else
+            log_info "  -> ERROR: GMT installation failed. Check $LOGFILE for details."
+        fi
+    fi
+
+    log_info "[STEP 3/4] Configuring Python3/GTK4..."
+    yes '' | ./install/configure.python3.gtk4 >> "$LOGFILE" 2>&1
+    if [ $? -eq 0 ]; then
+        log_info "  -> Configuration completed successfully."
+    else
+        log_info "  -> ERROR: Configuration failed. Check $LOGFILE for details."
+    fi
+
+    log_info "[STEP 4/4] Installing ConMan v3.0.0 (output logged to $LOGFILE)..."
+    bash install/install.conman.sh >> "$LOGFILE" 2>&1
+    if [ $? -eq 0 ]; then
+        log_info "  -> ConMan installation completed successfully."
+    else
+        log_info "  -> ERROR: ConMan installation failed. Check $LOGFILE for details."
+    fi
+
+    log_info ""
+    log_info "=========================================="
+    log_info "Installation completed: $(date)"
+    log_info "=========================================="
+    log_info ""
+    log_info "Running verification script..."
+    python3 verify_seatree.py
 fi
 
 export SEATREE=$(pwd)
 export GMT4HOME=$(pwd)/gmt-4.5.18
 export GMTHOME=$GMT4HOME
 export GMT_GSHHG_DATA=$GMT4HOME/gshhg-gmt-2.3.7
-export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1 
-ln -s $NETCDFHOME/lib/libnetcdf.so.22 $NETCDFHOME/lib/libnetcdf.so.7
+export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1
+export ARCH=$(uname -m)
+
+# Create symlink only if it doesn't exist
+if [ ! -e "$NETCDFHOME/lib/libnetcdf.so.7" ]; then
+    ln -s $NETCDFHOME/lib/libnetcdf.so.22 $NETCDFHOME/lib/libnetcdf.so.7
+fi
+
 export PATH=$PATH:$NETCDFHOME/lib:$GMT_GSHHG_DATA
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$NETCDFHOME/lib
