@@ -61,7 +61,7 @@ http://www-udc.ig.utexas.edu/external/becker/preprints/mbbssw08.pdf
 
 ## License
 
-SEATREE is freely available under the GNU license. See the file COPYRIGHT for details.
+SEATREE is freely available under the GNU General Public License v2. See [LICENSE.md](LICENSE.md) for the full license text.
 
 ## Support and Contributing
 
@@ -70,3 +70,21 @@ If you want to use SEATREE in a classroom setting, we might be able to offer you
 ## Acknowledgments
 
 Partial support was provided through NSF-CAREER.
+
+## Third-Party Components and Copyright
+
+SEATREE includes and may be distributed with the following third-party components:
+
+- **fstrack**: Set of routines to trace particles in mantle flow. Routines use precomputed velocities on GMT grd files. See: Becker et al. (GJI, 155, 696, 2003).
+
+- **d-rex**: DREX Kaminski & Ribe texture routines by Eduard Kaminski and Jules Browaeys. See: Kaminski et al. (GJI, 157, 1, 2004) and Browaeys & Chevrot (GJI, 159, 667, 2004).
+
+- **single_layer and multi_layer**: Shear wave splitting routines by Vera Schulte-Pelkum. See: Schulte-Pelkum & Blackman (GJI, 154, 166, 2003).
+
+- **eispack**: EISPACK eigensystem routines
+
+- **menke_splitting**: Bill Menke's cross-correlation routines
+
+Copyright for these components remains with the original authors.
+
+For the rest: Copyright (c) Thorsten Becker 2004-2005
