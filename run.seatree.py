@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 
 import os, sys
+import platform
 
 def add_subdirectories_to_path(root_dir):
     for dirpath, dirnames, filenames in os.walk(root_dir):
@@ -10,6 +11,12 @@ def add_subdirectories_to_path(root_dir):
 root_directory = os.getcwd()
 add_subdirectories_to_path(root_directory)
 
+# Set up SEATREE environment variable
+os.environ["SEATREE"] = root_directory
+
+# Set up ARCH environment variable (auto-detect architecture)
+os.environ["ARCH"] = platform.machine()
+
 # Set up GMT environment variables for direct execution
 gmt_home = os.path.join(root_directory, "gmt-4.5.18")
 if os.path.exists(gmt_home):
@@ -18,6 +25,7 @@ if os.path.exists(gmt_home):
     os.environ["GMT_SHAREDIR"] = os.path.join(gmt_home, "share")
     os.environ["GMT_DATADIR"] = os.path.join(gmt_home, "share")
     os.environ["GMT_FONTPATH"] = os.path.join(gmt_home, "share", "pslib")
+    os.environ["GMT_GSHHG_DATA"] = os.path.join(gmt_home, "gshhg-gmt-2.3.7")
 
     # Add GMT to PATH
     gmt_bin = os.path.join(gmt_home, "bin")
