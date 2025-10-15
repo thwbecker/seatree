@@ -63,22 +63,22 @@ if [ -n "$MACH" ]; then
     export GMTHOME=$GMT4HOME
     export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1
 
-    if [ -e "netcdf-c-4.9.3-rc1" ]; then 
+    if [ -e "netcdf-c-4.9.3-rc1" ]; then
         echo "Seems netcdf-c-4.9.3-rc1 has been installed."
     else
         echo "Local netcdf is not available, installing netcdf-c-4.9.3-rc1 ..."
-        bash install.netcdf.ubuntu22.sh
+        bash install/install.netcdf.ubuntu22.sh
     fi 
-    if [ -e "gmt-4.5.18" ]; then  
+    if [ -e "gmt-4.5.18" ]; then
         echo "Seems gmt-4.5.18 has been installed."
-    else 
+    else
         echo "Local gmt4 is not available, installing gmt4-5.18 ..."
-        bash install.gmt4.ubuntu22.sh
+        bash install/install.gmt4.ubuntu22.sh
     fi 
-    yes '' | ./configure.python3.gtk4 
+    yes '' | ./install/configure.python3.gtk4 
 
     echo "Installing new ConMan v3.0.0 from CIG ConMan GitHub ..."
-    bash install.conman.sh
+    bash install/install.conman.sh
 fi
 
 export SEATREE=$(pwd)
