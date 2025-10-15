@@ -87,11 +87,11 @@ if [ -n "$MACH" ]; then
     export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1
     export ARCH=$(uname -m)
 
-    log_info "[STEP 1/4] Checking NetCDF installation..."
+    log_info "[STEP 1/4] $(date +"%Y-%m-%d %H:%M:%S") - Checking NetCDF installation..."
     if [ -e "netcdf-c-4.9.3-rc1" ]; then
         log_info "  -> NetCDF already installed, skipping."
     else
-        log_info "  -> Installing netcdf-c-4.9.3-rc1 (output logged to $LOGFILE)..."
+        log_info "  -> Installing netcdf-c-4.9.3-rc1..."
         bash install/install.netcdf.ubuntu22.sh >> "$LOGFILE" 2>&1
         if [ $? -eq 0 ]; then
             log_info "  -> NetCDF installation completed successfully."
@@ -100,11 +100,11 @@ if [ -n "$MACH" ]; then
         fi
     fi
 
-    log_info "[STEP 2/4] Checking GMT installation..."
+    log_info "[STEP 2/4] $(date +"%Y-%m-%d %H:%M:%S") - Checking GMT installation..."
     if [ -e "gmt-4.5.18" ]; then
         log_info "  -> GMT already installed, skipping."
     else
-        log_info "  -> Installing gmt-4.5.18 (output logged to $LOGFILE)..."
+        log_info "  -> Installing gmt-4.5.18..."
         bash install/install.gmt4.ubuntu22.sh >> "$LOGFILE" 2>&1
         if [ $? -eq 0 ]; then
             log_info "  -> GMT installation completed successfully."
@@ -113,7 +113,7 @@ if [ -n "$MACH" ]; then
         fi
     fi
 
-    log_info "[STEP 3/4] Configuring Python3/GTK4..."
+    log_info "[STEP 3/4] $(date +"%Y-%m-%d %H:%M:%S") - Configuring Python3/GTK4..."
     yes '' | ./install/configure.python3.gtk4 >> "$LOGFILE" 2>&1
     if [ $? -eq 0 ]; then
         log_info "  -> Configuration completed successfully."
@@ -121,7 +121,7 @@ if [ -n "$MACH" ]; then
         log_info "  -> ERROR: Configuration failed. Check $LOGFILE for details."
     fi
 
-    log_info "[STEP 4/4] Installing ConMan v3.0.0 (output logged to $LOGFILE)..."
+    log_info "[STEP 4/4] $(date +"%Y-%m-%d %H:%M:%S") - Installing ConMan v3.0.0..."
     bash install/install.conman.sh >> "$LOGFILE" 2>&1
     if [ $? -eq 0 ]; then
         log_info "  -> ConMan installation completed successfully."

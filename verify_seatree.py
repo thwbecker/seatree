@@ -317,16 +317,8 @@ def main():
         result.add_fail("GTK 4.0", str(e))
         print_check("FAIL", "GTK 4.0", str(e))
 
-    # Check PATH and LD_LIBRARY_PATH
+    # Check LD_LIBRARY_PATH (critical for runtime linking)
     print_header("Environment Paths")
-    path_env = os.environ.get("PATH", "")
-    if netcdf_home and f"{netcdf_home}/bin" in path_env:
-        result.add_pass("NetCDF in PATH", f"{netcdf_home}/bin")
-        print_check("PASS", "NetCDF in PATH", f"{netcdf_home}/bin")
-    else:
-        result.add_warning("NetCDF in PATH", "NetCDF bin directory not in PATH")
-        print_check("WARN", "NetCDF in PATH", "NetCDF bin directory not in PATH")
-
     ld_library_path = os.environ.get("LD_LIBRARY_PATH", "")
     if netcdf_home and f"{netcdf_home}/lib" in ld_library_path:
         result.add_pass("NetCDF in LD_LIBRARY_PATH", f"{netcdf_home}/lib")
