@@ -509,10 +509,10 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def loadPlotter(self, plotter):
         self.plotter = plotter
-        self.plotterWidget = self.plotter.getPackedWiget()
-        oldPlotter = self.hPane.get_child2()
+        self.plotterWidget = self.plotter.getPackedWidget()
+        oldPlotter = self.hPane.get_end_child()
         if (oldPlotter):
-            self.hPane.remove(oldPlotter)
+            self.hPane.set_end_child(None)
             del oldPlotter
         self.packPlotterWidget(self.plotterWidget)
 

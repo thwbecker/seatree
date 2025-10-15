@@ -292,13 +292,16 @@ class MatPlotLibPlotter(Plotter):
     def plotXYZData(self, x, y, z, title="", colorBar=False, range=None):
         """
         Plot xyz data in vectors x y z
-        if range is set, will expect four entry vector with limiting range for plot sorted 
+        if range is set, will expect four entry vector with limiting range for plot sorted
         as [xmin, xmax, ymin, ymax]
         """
         if self.contourFills:
             self.image = self.axis.contourf(x, y, z, cmap=self.colorMap, shading='flat', extend='both')
         else:
-            self.image = self.axis.pcolor(x, y, z[:len(y)-1,:len(x)-1], cmap=self.colorMap, shading='flat')
+            # For pcolor with shading='flat', C must have shape (ny-1, nx-1)
+            # where ny and nx are the number of grid points in y and x
+            ny, nx = x.shape
+            self.image = self.axis.pcolor(x, y, z[:ny-1,:nx-1], cmap=self.colorMap, shading='flat')
         
         if self.contourLines:
             self.axis.contour(x, y, z, colors='black', linewidths=1, extend='both')

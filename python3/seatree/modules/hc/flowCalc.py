@@ -224,6 +224,14 @@ class FlowCalc(Module):
                 # Relative path from the seatree python3 directory
                 hcpath = os.path.abspath(os.path.join(path, hcpath))
 
+            # Append ARCH subdirectory if ARCH is set
+            arch = os.environ.get("ARCH", "")
+            if arch and hcpath:
+                arch_path = os.path.join(hcpath, arch)
+                # Check if ARCH-specific directory exists
+                if os.path.isdir(arch_path):
+                    hcpath = arch_path
+
             if not hcpath:
                 hcpath = ""
         else:

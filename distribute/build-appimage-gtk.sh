@@ -152,6 +152,7 @@ export GMT4HOME="$HERE/usr/share/seatree/gmt-4.5.18"
 export GMTHOME="$GMT4HOME"
 export GMT_GSHHG_DATA="$GMT4HOME/gshhg-gmt-2.3.7"
 export NETCDFHOME="$HERE/usr/share/seatree/netcdf-c-4.9.3-rc1"
+export ARCH="x86_64"
 
 # Set up GMT environment variables
 export GMT_SHAREDIR="$GMT4HOME/share"
@@ -267,6 +268,7 @@ export GMT4HOME="$HERE/usr/share/seatree/gmt-4.5.18"
 export GMTHOME="$GMT4HOME"
 export GMT_GSHHG_DATA="$GMT4HOME/gshhg-gmt-2.3.7"
 export NETCDFHOME="$HERE/usr/share/seatree/netcdf-c-4.9.3-rc1"
+export ARCH="x86_64"
 
 # Set up GMT environment variables
 export GMT_SHAREDIR="$GMT4HOME/share"

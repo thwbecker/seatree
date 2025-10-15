@@ -159,6 +159,8 @@ class Syn2D(Gtk.ApplicationWindow, Module):
                     self.setGMTDefaults()
                     self.gmtPlotterWidget = GMTPlotter(self, self.mainWindow, 450, 450, self.mainWindow.getConvertPath(), self.gmtPlotter)
                     self.gmtPlotterWidget.gmtSettingsPanel.loadDefaults()
+                # Reset projection to X after loading defaults (in case defaults loaded wrong projection)
+                self.gmtPlotter.setMapProjection(GMTProjection("X", "", "", 7, ""))
                 self.mainWindow.loadPlotter(self.gmtPlotterWidget)
         self.plotType = type
     
@@ -280,7 +282,7 @@ class Syn2D(Gtk.ApplicationWindow, Module):
         self.gmtPlotter.setPlotOffset(0, 1.5)
         self.gmtPlotter.setBoundaryAnnotation("a20f2/a20f2WeSn")
         self.gmtPlotter.setPortraitMode(1)
-        self.gmtPlotter.setColorbarHorizonal(1)
+        self.gmtPlotter.setColorbarHorizontal(1)
         self.gmtPlotter.setColorbarTriangles(1)
         self.gmtPlotter.setColorbarPos(3.5, -0.5)
         self.gmtPlotter.setColorbarSize(5, 0.25)
@@ -384,7 +386,7 @@ class Syn2D(Gtk.ApplicationWindow, Module):
             self.psFile = self.tmpn + "model.ps"
             
             # set colorbar options
-            self.gmtPlotter.setColorbarHorizonal(1)
+            self.gmtPlotter.setColorbarHorizontal(1)
             self.gmtPlotter.setColorbarTriangles(1)
             self.gmtPlotter.setColorbarPos(3.5, -0.5)
             self.gmtPlotter.setColorbarSize(5, 0.25)
@@ -665,7 +667,7 @@ class Syn2D(Gtk.ApplicationWindow, Module):
         self.gmtPlotter.makeCPT(-1.0, 1.0, 0.1, cptOut)
         
         # set colorbar options
-        self.gmtPlotter.setColorbarHorizonal(1)
+        self.gmtPlotter.setColorbarHorizontal(1)
         self.gmtPlotter.setColorbarTriangles(1)
         self.gmtPlotter.setColorbarPos(3.5, -0.5)
         self.gmtPlotter.setColorbarSize(5, 0.25)
@@ -765,7 +767,7 @@ class Syn2D(Gtk.ApplicationWindow, Module):
         self.gmtPlotter.makeCPT(-1.0, 1.0, 0.1, cptOut)
         
         # set colorbar options
-        self.gmtPlotter.setColorbarHorizonal(1)
+        self.gmtPlotter.setColorbarHorizontal(1)
         self.gmtPlotter.setColorbarTriangles(1)
         self.gmtPlotter.setColorbarPos(3.5, -0.5)
         self.gmtPlotter.setColorbarSize(5, 0.25)
