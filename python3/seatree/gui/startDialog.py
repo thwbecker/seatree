@@ -16,9 +16,7 @@ class StartDialog:
             self.dialog.connect("destroy", self.destroy)
         
         path = os.path.abspath(os.path.dirname(__file__)+'/../..')
-        # Use Gtk.Picture so the starter image scales properly on macOS
-        image = Gtk.Picture.new_for_filename(os.path.join(path, "img", "seatree.jpg"))
-        image.set_content_fit(Gtk.ContentFit.CONTAIN)
+        image = Gtk.Image.new_from_file(os.path.join(path, "img", "seatree.jpg"))
         image.set_size_request(350, 200)
         
         self.combo = Gtk.ComboBoxText()
