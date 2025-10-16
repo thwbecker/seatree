@@ -17,15 +17,23 @@ class ScriptDialog:
         self.window = Gtk.Dialog()
         self.window.connect("destroy", self.destroy)
         self.window.set_title(title)
-        self.window.set_border_width(0)
+        # GTK4: set_border_width() removed, use margins instead
         self.window.set_default_size(600, 400)
 
         # Create a new scrolled window.
         scrolled_window = Gtk.ScrolledWindow()
-        scrolled_window.set_border_width(10)
+        # GTK4: set_border_width() removed, use margins instead
+        scrolled_window.set_margin_top(10)
+        scrolled_window.set_margin_bottom(10)
+        scrolled_window.set_margin_start(10)
+        scrolled_window.set_margin_end(10)
 
         # Set the policy for the scrollbars.
         scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+
+        # Make scrolled window expand to fill available space
+        scrolled_window.set_vexpand(True)
+        scrolled_window.set_hexpand(True)
 
         textview = Gtk.TextView()
         textbuffer = textview.get_buffer()
@@ -37,52 +45,70 @@ class ScriptDialog:
         self.window.get_content_area().append(scrolled_window)
         scrolled_window.show()
 
-        # Add a "close" button to the bottom of the dialog
-        button = Gtk.Button(label="close")
+        # GTK4: Create a button box for the buttons
+        button_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        button_box.set_margin_top(10)
+        button_box.set_margin_bottom(10)
+        button_box.set_margin_start(10)
+        button_box.set_margin_end(10)
+        button_box.set_halign(Gtk.Align.END)
+
+        # Add a "close" button
+        button = Gtk.Button(label="Close")
         button.connect("clicked", self.destroy)
 
-        saveButton = Gtk.Button(label="save")
+        saveButton = Gtk.Button(label="Save")
         saveButton.connect("clicked", self.save)
 
-        # This makes it so the button is the default.
-        saveButton.set_can_default(True)
-        button.set_can_default(True)
-        self.window.get_action_area().append(saveButton)
-        self.window.get_action_area().append(button)
+        # Add buttons to the button box
+        button_box.append(saveButton)
+        button_box.append(button)
 
-        # This grabs this button to be the default button. Simply hitting
-        # the "Enter" key will cause this button to activate.
-        saveButton.grab_default()
-        saveButton.show()
-        button.show()
+        # Add button box to dialog content area
+        self.window.get_content_area().append(button_box)
+
         self.window.show()
 
     def save(self, w):
-        saveBox = SaveDialog(self, title="Save Script")
-        if self.saveFile == "none":
-            print("Not saving")
-        else:
-            with open(self.saveFile, "w") as file_object:
-                dirString = self.mainWindow.tmpn
-                if "/tmp" in self.mainWindow.tmpn:
-                    partition = self.mainWindow.tmpn.rpartition("/tmp")
-                    dirString = partition[0]
+        # Reset saveFile before opening dialog
+        self.saveFile = "none"
+        saveBox = SaveDialog(self, title="Save Script", default_file="script.sh")
+        # GTK4: Dialog is async, use timeout to check when file is selected
+        from gi.repository import GLib
+        GLib.timeout_add(100, self._check_and_save)
 
-                fileString = "#!/bin/bash\n"
-                fileString += f"if [ ! -s .{dirString} ]; then\n"
-                fileString += f"    mkdir {dirString}\n"
-                fileString += "fi\n"
-                file_object.write(fileString)
-                file_object.write(self.text)
+    def _check_and_save(self):
+        """Check if file was selected and perform the save"""
+        if self.saveFile != "none":
+            try:
+                with open(self.saveFile, "w") as file_object:
+                    dirString = self.mainWindow.tmpn
+                    if "/tmp" in self.mainWindow.tmpn:
+                        partition = self.mainWindow.tmpn.rpartition("/tmp")
+                        dirString = partition[0]
+
+                    fileString = "#!/bin/bash\n"
+                    fileString += f"if [ ! -s .{dirString} ]; then\n"
+                    fileString += f"    mkdir {dirString}\n"
+                    fileString += "fi\n"
+                    file_object.write(fileString)
+                    file_object.write(self.text)
+                print(f"Script saved to: {self.saveFile}")
+            except Exception as e:
+                print(f"Error saving script: {e}")
+            return False  # Don't repeat timeout
+        return True  # Keep checking
 
     def getFileName(self, fileName):
         self.saveFile = fileName
+        print(f"ScriptDialog.getFileName: {fileName}")
 
     def show(self):
-        return self.window.run()
+        # GTK4: run() method removed, just show the window
+        self.window.present()
 
     def hide(self):
         self.window.hide()
 
     def destroy(self, widget):
-        self.window.hide()
+        self.window.destroy()

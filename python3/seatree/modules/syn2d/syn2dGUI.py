@@ -293,7 +293,8 @@ class Syn2DGUI(Gtk.ApplicationWindow):
         self.populateModelSettings()
         
         # Make Everything Visible
-        self.vBox.set_size_request(375, -1)
+        # GTK4: Use 0 instead of -1 for "natural" size
+        self.vBox.set_size_request(375, 0)
         self.vBox.show()
         
         # boolean values to track if the data has been remade for replotting verses restoring old plot
@@ -365,12 +366,12 @@ class Syn2DGUI(Gtk.ApplicationWindow):
         self.diffBox.set_sensitive(False)
     
     def populateModelSettings(self, widget=None):
-        # remove all
+        # remove all children from modelTypeSettingsBox
         child = self.modelTypeSettingsBox.get_first_child()
         while child:
-            child = child.get_next_sibling()
-            for widget in child:
-                self.modelTypeSettingsBox.remove(widget)
+            next_child = child.get_next_sibling()
+            self.modelTypeSettingsBox.remove(child)
+            child = next_child
         
         # put the new one in
         selected = self.inputModelSelect.get_active()
