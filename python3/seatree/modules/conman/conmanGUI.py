@@ -234,11 +234,12 @@ class ConManGUI(Gtk.Box):
         if self.debug:
             print("acquired enable lock!")
         enable = (not self.calculating) and (self.hasData)
-        
+
         self.playButton.set_sensitive(enable and not self.playing)
         self.pauseButton.set_sensitive(enable and self.playing)
         self.playSlider.set_sensitive(enable and not self.playing)
         self.saveAnimButton.set_sensitive(enable and not self.playing)
+        self.resultsSaveButton.set_sensitive(enable)  # Enable save button when data is available
         
         if enable:
             if self.numCalculatedSteps < 0:
@@ -293,14 +294,37 @@ class ConManGUI(Gtk.Box):
         self.startButton.set_sensitive(success)
 
     def loadResultFile(self, *args):
-        cancel_button = Gtk.Button.new_from_icon_name("window-close-symbolic")
-        chooser = Gtk.FileChooserDialog(title="Select result file", parent=None, action=Gtk.FileChooserAction.OPEN, buttons=(cancel_button, Gtk.ResponseType.CANCEL, Gtk.ResponseType.OK))
-        
-        response = chooser.run()
+        chooser = Gtk.FileChooserDialog(
+            title="Select result file",
+            action=Gtk.FileChooserAction.OPEN
+        )
+
+        # Set parent window
+        if hasattr(self.conman, 'mainWindow'):
+            root = self.conman.mainWindow
+            if isinstance(root, Gtk.Window):
+                chooser.set_transient_for(root)
+            elif hasattr(root, 'get_root'):
+                root = root.get_root()
+                if isinstance(root, Gtk.Window):
+                    chooser.set_transient_for(root)
+
+        chooser.add_button("_Cancel", Gtk.ResponseType.CANCEL)
+        chooser.add_button("_Open", Gtk.ResponseType.OK)
+
+        # GTK4: Use async pattern
+        chooser.connect("response", self._on_load_result_response)
+        chooser.show()
+
+    def _on_load_result_response(self, dialog, response):
+        """Handle load result file dialog response"""
         file = None
         if response == Gtk.ResponseType.OK:
-            file = chooser.get_filename()
-        chooser.destroy()
+            gfile = dialog.get_file()
+            if gfile:
+                file = gfile.get_path()
+        dialog.destroy()
+
         if file is not None:
             if self.conman.loadResultFile(file):
                 self.hasData = True
@@ -309,7 +333,49 @@ class ConManGUI(Gtk.Box):
             self.enablePlayButtons()
 
     def saveResultFile(self, *args):
-        pass
+        """Save the current result file to a user-specified location"""
+        chooser = Gtk.FileChooserDialog(
+            title="Save result file",
+            action=Gtk.FileChooserAction.SAVE
+        )
+
+        # Set parent window
+        if hasattr(self.conman, 'mainWindow'):
+            root = self.conman.mainWindow
+            if isinstance(root, Gtk.Window):
+                chooser.set_transient_for(root)
+            elif hasattr(root, 'get_root'):
+                root = root.get_root()
+                if isinstance(root, Gtk.Window):
+                    chooser.set_transient_for(root)
+
+        chooser.add_button("_Cancel", Gtk.ResponseType.CANCEL)
+        chooser.add_button("_Save", Gtk.ResponseType.OK)
+
+        # Set a default filename
+        currentFile = self.conman.getCurrentResultFile()
+        if currentFile:
+            import os
+            basename = os.path.basename(currentFile)
+            chooser.set_current_name(basename)
+        else:
+            chooser.set_current_name("conman_results.dat")
+
+        # GTK4: Use async pattern
+        chooser.connect("response", self._on_save_result_response)
+        chooser.show()
+
+    def _on_save_result_response(self, dialog, response):
+        """Handle save result file dialog response"""
+        if response == Gtk.ResponseType.OK:
+            gfile = dialog.get_file()
+            if gfile:
+                destFile = gfile.get_path()
+                if self.conman.saveResultFile(destFile):
+                    print(f"Result file saved to: {destFile}")
+                else:
+                    print("Failed to save result file")
+        dialog.destroy()
 
     def startCalc(self, *args):
         self.startButton.set_sensitive(False)
@@ -439,35 +505,48 @@ class ConManGUI(Gtk.Box):
     def saveAnim(self, *args):
         if self.debug:
             print("saving")
-        saveDiag = SaveDialog(self.conman.mainWindow, self.saveTypes, "Save Animation", None)
+        self.saveDiag = SaveDialog(self.conman.mainWindow, self.saveTypes, "Save Animation", None)
+        # Use GLib.timeout to check for file selection
+        GLib.timeout_add(100, self._check_and_save_anim)
+
+    def _check_and_save_anim(self):
+        """Check if user has selected a file and proceed with animation save"""
         file = self.conman.mainWindow.saveFileName
-        ext = saveDiag.getFilterExtension()
-        if file is None or file == "none":
+        if file == "none":
+            # User hasn't selected yet, keep checking
+            return True
+
+        if file is None:
             print("save aborted")
-            return
+            return False
+
+        ext = self.saveDiag.getFilterExtension()
         # strip out the extension if it's there
-        if file.lower().endswith(ext.lower()):
+        if ext and file.lower().endswith(ext.lower()):
             newfile = file[0:len(file)-len(ext)-1]
             if self.debug:
                 print("stripping out extension: " + file + " => " + newfile)
             file = newfile
+
         numSteps = self.conman.getNumSteps()
         numDigits = len(str(numSteps))
-        
+
         self.rendering = True
         files = []
         for step in range(numSteps):
-            
+
             plotTemp = self.isPlotTempSelected()
             plotVectors = self.isPlotVelocitiesSelected()
             plotAverages = self.isPlotAveragesSelected()
-            
+
             self.playSlider.setValue(step)
             self.conman.plotStep(step, plotTemp=plotTemp, plotVectors=plotVectors, plotAverages=plotAverages)
-            
+
             fname = self.__getSequenceFileName(file, step, numDigits)
             files.append(self.__renderSequenceImage(fname, ext))
         self.rendering = False
+
+        return False  # Don't repeat
 
     def __renderSequenceImage(self, fname, ext):
         fname = fname + "." + ext

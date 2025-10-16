@@ -80,6 +80,7 @@ class ConMan(Module):
         #self.stderrFile = open(self.tempDir + "log.dat.err", "w")
         self.plotter.setColorLimits(0, 1)
         self.plotter.setColorMapByName("Spectral", reversed=True)
+        self.commandString = ""  # Initialize command tracking
     
     def getPlotter(self):
         """
@@ -125,6 +126,7 @@ class ConMan(Module):
     def gawk(self, steps, saveSteps, rayleigh, nelz, aspect, heating, activation):
         def run_cmd(cmd):
             print(cmd)
+            self.commandString += cmd + "\n"  # Track command
             os.system(cmd)
 
         self.model = "bm1a50"
@@ -320,6 +322,7 @@ class ConMan(Module):
     def makeCalcThread(self, stdin=""):
         executable = self.conmanPath + "conman.exp"
         oufFile = self.tempDir + "temp."+self.model
+        self.currentResultFile = oufFile  # Track current result file
         self.calcThread = CalcThread(self.gui, executable, self.mainWindow.getTempFileDir(), oufFile,
                                      stdin=stdin)
 
@@ -332,6 +335,13 @@ class ConMan(Module):
         #        stdin += line
         stdin = " < "+self.runFile
         print("stdin is", stdin)
+
+        # Track the command
+        executable = self.conmanPath + "conman.exp"
+        command = executable + stdin
+        self.commandString += "# Starting ConMan calculation\n"
+        self.commandString += command + "\n"
+
         self.makeCalcThread(stdin=stdin)
         self.calcThread.start()
 
@@ -346,9 +356,28 @@ class ConMan(Module):
         plot = data is not None and len(data) > 0
         lock.release()
         if plot:
+            self.currentResultFile = file  # Track loaded file
             self.plotStep(0)
             return True
         return False
+
+    def saveResultFile(self, destFile):
+        """Save the current result file to a new location"""
+        import shutil
+        if hasattr(self, 'currentResultFile') and self.currentResultFile and os.path.exists(self.currentResultFile):
+            try:
+                shutil.copy2(self.currentResultFile, destFile)
+                return True
+            except Exception as e:
+                print(f"Error saving result file: {e}")
+                return False
+        return False
+
+    def getCurrentResultFile(self):
+        """Get the path to the current result file"""
+        if hasattr(self, 'currentResultFile'):
+            return self.currentResultFile
+        return None
 
     def getNumCalculatedSteps(self):
         lock = self.calcThread.dataLock
@@ -476,8 +505,7 @@ class ConMan(Module):
                 
                 y += rowAdd
             self.plotter.setAxis(ax)
-            ax._aspect = 'equal'
-            ax.apply_aspect()
+            ax.set_aspect('equal')
             ax.set_ylabel("Z")
             ax.set_xlabel("<T>")
             xmax = max(1, xdata.max())
@@ -518,3 +546,15 @@ class ConMan(Module):
         if self.calcThread is not None and self.calcThread.is_alive():
             self.killThread()
         return False
+
+    def getOutput(self):
+        """
+        Returns a string of all commands that have been executed.
+        """
+        return self.commandString
+
+    def clearOutput(self):
+        """
+        Clears the command history string.
+        """
+        self.commandString = ""

@@ -254,7 +254,8 @@ class FlowGUI:
         self.deactivatePlotButtons()
         self.vBox.show()
 
-        self.vBox.set_size_request(375, -1)
+        # GTK4: Use 0 instead of -1 for "natural" size
+        self.vBox.set_size_request(375, 0)
 
         self.figCount = 1
 
@@ -384,66 +385,86 @@ class FlowGUI:
         return filename
 
     def saveComputeFiles(self, widget):
-#        chooser = Gtk.FileChooserDialog(title="Select DIRECTORY To Save Solution Files", parent=self.mainWindow, action=Gtk.FileChooserAction.SELECT_FOLDER, buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+        # GTK4: Cannot pass parent in constructor, must use set_transient_for
         chooser = Gtk.FileChooserDialog(
             title="Select DIRECTORY To Save Solution Files",
-            parent=self.mainWindow,
             action=Gtk.FileChooserAction.SELECT_FOLDER
         )
-        chooser.add_button=('_Cancel', Gtk.ResponseType.CANCEL)
-        chooser.add_button=('_Save', Gtk.ResponseType.OK)
+        # Set parent window
+        if isinstance(self.mainWindow, Gtk.Window):
+            chooser.set_transient_for(self.mainWindow)
+        elif hasattr(self.mainWindow, 'get_root'):
+            root = self.mainWindow.get_root()
+            if isinstance(root, Gtk.Window):
+                chooser.set_transient_for(root)
+
+        # GTK4: Use add_button (note: singular, not plural)
+        chooser.add_button('_Cancel', Gtk.ResponseType.CANCEL)
+        chooser.add_button('_Save', Gtk.ResponseType.OK)
 
         def on_response(dialog, response_id):
             if response_id == Gtk.ResponseType.OK:
-                dir = chooser.get_filename()
-                geoidName = dir + os.sep + "geoid.ab"
-                if os.path.exists(self.flowCalc.geoidFile):
-                    shutil.copy(self.flowCalc.geoidFile, dir)
-                    print("Copied geoid.ab to " + dir + geoidName)
-                velName = dir + os.sep + "vel.sol.bin"
-                if os.path.exists(self.flowCalc.velFile):
-                    shutil.copy(self.flowCalc.velFile, dir)
-                    print("Copied vel.sol.bin to " + dir + velName)
-                tracName = dir + os.sep + "rtrac.sol.bin"
-                if os.path.exists(self.flowCalc.rtracFile):
-                    shutil.copy(self.flowCalc.rtracFile, dir)
-                    print("Copied rtrac.sol.bin to " + dir + tracName)
+                # GTK4: get_filename() -> get_file().get_path()
+                file = chooser.get_file()
+                if file:
+                    dir = file.get_path()
+                    geoidName = dir + os.sep + "geoid.ab"
+                    if os.path.exists(self.flowCalc.geoidFile):
+                        shutil.copy(self.flowCalc.geoidFile, dir)
+                        print("Copied geoid.ab to " + geoidName)
+                    velName = dir + os.sep + "vel.sol.bin"
+                    if os.path.exists(self.flowCalc.velFile):
+                        shutil.copy(self.flowCalc.velFile, dir)
+                        print("Copied vel.sol.bin to " + velName)
+                    tracName = dir + os.sep + "rtrac.sol.bin"
+                    if os.path.exists(self.flowCalc.rtracFile):
+                        shutil.copy(self.flowCalc.rtracFile, dir)
+                        print("Copied rtrac.sol.bin to " + tracName)
             dialog.destroy()
         chooser.connect("response", on_response)
         chooser.show()
 
     def loadComputeFiles(self, widget):
+        # GTK4: Cannot pass parent in constructor, must use set_transient_for
         chooser = Gtk.FileChooserDialog(
-            title="Select DIRECTORY Containing Solution Files", 
-            parent=self.mainWindow, 
+            title="Select DIRECTORY Containing Solution Files",
             action=Gtk.FileChooserAction.SELECT_FOLDER
-        ) 
-        chooser.add_buttons=(
-                '_Cancel', Gtk.ResponseType.CANCEL, 
-                '_Open', Gtk.ResponseType.OK
         )
+        # Set parent window
+        if isinstance(self.mainWindow, Gtk.Window):
+            chooser.set_transient_for(self.mainWindow)
+        elif hasattr(self.mainWindow, 'get_root'):
+            root = self.mainWindow.get_root()
+            if isinstance(root, Gtk.Window):
+                chooser.set_transient_for(root)
+
+        # GTK4: Use add_button (note: singular, not plural)
+        chooser.add_button('_Cancel', Gtk.ResponseType.CANCEL)
+        chooser.add_button('_Open', Gtk.ResponseType.OK)
         
         def on_response(dialog, response_id):
-        
             if response_id == Gtk.ResponseType.OK:
-                dir = chooser.get_filename()
-                geoidName = dir + os.sep + "geoid.ab"
-                if os.path.exists(geoidName):
-                    self.flowCalc.geoidFile = geoidName
-                    self.plotGeoidButton.set_sensitive(True)
-                    self.computeSaveButton.set_sensitive(True)
-                velName = dir + os.sep + "vel.sol.bin"
-                if os.path.exists(velName):
-                    self.flowCalc.velFile = velName
-                    self.plotVelButton.set_sensitive(True)
-                    self.layerBox.set_sensitive(True)
-                    self.computeSaveButton.set_sensitive(True)
-                tracName = dir + os.sep + "rtrac.sol.bin"
-                if os.path.exists(tracName):
-                    self.flowCalc.rtracFile = tracName
-                    self.plotTracButton.set_sensitive(True)
-                    self.layerBox.set_sensitive(True)
-                    self.computeSaveButton.set_sensitive(True)
+                # GTK4: get_filename() -> get_file().get_path()
+                file = chooser.get_file()
+                if file:
+                    dir = file.get_path()
+                    geoidName = dir + os.sep + "geoid.ab"
+                    if os.path.exists(geoidName):
+                        self.flowCalc.geoidFile = geoidName
+                        self.plotGeoidButton.set_sensitive(True)
+                        self.computeSaveButton.set_sensitive(True)
+                    velName = dir + os.sep + "vel.sol.bin"
+                    if os.path.exists(velName):
+                        self.flowCalc.velFile = velName
+                        self.plotVelButton.set_sensitive(True)
+                        self.layerBox.set_sensitive(True)
+                        self.computeSaveButton.set_sensitive(True)
+                    tracName = dir + os.sep + "rtrac.sol.bin"
+                    if os.path.exists(tracName):
+                        self.flowCalc.rtracFile = tracName
+                        self.plotTracButton.set_sensitive(True)
+                        self.layerBox.set_sensitive(True)
+                        self.computeSaveButton.set_sensitive(True)
             dialog.destroy()
         chooser.connect("response", on_response)
         chooser.present()
