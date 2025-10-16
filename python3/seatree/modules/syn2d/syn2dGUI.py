@@ -220,7 +220,7 @@ class Syn2DGUI(Gtk.ApplicationWindow):
         #self.vBox.set_sensitive(False)
         
         # Data Section Box
-        self.vBox.append(self.vBox)
+        self.vBox.append(self.dataVBox)
         
         # Separator
         self.vBox.append(Gtk.Separator())
