@@ -139,7 +139,9 @@ class StartDialog(Gtk.ApplicationWindow):
             self.dialog.connect("destroy", self.destroy)
         
         path = os.path.abspath(os.path.dirname(__file__)+'/../..')
-        image = Gtk.Image.new_from_file(os.path.join(path, "img", "seatree.jpg"))
+        # Use Gtk.Picture for better macOS scaling
+        image = Gtk.Picture.new_for_filename(os.path.join(path, "img", "seatree.jpg"))
+        image.set_can_shrink(False)
         image.set_size_request(350, 200)
         
         self.combo = Gtk.ComboBoxText()
