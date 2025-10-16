@@ -38,7 +38,8 @@ class ImagePlotter(Plotter):
     def getMainWidget(self):
         # return the Image Event Box for this image plotter
         
-        self.image = Gtk.Image()
+        # Use Gtk.Picture (GTK4) so images scale properly across platforms
+        self.image = Gtk.Picture()
         #self.image.show()
         
         self.imageBuffer = 7
@@ -70,6 +71,8 @@ class ImagePlotter(Plotter):
         self.imageEB.set_vexpand(True)
         self.image.set_hexpand(True)
         self.image.set_vexpand(True)
+        # Ensure the picture scales to fit available space while keeping aspect ratio
+        self.image.set_content_fit(Gtk.ContentFit.CONTAIN)
         #self.image.set_size_request(self.imageWidth*self.scaleFactor, self.imageHeight*self.scaleFactor)
         self.imageEB.show()
         
@@ -117,7 +120,8 @@ class ImagePlotter(Plotter):
 
         try:
             self.imageFile = imageFile
-            self.image.set_from_file(self.imageFile)
+            # Gtk.Picture API in GTK4
+            self.image.set_filename(self.imageFile)
             print(f"Successfully loaded image: {imageFile}")
         except Exception as e:
             print(f"ERROR loading image {imageFile}: {e}")
