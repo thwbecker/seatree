@@ -25,8 +25,8 @@ The main software design consists of transparent python wrappers that drive the 
 
 ```bash
 # Clone SEATREE from GitHub repository
-git clone https://github.com/dunyuliu/seatree.dev
-cd seatree.dev
+git clone https://github.com/thwbecker/seatree/
+cd seatree
 
 # If Ubuntu packages are not installed, use -e option to install packages, netcdf, gmt, and seatree
 ./install.seatree.sh -e ubuntu
@@ -51,7 +51,6 @@ http://www-udc.ig.utexas.edu/external/becker/seatree/wiki/download.html
 
 **Project Website:** http://www-udc.ig.utexas.edu/external/becker/seatree/
 
-**Installation Guide:** http://www-udc.ig.utexas.edu/external/becker/seatree/wiki/download.html
 
 ## Reference
 
