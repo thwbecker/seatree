@@ -268,7 +268,8 @@ class GMTSettingsPanel:
                 except Exception:
                     break
 
-        default_options = ["haxby", "gray", "wysiwyg", "polar", "seis", "spectral"]
+        #default_options = ["haxby", "gray", "wysiwyg", "polar", "seis", "spectral"]
+        default_options = []
         gmt6_options = ["roma", "greyC", "vik", "turbo", "batlow", "davos", "cork", "viridis"]
 
         options = list(default_options)
