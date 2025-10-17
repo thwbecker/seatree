@@ -10,7 +10,7 @@
    original comments for grdtrack from GMT at bottom of file
  
 */
-
+#ifndef NO_GMT
 #include "hc_ggrd.h"
 
 #ifndef ONEEIGHTYOVERPI
@@ -24,9 +24,6 @@
 #define irint(x) ((int)rint(x))
 #endif
 
-#ifdef __APPLE__
-#define finite isfinite
-#endif
 
 void ggrd_init_master(struct ggrd_master *ggrd)
 {
@@ -1551,3 +1548,4 @@ float ggrd_gt_mean(float *x,int n)
  *  Modified:	10 Jul 2000 3.3.5  by PW to allow plain -L to indicate geographic coordinates
  * Version:	3.4.3
  */
+#endif

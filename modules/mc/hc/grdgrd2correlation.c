@@ -17,15 +17,11 @@ for regional grids, this assumes 0...360 convention
 
 
 */
-#include "hc_ggrd.h"
+
 #include "hc.h"
 #include "fitxyee.h"		/* part of numerical recipes */
-
-#include <math.h>
-#ifdef __APPLE__
-#define finite isfinite
-#endif
-
+#ifndef NO_GMT
+#include "hc_ggrd.h"
 void calc_mean(struct nr_dp *, int ,double *);
 void calc_std(struct nr_dp *, int ,double *,double *);
 
@@ -406,3 +402,4 @@ double mod(double y, double x)
 {
   return  y - x*floor(y/x);
 }
+#endif
