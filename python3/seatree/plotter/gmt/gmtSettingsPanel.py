@@ -269,7 +269,7 @@ class GMTSettingsPanel:
                     break
 
         default_options = ["haxby", "gray", "wysiwyg", "polar", "seis", "spectral"]
-        gmt6_options = ["turbo", "vik", "batlow", "davos", "cork", "roma", "viridis"]
+        gmt6_options = ["roma", "greyC", "vik", "turbo", "batlow", "davos", "cork", "viridis"]
 
         options = list(default_options)
         if hasattr(self.gmtPlotter, "gmt4") and not self.gmtPlotter.gmt4:
