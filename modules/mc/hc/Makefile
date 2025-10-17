@@ -10,15 +10,18 @@
 #
 # EDIT HERE FOR GMT VERSION 
 #
-include Makefile.include
+#include Makefile.include
+include Makefile.include_no_gmt
 #
 #
-ifdef ARCH
-suffix=/$(ARCH)
-endif
-ifdef HC_HOME
-prefix=$(HC_HOME)/
-endif
+#
+#
+#ifdef ARCH
+#suffix=/$(ARCH)
+#endif
+#ifdef HC_HOME
+#prefix=$(HC_HOME)/
+#endif
 # object file directory
 ODIR = $(prefix)objects$(suffix)
 #
@@ -38,7 +41,7 @@ OINCS = hc.h hc_filenames.h sh.h hc_constants.h
 #HEAL_LIB_FLAGS = -L/usr/local/src/cfitsio/lib/ -L/opt/cfitsio/lib/
 #HEAL_LIBS_LINKLINE = -lchealpix -lhealpix -lcfitsio 
 #HEAL_INCS = $(HEAL_INC_DIR)/myhealpix.h $(HEAL_INC_DIR)/chealpix.h 
- #HEAL_DEFINES = -DHC_USE_HEALPIX
+#HEAL_DEFINES = -DHC_USE_HEALPIX
 #
 # Rick spherical harmonics stuff
 #
@@ -75,7 +78,7 @@ GGRD_OBJS = $(ODIR)/ggrd_velinterpol.o $(ODIR)/ggrd_readgrds.o \
 	$(ODIR)/ggrd_grdtrack_util.o $(ODIR)/sh_exp_ggrd.o $(PREM_OBJS)
 
 GGRD_OBJS_DBG = $(ODIR)/ggrd_velinterpol.dbg.o $(ODIR)/ggrd_readgrds.dbg.o $(ODIR)/ggrd_grdtrack_util.dbg.o 
-GGRD_DEFINES = -I$(GMT4HOME)/include -I$(NETCDFHOME)/include  
+GGRD_DEFINES = $(GGRD_INC_FLAGS) 
 GGRD_LIB_FLAGS = -L$(GMT4HOME)/lib -L$(NETCDFHOME)/lib 
 GGRD_LIBS = $(ODIR)/libggrd.a $(ODIR)/libggrd.dfast.a $(ODIR)/libggrd.dbg.a
 GGRD_LIBS_LINKLINE = $(GGRD_LIB_FLAGS) -lggrd -lpsl -lgmt -lnetcdf
@@ -131,9 +134,9 @@ DEFINES = $(RICK_DEFINES) $(HEAL_DEFINES)
 LIBS = $(HC_LIBS)  $(HEAL_LIBS) $(RICK_LIB)
 
 
-all: all_no_gmt sh_tools hc_tools gmt_tools
+all: all_no_gmt # gmt_tools
 
-all_no_gmt: $(ODIR) $(BDIR) libs hc_tools 
+all_no_gmt: $(ODIR) $(BDIR) libs hc_tools  sh_tools 
 
 sh_tools: 	$(BDIR)/sh_syn $(BDIR)/sh_corr $(BDIR)/sh_ana $(BDIR)/sh_power \
 	 $(BDIR)/sh_extract_layer $(BDIR)/gaussp
@@ -252,7 +255,7 @@ $(BDIR)/grdinttester: $(GGRD_INCS) $(LIBS) $(GGRD_LIBS) $(INCS) grdinttester.c
 		$(GGRD_LIBS_LINKLINE) -lhc -lrick -lm $(LDFLAGS) 
 
 $(BDIR)/grdgrd2correlation: $(GGRD_INCS) $(LIBS) $(GGRD_LIBS) $(INCS) grdgrd2correlation.c fitxyee_util.c
-	$(CC) $(LIB_FLAGS) grdgrd2correlation.c  fitxyee_util.c $(GGRD_DEFINES) -o $(BDIR)/grdgrd2correlation \
+	$(CC) $(LIB_FLAGS) grdgrd2correlation.c   $(INC_FLAGS) fitxyee_util.c $(GGRD_DEFINES) -o $(BDIR)/grdgrd2correlation \
 		$(GGRD_LIBS_LINKLINE) -lhc -lrick -lm $(LDFLAGS) 
 
 $(BDIR)/hc_extract_sh_layer: $(LIBS) $(INCS) $(PREM_OBJS)  $(ODIR)/hc_extract_sh_layer.o
