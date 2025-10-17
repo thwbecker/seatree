@@ -377,6 +377,9 @@ class Syn2D(Gtk.ApplicationWindow, Module):
         
         cptOut = self.tmpn + "cpt.cpt"
         self.gmtPlotter.makeCPT(-1.0, 1.0, 0.1, cptOut)
+        # For GMT6, ensure CPT is rewritten in modern format
+        if not self.gmtPlotter.gmt4:
+            self.gmtPlotter.rewriteCPT(cptOut)
         
         self.gmtPlotter.createImageFromGrid(self.grdFile)
     def plotModelGMT(self, dx):
@@ -665,6 +668,8 @@ class Syn2D(Gtk.ApplicationWindow, Module):
             self.gmtPlotter.setPlotRange(self.gridRange[0], self.gridRange[1], self.gridRange[2], self.gridRange[3])
             
         self.gmtPlotter.makeCPT(-1.0, 1.0, 0.1, cptOut)
+        if not self.gmtPlotter.gmt4:
+            self.gmtPlotter.rewriteCPT(cptOut)
         
         # set colorbar options
         self.gmtPlotter.setColorbarHorizontal(1)

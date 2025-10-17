@@ -119,17 +119,32 @@ class SEATREEInstaller:
     def setupGMT(self):
         print("Setting up GMT")
         self.gmtPath = ""
-        command = "gmtdefaults -L"
+        # Try GMT6 first (gmt defaults), then GMT4 (gmtdefaults)
+        command = "gmt defaults -L"
         if (self.testCommand("", command) == 0):
-            print("GMT appears to be in your system path already...")
+            print("GMT 6 appears to be in your system path already...")
             response = input("Specify another path (y/n default: n)? ")
             if (not (response.find("y") >= 0) and not (response.find("Y") >= 0)):
                 return
-        
-        self.gmtPath = "/usr/lib/gmt/bin"
+        else:
+            command = "gmtdefaults -L"
+            if (self.testCommand("", command) == 0):
+                print("GMT 4 appears to be in your system path already...")
+                response = input("Specify another path (y/n default: n)? ")
+                if (not (response.find("y") >= 0) and not (response.find("Y") >= 0)):
+                    return
+
+        # Check GMTHOME environment variable
         var = self.sys_var("GMTHOME")
-        if (var and os.path.isdir(var + os.sep + "bin")):
-            self.gmtPath = var + os.sep + "bin"
+        if var is not None and var != "":
+            # GMTHOME is set to a path (GMT4 case)
+            if os.path.isdir(var + os.sep + "bin"):
+                self.gmtPath = var + os.sep + "bin"
+            else:
+                self.gmtPath = "/usr/lib/gmt/bin"
+        else:
+            # GMTHOME is empty or not set (GMT6 system install case)
+            self.gmtPath = ""
         
         while True:
             response = input("Path to GMT binaries (default: " + self.gmtPath + "): ")

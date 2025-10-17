@@ -67,12 +67,13 @@ class FlowInstaller:
         return self.hcDir
     
     def getGMT4HOME(self):
+        """Get GMT4 installation directory (HC C code requires GMT4 API)"""
         path = os.path.abspath(self.gmtPath + os.sep + ".." + os.sep)
-        
+
         var = self.sys_var("GMT4HOME")
         if (var and os.path.isdir(var)):
             path = var
-        
+
         self.GMT4HOME = self.getIncLibDir("GMT", path, path, "gmt.h", "libgmt.a")
     
     def getNetCDFDir(self):
@@ -135,10 +136,10 @@ class FlowInstaller:
         print("HC Directory: " + self.hcDir)
         
         gmtFlags = ""
-        
+
         while True:
             print("1) GMT 3.4.5")
-            print("2) GMT 4.x.x")
+            print("2) GMT 4.x.x (RECOMMENDED - C code uses GMT4 API)")
             response = input("Select GMT version from above (default: 2): ")
             if (not response):
                 response = "2"

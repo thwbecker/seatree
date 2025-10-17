@@ -474,9 +474,10 @@ class Invert(Module):
         self.myPlotter.initPSFile(fileName)
         # set colormap
         self.myPlotter.setCPTFile(self.colormap)
+        self.myPlotter._cpt_cache_file = None
         #
         # Plot Data
-        self.myPlotter.plotAnomalyBoxes(gmtfile)
+        self.myPlotter.plotAnomalyBoxesWCPT(gmtfile)
         if self.myPlotter.drawPlateBounds:
             self.myPlotter.drawPlateBoundaries()
         self.myPlotter.drawCoastline()
