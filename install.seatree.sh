@@ -186,7 +186,7 @@ if [ -n "$MACH" ]; then
     log_info "=========================================="
     log_info ""
     log_info "Running verification script..."
-    python3 verify_seatree.py
+    python3 verify.seatree.py
 fi
 
 export SEATREE=$(pwd)
