@@ -40,7 +40,7 @@ def load_seatree_env():
                 key, _, value = line.partition('=')
                 # Only update SEATREE-related variables
                 if key in ['SEATREE', 'GMT4HOME', 'GMTHOME', 'NETCDFHOME',
-                          'GMT_GSHHG_DATA', 'ARCH', 'PATH', 'LD_LIBRARY_PATH']:
+                          'GMT_GSHHG_DATA', 'GMTVERSION', 'ARCH', 'PATH', 'LD_LIBRARY_PATH']:
                     os.environ[key] = value
     except Exception as e:
         print(f"Warning: Failed to source environment: {e}")
@@ -199,14 +199,24 @@ def main():
     gmthome = check_env_var("GMTHOME", result)
     netcdf_home = check_env_var("NETCDFHOME", result)
 
-    # Check GMT_GSHHG_DATA (optional but recommended)
+    # Check GMT_GSHHG_DATA (only needed for GMT4)
+    gmtversion = os.environ.get("GMTVERSION", "6")
     gshhg_data = os.environ.get("GMT_GSHHG_DATA")
-    if gshhg_data and Path(gshhg_data).exists():
-        result.add_pass("Environment variable GMT_GSHHG_DATA", gshhg_data)
-        print_check("PASS", "Environment variable: GMT_GSHHG_DATA", gshhg_data)
+    if gmtversion == "4":
+        if gshhg_data and Path(gshhg_data).exists():
+            result.add_pass("Environment variable GMT_GSHHG_DATA", gshhg_data)
+            print_check("PASS", "Environment variable: GMT_GSHHG_DATA", gshhg_data)
+        else:
+            result.add_warning("Environment variable GMT_GSHHG_DATA", "Not set or path doesn't exist (required for GMT4)")
+            print_check("WARN", "Environment variable: GMT_GSHHG_DATA", "Not set or path doesn't exist (required for GMT4)")
     else:
-        result.add_warning("Environment variable GMT_GSHHG_DATA", "Not set or path doesn't exist")
-        print_check("WARN", "Environment variable: GMT_GSHHG_DATA", "Not set or path doesn't exist")
+        # GMT6 doesn't need GMT_GSHHG_DATA
+        if gshhg_data:
+            result.add_pass("Environment variable GMT_GSHHG_DATA", f"{gshhg_data} (GMT6 mode - not required)")
+            print_check("PASS", "Environment variable: GMT_GSHHG_DATA", f"{gshhg_data} (GMT6 mode - not required)")
+        else:
+            result.add_pass("Environment variable GMT_GSHHG_DATA", "Not set (GMT6 mode - not required)")
+            print_check("PASS", "Environment variable: GMT_GSHHG_DATA", "Not set (GMT6 mode - not required)")
 
     # Check ARCH
     arch = os.environ.get("ARCH")
@@ -228,12 +238,29 @@ def main():
         check_command_version(f"{netcdf_home}/bin/nc-config", "nc-config --version", result)
 
     # Check GMT installation
-    if gmt4_home:
-        print_header("GMT 4 Installation")
-        # Note: GMT4 does not have unified 'gmt' command, only individual programs
-        gmt_executables = ['pscoast', 'psxy', 'psbasemap', 'pstext', 'gmtset']
-        for exe in gmt_executables:
-            check_executable(f"{gmt4_home}/bin/{exe}", exe, result)
+    gmtversion = os.environ.get("GMTVERSION", "6")
+    if gmtversion == "4":
+        if gmt4_home:
+            print_header("GMT 4 Installation")
+            # Note: GMT4 does not have unified 'gmt' command, only individual programs
+            gmt_executables = ['pscoast', 'psxy', 'psbasemap', 'pstext', 'gmtset']
+            for exe in gmt_executables:
+                check_executable(f"{gmt4_home}/bin/{exe}", exe, result)
+    else:
+        # GMT6 mode - check for system GMT
+        print_header("GMT 6 Installation")
+        if gmthome:
+            # Check GMTHOME path exists
+            gmthome_path = Path(gmthome)
+            if gmthome_path.exists():
+                result.add_pass("GMTHOME path", gmthome)
+                print_check("PASS", "GMTHOME path", gmthome)
+            else:
+                result.add_fail("GMTHOME path", f"Path does not exist: {gmthome}")
+                print_check("FAIL", "GMTHOME path", f"Path does not exist: {gmthome}")
+
+        # Check for GMT6 executable in system PATH
+        check_command_version("gmt", "GMT", result)
 
     # Check ConMan installation
     if seatree_home:

@@ -105,8 +105,16 @@ if [ -n "$MACH" ]; then
         export GMT4HOME=$(pwd)/gmt-4.5.18
         export GMTHOME=$GMT4HOME
     elif [ "$GMTVERSION" == "6" ]; then
-        # For GMT6, detect system installation
-        if [ -d "/usr/include/gmt" ] && [ -f "/usr/lib/x86_64-linux-gnu/libgmt.so" ]; then
+        # For GMT6, detect installation location
+        # First, try to find GMT6 using 'which gmt'
+        if command -v gmt >/dev/null 2>&1; then
+            GMT_BIN=$(which gmt)
+            # Get the bin directory, then go up one level to get GMT home
+            GMT_BIN_DIR=$(dirname "$GMT_BIN")
+            export GMTHOME=$(dirname "$GMT_BIN_DIR")
+            export GMT4HOME="$GMTHOME"  # For HC backward compatibility
+            log_info "  -> Found GMT6 at: $GMT_BIN (GMTHOME=$GMTHOME)"
+        elif [ -d "/usr/include/gmt" ] && [ -f "/usr/lib/x86_64-linux-gnu/libgmt.so" ]; then
             # Ubuntu/Debian system GMT6
             export GMTHOME="/usr"
             export GMT4HOME="$GMTHOME"  # For HC backward compatibility
@@ -115,7 +123,7 @@ if [ -n "$MACH" ]; then
             export GMTHOME="/usr/local"
             export GMT4HOME="$GMTHOME"
         else
-            echo "ERROR: GMT6 not found in /usr or /usr/local"
+            echo "ERROR: GMT6 not found in PATH, /usr, or /usr/local"
             echo "Please install GMT6 with: sudo apt-get install gmt gmt-dcw gmt-gshhg libgmt-dev"
             exit 1
         fi
@@ -178,7 +186,7 @@ if [ -n "$MACH" ]; then
     log_info "=========================================="
     log_info ""
     log_info "Running verification script..."
-    python3 verify_seatree.py
+    python3 verify.seatree.py
 fi
 
 export SEATREE=$(pwd)
@@ -187,8 +195,15 @@ if [ "$GMTVERSION" == "4" ]; then
     export GMTHOME=$GMT4HOME
     export GMT_GSHHG_DATA=$GMT4HOME/gshhg-gmt-2.3.7
 elif [ "$GMTVERSION" == "6" ]; then
-    # For GMT6, detect system installation
-    if [ -d "/usr/include/gmt" ] && [ -f "/usr/lib/x86_64-linux-gnu/libgmt.so" ]; then
+    # For GMT6, detect installation location
+    # First, try to find GMT6 using 'which gmt'
+    if command -v gmt >/dev/null 2>&1; then
+        GMT_BIN=$(which gmt)
+        # Get the bin directory, then go up one level to get GMT home
+        GMT_BIN_DIR=$(dirname "$GMT_BIN")
+        export GMTHOME=$(dirname "$GMT_BIN_DIR")
+        export GMT4HOME="$GMTHOME"  # For HC backward compatibility
+    elif [ -d "/usr/include/gmt" ] && [ -f "/usr/lib/x86_64-linux-gnu/libgmt.so" ]; then
         # Ubuntu/Debian system GMT6
         export GMTHOME="/usr"
         export GMT4HOME="$GMTHOME"  # For HC backward compatibility
