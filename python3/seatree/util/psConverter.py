@@ -113,19 +113,11 @@ class PSConverter:
         else:
             use_ps = self.psfile
 
-        # Build ps2raster command with better error checking
-        gmt4home = os.environ.get("GMT4HOME", "")
-        if not gmt4home:
-            print("ERROR: GMT4HOME environment variable not set!")
-            return None
+        # Try GMT6 first (gmt psconvert), then GMT4 (ps2raster)
+        gmtversion = os.environ.get("GMTVERSION", "6")
 
-        ps2raster_path = os.path.join(gmt4home, "bin", "ps2raster")
-        if not os.path.isfile(ps2raster_path):
-            print(f"ERROR: ps2raster not found at {ps2raster_path}")
-            return None
-
-        # Change to a writable directory before running ps2raster
-        # ps2raster creates temporary .bb files in the current directory
+        # Change to a writable directory before running conversion
+        # ps2raster/psconvert creates temporary .bb files in the current directory
         original_cwd = os.getcwd()
         temp_dir = os.path.dirname(use_ps)  # Use the same directory as the PS file
 
@@ -133,11 +125,32 @@ class PSConverter:
             os.chdir(temp_dir)
             print(f'Changed to writable directory: {temp_dir}')
 
-            cmd = f"{ps2raster_path} {use_ps} -A -P -Tg"
-            print(f'Running ps2raster command: {cmd}')
+            if gmtversion == "6":
+                # Try GMT6 psconvert first
+                cmd = f"gmt psconvert {use_ps} -A -P -Tg"
+                print(f'Running GMT6 psconvert command: {cmd}')
+                ret_code = self.command(cmd)
 
-            # Run command and check return code
-            ret_code = self.command(cmd)
+                # If GMT6 failed, fall back to GMT4
+                if ret_code != 0:
+                    print("GMT6 psconvert failed, trying GMT4 ps2raster...")
+                    gmtversion = "4"
+
+            if gmtversion == "4":
+                # Try GMT4 ps2raster
+                gmt4home = os.environ.get("GMT4HOME", "")
+                if not gmt4home:
+                    print("ERROR: GMT4HOME environment variable not set!")
+                    return None
+
+                ps2raster_path = os.path.join(gmt4home, "bin", "ps2raster")
+                if not os.path.isfile(ps2raster_path):
+                    print(f"ERROR: ps2raster not found at {ps2raster_path}")
+                    return None
+
+                cmd = f"{ps2raster_path} {use_ps} -A -P -Tg"
+                print(f'Running GMT4 ps2raster command: {cmd}')
+                ret_code = self.command(cmd)
         finally:
             # Always restore original working directory
             os.chdir(original_cwd)

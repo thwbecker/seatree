@@ -77,11 +77,12 @@ GGRD_SRCS = ggrd_velinterpol.c ggrd_readgrds.c ggrd_grdtrack_util.c sh_exp_ggrd.
 GGRD_OBJS = $(ODIR)/ggrd_velinterpol.o $(ODIR)/ggrd_readgrds.o \
 	$(ODIR)/ggrd_grdtrack_util.o $(ODIR)/sh_exp_ggrd.o $(PREM_OBJS)
 
-GGRD_OBJS_DBG = $(ODIR)/ggrd_velinterpol.dbg.o $(ODIR)/ggrd_readgrds.dbg.o $(ODIR)/ggrd_grdtrack_util.dbg.o 
-GGRD_DEFINES = $(GGRD_INC_FLAGS) 
-GGRD_LIB_FLAGS = -L$(GMT4HOME)/lib -L$(NETCDFHOME)/lib 
+GGRD_OBJS_DBG = $(ODIR)/ggrd_velinterpol.dbg.o $(ODIR)/ggrd_readgrds.dbg.o $(ODIR)/ggrd_grdtrack_util.dbg.o
+GGRD_DEFINES = $(GGRD_INC_FLAGS)
+# Comment out these to use values from Makefile.include or Makefile.include_no_gmt
+#GGRD_LIB_FLAGS = -L$(GMT4HOME)/lib -L$(NETCDFHOME)/lib
 GGRD_LIBS = $(ODIR)/libggrd.a $(ODIR)/libggrd.dfast.a $(ODIR)/libggrd.dbg.a
-GGRD_LIBS_LINKLINE = $(GGRD_LIB_FLAGS) -lggrd -lpsl -lgmt -lnetcdf
+#GGRD_LIBS_LINKLINE = $(GGRD_LIB_FLAGS) -lggrd -lpsl -lgmt -lnetcdf
 GGRD_INCS = $(PREM_INCS)  ggrd_grdtrack_util.h ggrd_base.h ggrd_struc.h hc_ggrd_auto_proto.h
 
 #
@@ -178,8 +179,8 @@ $(BDIR)/sh_test: $(LIBS) $(INCS) $(ODIR)/sh_test.o
 	$(CC) $(LIB_FLAGS) $(ODIR)/sh_test.o \
 		-o $(BDIR)/sh_test -lhc -lrick $(HEAL_LIBS_LINKLINE) -lm $(LDFLAGS)
 
-$(BDIR)/sh_syn: $(LIBS) $(GGRD_LIBS) $(INCS) $(GGRD_INCS) $(ODIR)/sh_syn.o
-	$(CC) $(LIB_FLAGS) $(ODIR)/sh_syn.o \
+$(BDIR)/sh_syn: $(LIBS) $(GGRD_LIBS) $(INCS) $(GGRD_INCS) $(ODIR)/sh_syn.o $(PREM_OBJS)
+	$(CC) $(LIB_FLAGS) $(ODIR)/sh_syn.o $(PREM_OBJS) \
 		-o $(BDIR)/sh_syn -lhc -lrick $(HEAL_LIBS_LINKLINE) $(GGRD_LIBS_LINKLINE) -lm $(LDFLAGS)
 
 $(BDIR)/sh_corr: $(LIBS) $(INCS) $(ODIR)/sh_corr.o $(PREM_OBJS) 
@@ -191,7 +192,7 @@ $(BDIR)/sh_power: $(LIBS) $(INCS) $(PREM_OBJS)  $(ODIR)/sh_power.o
 		-o $(BDIR)/sh_power $(PREM_OBJS) -lhc -lrick $(HEAL_LIBS_LINKLINE)  -lm $(LDFLAGS)
 
 $(BDIR)/sh_ana: $(LIBS) $(GGRD_LIBS) $(PREM_OBJS) $(INCS) $(GGRD_INCS) $(ODIR)/sh_ana.o
-	$(CC) $(LIB_FLAGS) $(ODIR)/sh_ana.o \
+	$(CC) $(LIB_FLAGS) $(ODIR)/sh_ana.o $(PREM_OBJS) \
 		-o $(BDIR)/sh_ana -lhc -lrick $(HEAL_LIBS_LINKLINE) \
 		$(GGRD_LIBS_LINKLINE)  -lm $(LDFLAGS)
 

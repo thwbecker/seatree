@@ -1,13 +1,16 @@
 #
 # quad precision
 #
-#ADD_FLAGS = -DHC_PRECISION=32 
+#ADD_FLAGS = -DHC_PRECISION=32
 #
 # double precision
 ADD_FLAGS =  -DNO_GMT
 
 
-# GMT4 
+# GMT4 - all commented out for NO_GMT build
 #GGRD_INC_FLAGS = -I$(GMT4HOME)/include -I$(NETCDFDIR)/include -DUSE_GMT4
-#GGRD_LIBS_LINKLINE = -lggrd -L$(GMT4HOME)/lib/ -lgmt -lpsl -lnetcdf 
+GGRD_INC_FLAGS =
+#GGRD_LIBS_LINKLINE = -lggrd -L$(GMT4HOME)/lib/ -lgmt -lpsl -lnetcdf
+GGRD_LIBS_LINKLINE =
 #LDFLAGS = -L$(NETCDFDIR)/lib -lnetcdf
+LDFLAGS =

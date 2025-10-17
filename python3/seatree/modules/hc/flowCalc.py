@@ -323,13 +323,25 @@ class FlowCalc(Module):
             if self.verb > 0:
                 print(f"Computing correlations with {self.ogeoidFile}")
             # Full correlation between l = 1 and 20
-            command = f"cat {self.geoidFile} {self.ogeoidFile} | {hcpath}sh_corr 20 0 0 1 2> /dev/null"
-            result = self.myPlotter.runGMT(command)
-            r1 = f'{float(result[1]):.2f}'
+            command = f"cat {self.geoidFile} {self.ogeoidFile} | {hcpath}sh_corr 20 0 0 1"
+            result = subprocess.run(command, shell=True, capture_output=True, text=True)
+            r1_val = result.stdout.strip() if result.stdout else ""
+            if r1_val:
+                r1 = f'{float(r1_val):.2f}'
+            else:
+                r1 = "N/A"
+                if self.verb > 0:
+                    print(f"Warning: sh_corr (1-20) returned no output. Error: {result.stderr}")
             # Between 4 and 9
-            command = f"cat {self.geoidFile} {self.ogeoidFile} | {hcpath}sh_corr 9 0 0 4 2> /dev/null"
-            result = self.myPlotter.runGMT(command)
-            r2 = f'{float(result[1]):.2f}'
+            command = f"cat {self.geoidFile} {self.ogeoidFile} | {hcpath}sh_corr 9 0 0 4"
+            result = subprocess.run(command, shell=True, capture_output=True, text=True)
+            r2_val = result.stdout.strip() if result.stdout else ""
+            if r2_val:
+                r2 = f'{float(r2_val):.2f}'
+            else:
+                r2 = "N/A"
+                if self.verb > 0:
+                    print(f"Warning: sh_corr (4-9) returned no output. Error: {result.stderr}")
             self.myPlotter.plotText(f"0.05 -0.05 14 0 0 ML \"r@-1-20@- = {r1}\"")
             self.myPlotter.plotText(f"0.80 -0.05 14 0 0 ML \"r@-4-9@- = {r2}\"")
 
@@ -361,9 +373,9 @@ class FlowCalc(Module):
         if self.verb > 0:
             print("Plotting geoid correlation")
 
-        command = f"cat {self.geoidFile} {self.ogeoidFile} | {hcpath}sh_corr {lmax} 0 1 2 2> /dev/null > tmp.c.dat"
-        # Set up XY plot
-        self.myPlotter.runGMT(command)
+        command = f"cat {self.geoidFile} {self.ogeoidFile} | {hcpath}sh_corr {lmax} 0 1 2 > tmp.c.dat"
+        # Run sh_corr directly (not a GMT command)
+        subprocess.run(command, shell=True, capture_output=True, text=True)
         self.myPlotter.setPlotRange(2, 20, 0, 1)
         self.myPlotter.setMapProjection(GMTProjection("X", "", "", 3.5, 7))
         self.myPlotter.setTextProjection(GMTProjection("X", "", "", 3.5, 7))

@@ -11,6 +11,7 @@ class GMTSettingsPanel:
     def __init__(self, gmtPlotterWidget, gmtWrapper, width=200):
         self.width = width
         self.gmtPlotterWidget = gmtPlotterWidget
+        self.gmtPlotter = gmtWrapper
 
         self.eb = Gtk.Box()
         self.eb.set_size_request(self.width, 200)
@@ -21,14 +22,7 @@ class GMTSettingsPanel:
         
         # Colormap Type
         self.colormapCombo = Gtk.ComboBoxText()
-        self.colormapCombo.append_text("haxby")
-        self.colormapCombo.append_text("gray")
-        self.colormapCombo.append_text("wysiwyg")
-        self.colormapCombo.append_text("polar")
-        self.colormapCombo.append_text("seis")
-        self.colormapCombo.append_text("spectral")
-        self.colormapCombo.append_text("other...")
-        self.colormapCombo.set_active(0)
+        self._populate_colormap_combo()
 
         self.colormapCombo.connect("changed", self.checkColormap)
 
@@ -166,7 +160,6 @@ class GMTSettingsPanel:
         self.eb.append(self.vBox)
         #
         # init with none, gets set in gmt plotter widget
-        self.gmtPlotter = gmtWrapper
         self.loadDefaults()
 
     def setGMTPlotter(self, plotter):
@@ -239,6 +232,7 @@ class GMTSettingsPanel:
 
         self.myPlotter = self.gmtPlotterWidget.getGMTPlotter()
         self.myPlotter.setColormapType(cptType)
+        self.myPlotter._cpt_cache_file = None
         self.myPlotter.setColormapInvert(self.invertCheck.get_active())
         self.myPlotter.setDrawPlateBoundaries(self.plateBoundaryCheck.get_active())
         self.myPlotter.setDrawCoastlines(self.coastCheck.get_active())
@@ -259,14 +253,34 @@ class GMTSettingsPanel:
         gridres = float(self.gridres.get_text())
         self.myPlotter.setGridRes(gridres)
 
-        # adjust the text projection to map width 
-        myprojection = GMTProjection("X", "", "", pwidth, pwidth / 2.)
-        self.myPlotter.setTextProjection(myprojection)  # set the new projection
-        self.myPlotter.setColorbarPos(pwidth / 2, -pwidth * 0.042)
-        self.myPlotter.setColorbarSize(pwidth / 2., pwidth * 0.036)
+        # Re-render plot with new settings
+        if self.gmtPlotterWidget:
+            self.gmtPlotterWidget.updatePlot()
 
-        self.gmtPlotterWidget.setGMTPlotter(self.myPlotter)
-        self.gmtPlotterWidget.updatePlot()
+    def _populate_colormap_combo(self):
+        if hasattr(self.colormapCombo, "remove_all"):
+            self.colormapCombo.remove_all()
+        else:
+            # Fallback for older Gtk; remove until empty
+            while True:
+                try:
+                    self.colormapCombo.remove(0)
+                except Exception:
+                    break
+
+        default_options = ["haxby", "gray", "wysiwyg", "polar", "seis", "spectral"]
+        gmt6_options = ["turbo", "vik", "batlow", "davos", "cork", "roma", "viridis"]
+
+        options = list(default_options)
+        if hasattr(self.gmtPlotter, "gmt4") and not self.gmtPlotter.gmt4:
+            for name in gmt6_options:
+                if name not in options:
+                    options.append(name)
+        options.append("other...")
+
+        for name in options:
+            self.colormapCombo.append_text(name)
+        self.colormapCombo.set_active(0)
 
     def resetToDefault(self, b):
         self.loadDefaults()
@@ -293,16 +307,21 @@ class GMTSettingsPanel:
         self.adjustCheck.set_active(self.gmtPlotter.adjust)
         self.labelCheck.set_active(self.gmtPlotter.addLabel)
         
-        if self.gmtPlotter.cptType == "haxby":
-            self.colormapCombo.set_active(0)
-        elif self.gmtPlotter.cptType == "gray":
-            self.colormapCombo.set_active(1)
-        elif self.gmtPlotter.cptType == "wysiwyg":
-            self.colormapCombo.set_active(2)
-        elif self.gmtPlotter.cptType == "polar":
-            self.colormapCombo.set_active(3)
-        elif self.gmtPlotter.cptType == "seis":
-            self.colormapCombo.set_active(4)
+        combo_model = self.colormapCombo.get_model()
+        active_index = None
+        if combo_model is not None:
+            for i, row in enumerate(combo_model):
+                if row[0] == self.gmtPlotter.cptType:
+                    active_index = i
+                    break
+        if active_index is not None:
+            self.colormapCombo.set_active(active_index)
+        else:
+            # Fall back to custom entry
+            last_index = len(combo_model) - 1 if combo_model is not None else 0
+            self.colormapCombo.set_active(last_index)
+            self.colormapEntry.set_text(self.gmtPlotter.cptType)
+        self.checkColormap(None)
         for i in range(len(self.projections)):
             proj = self.projections[i]
             if self.gmtPlotter.projection.type == proj[0]:

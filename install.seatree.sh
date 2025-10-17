@@ -6,6 +6,13 @@
 # 2. docker: please see Dockerfile.
 # 3. macos: MacOS 14
 
+# GMT Version Selection (4 or 6)
+# Default: GMT6 (system-installed via package manager)
+# Optional: GMT4 (set GMTVERSION=4 to use legacy GMT4)
+# Note: SEATREE now uses GMT6 by default. GMT4 is kept available
+#       for users who need it, but GMT6 is recommended for new installations.
+GMTVERSION=${GMTVERSION:-6}  # Default to 6 if not set
+
 # Set up logging
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 LOGDIR="tmp"
@@ -26,11 +33,12 @@ log_info "=========================================="
 log_info "SEATREE Installation Log"
 log_info "Started: $(date)"
 log_info "Log file: $LOGFILE"
+log_info "GMT Version: ${GMTVERSION} (default: 6)"
 log_info "=========================================="
 log_info ""
 
 while getopts "m:e:c:h" OPTION; do
-    case $OPTION in 
+    case $OPTION in
         m)
             MACH=$OPTARG
             ;;
@@ -39,51 +47,82 @@ while getopts "m:e:c:h" OPTION; do
             ENV="True"
             ;;
         h)
-            echo "Usage: ./install.seatree.python3.gtk4.sh [-h] [-m Machine_name] [-e Machine_name] "
+            echo "Usage: ./install.seatree.sh [-h] [-m Machine_name] [-e Machine_name] "
             echo "                                                                     "
             echo "Examples:                                                            "
             echo "                                                                     "
-            echo "./install.seatree.python3.gtk4.sh -h                                 "
+            echo "./install.seatree.sh -h                                 "
             echo " -----Display this help message                                      "
             echo "                                                                     "
-            echo "./install.seatree.python3.gtk4.sh -m ubuntu                          "
-            echo " -----Install SEATREE on ubuntu 22.04                                "
+            echo "./install.seatree.sh -m ubuntu                          "
+            echo " -----Install SEATREE on ubuntu 22.04 (uses system GMT6 by default)  "
             echo "                                                                     "
-            echo "./install.seatree.python3.gtk4.sh -e macos                           "
+            echo "GMTVERSION=4 ./install.seatree.sh -m ubuntu             "
+            echo " -----Install SEATREE with GMT4 (optional, for legacy use cases)     "
+            echo "                                                                     "
+            echo "./install.seatree.sh -e macos                           "
             echo " -----Simply set up envs for SEATREE without installation            "
             echo " -----on macos                                                       "
             echo "                                                                     "
-            echo "source ./install.seatree.python3.gtk4.sh                             "
+            echo "source ./install.seatree.sh                             "
             echo " -----Activate ENV VAR and add exes to PATH                          "
             echo "                                                                     "
             echo "Currently supported machines include:                                "
             echo " ubuntu/macos/docker                                                 "
+            echo "                                                                     "
+            echo "GMT Version:                                                         "
+            echo " Default: GMT6 (system-installed via apt/homebrew)                   "
+            echo " Optional: GMT4 (set GMTVERSION=4 before running this script)        "
             ;;
     esac
 done 
 
-if [ -n "$MACH" ]; then 
+if [ -n "$MACH" ]; then
     export MACHINE=$MACH
-    if [ $MACHINE == "ubuntu" ]; then 
+    if [ $MACHINE == "ubuntu" ]; then
         if [ -n "$ENV" ]; then
           sudo apt-get update
           sudo apt-get install git wget cmake python3 python3-pip python3-numpy
           sudo apt-get install python3-gi python3-gi-cairo gir1.2-gtk-4.0 libgtk-4-dev
           sudo apt-get install build-essential gfortran
           sudo apt-get install x11-apps libx11-dev libxt-dev libxaw7-dev ghostscript libhdf5-dev gawk
+          # Install GMT6 (default) - required for SEATREE plotting modules
+          sudo apt-get install gmt gmt-dcw gmt-gshhg libgmt-dev
           pip3 install --user matplotlib==3.9.2 #--break-system-packages # needs newer version of matplotlib to work.
-        fi 
-    elif [ $MACHINE == "macos" ]; then 
+        fi
+    elif [ $MACHINE == "macos" ]; then
         echo "Installing SEATREE on MacOS 14 ... ..."
         if [ -n "$ENV" ]; then
             brew install gtk4 ghostscript gawk
-            pip3 install --break-system-packages matplotlib==3.9.2 pygobject       
-        fi   
+            # Install GMT6 (default) - required for SEATREE plotting modules
+            brew install gmt
+            pip3 install --break-system-packages matplotlib==3.9.2 pygobject
+        fi
     fi 
 
     export SEATREE=$(pwd)
-    export GMT4HOME=$(pwd)/gmt-4.5.18
-    export GMTHOME=$GMT4HOME
+    if [ "$GMTVERSION" == "4" ]; then
+        export GMT4HOME=$(pwd)/gmt-4.5.18
+        export GMTHOME=$GMT4HOME
+    elif [ "$GMTVERSION" == "6" ]; then
+        # For GMT6, detect system installation
+        if [ -d "/usr/include/gmt" ] && [ -f "/usr/lib/x86_64-linux-gnu/libgmt.so" ]; then
+            # Ubuntu/Debian system GMT6
+            export GMTHOME="/usr"
+            export GMT4HOME="$GMTHOME"  # For HC backward compatibility
+        elif [ -d "/usr/local/include/gmt" ] && [ -f "/usr/local/lib/libgmt.dylib" ]; then
+            # macOS Homebrew GMT6
+            export GMTHOME="/usr/local"
+            export GMT4HOME="$GMTHOME"
+        else
+            echo "ERROR: GMT6 not found in /usr or /usr/local"
+            echo "Please install GMT6 with: sudo apt-get install gmt gmt-dcw gmt-gshhg libgmt-dev"
+            exit 1
+        fi
+    else
+        echo "ERROR: GMTVERSION must be 4 or 6, got: $GMTVERSION"
+        exit 1
+    fi
     export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1
     export ARCH=$(uname -m)
 
@@ -101,16 +140,20 @@ if [ -n "$MACH" ]; then
     fi
 
     log_info "[STEP 2/4] $(date +"%Y-%m-%d %H:%M:%S") - Checking GMT installation..."
-    if [ -e "gmt-4.5.18" ]; then
-        log_info "  -> GMT already installed, skipping."
-    else
-        log_info "  -> Installing gmt-4.5.18..."
-        bash install/install.gmt4.ubuntu22.sh >> "$LOGFILE" 2>&1
-        if [ $? -eq 0 ]; then
-            log_info "  -> GMT installation completed successfully."
+    if [ "$GMTVERSION" == "4" ]; then
+        if [ -e "gmt-4.5.18" ]; then
+            log_info "  -> GMT 4 already installed, skipping."
         else
-            log_info "  -> ERROR: GMT installation failed. Check $LOGFILE for details."
+            log_info "  -> Installing GMT 4..."
+            bash install/install.gmt4.ubuntu22.sh >> "$LOGFILE" 2>&1
+            if [ $? -eq 0 ]; then
+                log_info "  -> GMT 4 installation completed successfully."
+            else
+                log_info "  -> ERROR: GMT 4 installation failed. Check $LOGFILE for details."
+            fi
         fi
+    elif [ "$GMTVERSION" == "6" ]; then
+        log_info "  -> Using system GMT 6 (skipping installation)"
     fi
 
     log_info "[STEP 3/4] $(date +"%Y-%m-%d %H:%M:%S") - Configuring Python3/GTK4..."
@@ -139,9 +182,22 @@ if [ -n "$MACH" ]; then
 fi
 
 export SEATREE=$(pwd)
-export GMT4HOME=$(pwd)/gmt-4.5.18
-export GMTHOME=$GMT4HOME
-export GMT_GSHHG_DATA=$GMT4HOME/gshhg-gmt-2.3.7
+if [ "$GMTVERSION" == "4" ]; then
+    export GMT4HOME=$(pwd)/gmt-4.5.18
+    export GMTHOME=$GMT4HOME
+    export GMT_GSHHG_DATA=$GMT4HOME/gshhg-gmt-2.3.7
+elif [ "$GMTVERSION" == "6" ]; then
+    # For GMT6, detect system installation
+    if [ -d "/usr/include/gmt" ] && [ -f "/usr/lib/x86_64-linux-gnu/libgmt.so" ]; then
+        # Ubuntu/Debian system GMT6
+        export GMTHOME="/usr"
+        export GMT4HOME="$GMTHOME"  # For HC backward compatibility
+    elif [ -d "/usr/local/include/gmt" ] && [ -f "/usr/local/lib/libgmt.dylib" ]; then
+        # macOS Homebrew GMT6
+        export GMTHOME="/usr/local"
+        export GMT4HOME="$GMTHOME"
+    fi
+fi
 export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1
 export ARCH=$(uname -m)
 
