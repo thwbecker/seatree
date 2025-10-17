@@ -64,7 +64,7 @@ class DataPointChooser:
 		x, y = event.xdata, event.ydata
 
 		if event.inaxes:
-			print 'generic call?: data coords', x,y
+			print('generic call?: data coords', x,y)
 	
 	def getClosestPointInTolerance(self, x, y, list):
 		minDist = -1
@@ -110,7 +110,7 @@ class DataPointChooser:
 				if button == 1 or button == 3: # center mouse click: add point to list
 					if not closest:
 						if self.verbose:
-							print 'adding data point %7.2f, %7.2f ' % (x, y)
+							print('adding data point %7.2f, %7.2f ' % (x, y))
 						if button == 3:
 							self.sources.append((x, y))
 						else:
@@ -118,18 +118,18 @@ class DataPointChooser:
 						self.redraw_plot()
 					else:
 						if self.verbose:
-							print 'there is already a point at %7.2f, %7.2f ' % (x, y)
+							print('there is already a point at %7.2f, %7.2f ' % (x, y))
 				elif button == 2:
 					if closest:
 						val = closest[1]
 						theList = closest[3]
 						theList.remove(val)
 						if self.verbose:
-							print 'removing data point %7.2f, %7.2f ' % val
+							print('removing data point %7.2f, %7.2f ' % val)
 						self.redraw_plot()
 					else:
 						if self.verbose:
-							print 'did not find data close to click  %7.2f, %7.2f' % (x,y)
+							print('did not find data close to click  %7.2f, %7.2f' % (x,y))
 	
 	def plotScatterData(self, x, y, type=None, color='b', size=30, globalWidth=0.2, linewidths=None):
 		if type == None:
@@ -159,9 +159,9 @@ class DataPointChooser:
 				x.append(source[0])
 				y.append(source[1])
 			color = "r"
-			type = matPlotLibPlotter.PENTAGRAM
+			type = matPlotLibPlotter.MatPlotLibPlotter.PENTAGRAM
 			self.plotScatterData(x, y, type, color)
-		
+
 		if len(self.receivers) > 0:
 			x = []
 			y = []
@@ -169,7 +169,7 @@ class DataPointChooser:
 				x.append(reciever[0])
 				y.append(reciever[1])
 			color = "b"
-			type = matPlotLibPlotter.TRIANGLE_DOWN
+			type = matPlotLibPlotter.MatPlotLibPlotter.TRIANGLE_DOWN
 			self.plotScatterData(x, y, type, color)
 
 		# fix the axes
@@ -184,7 +184,7 @@ class DataPointChooser:
 
 	def reset_data(self):
 		if self.verbose:
-			print 'resetting to original data'
+			print('resetting to original data')
 		self.sources = copy.copy(self.origSources)
 		self.receivers = copy.copy(self.origReceivers)
 		self.redraw_plot()

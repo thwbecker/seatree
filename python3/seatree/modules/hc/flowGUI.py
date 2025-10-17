@@ -7,11 +7,15 @@ import subprocess, sys, fnmatch
 from seatree.util.scriptRunner import ScriptRunner
 
 try:
-    from xyDialog import XYDialog
+    from .xyDialog import XYDialog
     showEditors = True
+    print("XYDialog imported successfully - Edit buttons will be enabled")
 except Exception as e:
-    print("matplotlib / pylab is not installed: Viscosity and density file editing will be disabled")
+    print(f"XYDialog import failed: {e}")
+    print("Viscosity and density file editing will be disabled")
     showEditors = False
+    import traceback
+    traceback.print_exc()
 
 class FlowGUI:
     
@@ -61,10 +65,14 @@ class FlowGUI:
         self.densDependentLabel.set_tooltip_text('read depth dependent density scaling from file')
         self.densDependentRightBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         self.densDependentRightBox.append(self.densDependentFile)
+        print(f"DEBUG: showEditors = {showEditors}")
         if showEditors:
+            print("DEBUG: Creating density Edit button")
             self.densEditButton = Gtk.Button.new_with_label("Edit")
             self.densEditButton.connect("clicked", self.editDens)
-            self.densDependentRightBox.append(self.densEditButton )
+            self.densDependentRightBox.append(self.densEditButton)
+        else:
+            print("DEBUG: Skipping density Edit button - showEditors is False")
         self.densDependentBox.append(self.densDependentRightBox)
         self.vBox.append(self.densDependentBox )
         
@@ -114,10 +122,14 @@ class FlowGUI:
         self.viscFileBox.append(self.viscFileLabel)
         self.viscFileRightBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         self.viscFileRightBox.append(self.viscFile)
+        print(f"DEBUG: showEditors = {showEditors} (for viscosity)")
         if showEditors:
+            print("DEBUG: Creating viscosity Edit button")
             self.viscEditButton = Gtk.Button.new_with_label("Edit")
             self.viscEditButton.connect("clicked", self.editVisc)
             self.viscFileRightBox.append(self.viscEditButton)
+        else:
+            print("DEBUG: Skipping viscosity Edit button - showEditors is False")
         self.viscFileBox.append(self.viscFileRightBox)
         self.vBox.append(self.viscFileBox)
 
@@ -547,33 +559,16 @@ class FlowGUI:
         self.deactivatePlotButtons()  # make sure to recompute
 
     def editVisc(self, widget):
-        self.xyDiag = XYDialog("Edit Viscosity", self.mainWindow.window, self.viscFile.getFileName(), self.flowCalc.tmpn, 1)
+        self.xyDiag = XYDialog("Edit Viscosity", self.mainWindow, self.viscFile.getFileName(),
+                                self.flowCalc.tmpn, 1, file_box=self.viscFile)
 
-        # show the dialog
-        response = self.xyDiag.dialog.run()
-
-        # handle it
-        if self.xyDiag.save:
-            filename = self.saveFile("Save Viscosity File", self.xyDiag.mp.outfile, startdir=os.path.dirname(self.viscFile.getFileName()))
-            if filename:
-                self.viscFile.changeFile(filename)
-            else:
-                print("NO FILE!")
-        elif self.xyDiag.use:
-            self.viscFile.changeFile(self.xyDiag.mp.outfile)
+        # GTK4: Dialog is shown modally, handlers will be called when buttons clicked
+        # No blocking run() in GTK4, buttons already connected to handlers in XYDialog
 
     def editDens(self, widget):
-        self.xyDiag = XYDialog("Edit Depth Dependent Density", self.mainWindow.window, self.densDependentFile.getFileName(), self.flowCalc.tmpn, 2)
+        self.xyDiag = XYDialog("Edit Depth Dependent Density", self.mainWindow,
+                                self.densDependentFile.getFileName(),
+                                self.flowCalc.tmpn, 2, file_box=self.densDependentFile)
 
-        # show the dialog
-        response = self.xyDiag.dialog.run()
-
-        # handle it
-        if self.xyDiag.save:
-            filename = self.saveFile("Save Depth Dependent Density File", self.xyDiag.mp.outfile, startdir=os.path.dirname(self.densDependentFile.getFileName()))
-            if filename:
-                self.densDependentFile.changeFile(filename)
-            else:
-                print("NO FILE!")
-        elif self.xyDiag.use:
-            self.densDependentFile.changeFile(self.xyDiag.mp.outfile)
+        # GTK4: Dialog is shown modally, handlers will be called when buttons clicked
+        # No blocking run() in GTK4, buttons already connected to handlers in XYDialog

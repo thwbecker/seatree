@@ -220,7 +220,7 @@ class Syn2DGUI(Gtk.ApplicationWindow):
         #self.vBox.set_sensitive(False)
         
         # Data Section Box
-        self.vBox.append(self.vBox)
+        self.vBox.append(self.dataVBox)
         
         # Separator
         self.vBox.append(Gtk.Separator())
@@ -417,15 +417,11 @@ class Syn2DGUI(Gtk.ApplicationWindow):
         numX = self.xtot + 1
         numY = numX
         window = XYDialog("Edit Data", self.mainWindow.getWindow(), self.syn2d, numX, numY)
-        
-        # show the dialog
-        response = window.dialog.run()
-        
-        if window.wasUseSelected():
-            self.plotDataBox.set_sensitive(True)
-            self.syn2d.setDataFiles(window.getSourcesFile(), window.getReceiversFile())
-            self.makeData(stationMode=-1)
-            self.plotData(None)
+
+        # GTK4: Dialog is already shown in constructor, no blocking run()
+        # The callback will be handled when "Use" button is clicked
+        # Store the window reference so callbacks can access it
+        self._xyDialog = window
     
     def setDataChanged(self, widget):
         self.dataChanged = True
