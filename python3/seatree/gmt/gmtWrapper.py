@@ -942,7 +942,7 @@ class GMTWrapper:
                                 break
             except OSError:
                 pass
-        multiseg_flag = "-M" if self.gmt4 else "-m"
+        multiseg_flag = "-m"
         use_L = True
         if not self.gmt4 and (zflag or has_g_colors):
             # GMT6 has stability issues combining -L with per-segment -Z/-G fills (Hammer projections).
@@ -1016,7 +1016,7 @@ class GMTWrapper:
         """
         Add main anomaly boxes to postscript file
         """
-        multiseg_flag = "-M" if self.gmt4 else "-m"
+        multiseg_flag = "-m"
         color_flag = ""
         temp_file = None
         if self.cptFile:
@@ -1304,14 +1304,14 @@ class GMTWrapper:
     
     def plotPolygon(self, polygonfile, linewidth, R, G, B):
         """
-        Plots GMT -M style polygons
+        Plots GMT -m style polygons
 
         Arguments:
         polygonfile: filename of polygon file
         linewidth: linewidth
         R, G, B: RGB color for polygon
         """
-        command = self.getGMTCommand("psxy") + f" {polygonfile} -M {self.getProjectionString(self.projection)} {self.getRangeString(self.plotXmin, self.plotXmax, self.plotYmin, self.plotYmax, self.projection, True)} {self.getLineString(linewidth, R, G, B)} -O -K >> {self.psFile}"
+        command = self.getGMTCommand("psxy") + f" {polygonfile} -m {self.getProjectionString(self.projection)} {self.getRangeString(self.plotXmin, self.plotXmax, self.plotYmin, self.plotYmax, self.projection, True)} {self.getLineString(linewidth, R, G, B)} -O -K >> {self.psFile}"
         self.runGMT(command)
     
     def plotXY(self, xyFile, colorName="", colorR=-1, colorG=-1, colorB=-1, plotSymbols=False, symbol="", symbolSize=0):
