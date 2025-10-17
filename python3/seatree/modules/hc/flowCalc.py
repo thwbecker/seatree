@@ -175,7 +175,7 @@ class FlowCalc(Module):
         # coastline
         self.myPlotter.setCoastlineMaskArea(70000)
         self.myPlotter.setCoastlineResolution("c")
-        self.myPlotter.setCoastlineWidth(4)
+        self.myPlotter.setCoastlineWidth(2)
         
         # colorbar
         self.myPlotter.setColorbarN(50)
