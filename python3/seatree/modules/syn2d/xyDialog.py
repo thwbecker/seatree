@@ -6,7 +6,7 @@ import os
 
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_gtk4agg import FigureCanvasGTK4Agg as FigureCanvas
-from dataPointChooser import DataPointChooser
+from .dataPointChooser import DataPointChooser
 from seatree.modules.hc.manipulate_hc import ManipulateXYData
 
 class XYDialog:
@@ -29,12 +29,13 @@ class XYDialog:
         self.parent = parent
         
         self.sourcesFile, self.receiversFile = self.syn2d.getDataFiles()
-        print("Loading initial data from: " + self.sourcesFile + " , " + self.receiversFile)
+        print(("Loading initial data from: " + self.sourcesFile + " , " + self.receiversFile))
         sources = self.loadXYFile(self.sourcesFile)
         receivers = self.loadXYFile(self.receiversFile, True)
         
         # create GTK dialog
-        self.dialog = Gtk.Dialog(title=title, transient_for=parent, flags=Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT)
+        self.dialog = Gtk.Dialog(title=title, transient_for=parent)
+        self.dialog.set_modal(True)
         self.dialog.set_default_size(500, 400)
         self.vBox = self.dialog.get_content_area()
         
@@ -76,28 +77,33 @@ class XYDialog:
         self.canvas.draw()
     
     def loadHandler(self, widget):
-        chooser = Gtk.FileChooserDialog(title="Select DIRECTORY Containing 'sources.txt' and 'receivers.txt' Files", 
-                                        transient_for=self.parent, 
-                                        action=Gtk.FileChooserAction.SELECT_FOLDER, 
-                                        buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, 
-                                                 Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
-        
-        response = chooser.run()
-        if response == Gtk.ResponseType.OK:
-            dir = chooser.get_filename()
-            sourceName = os.path.join(dir, "sources.txt")
-            if os.path.exists(sourceName):
-                sources = self.loadXYFile(sourceName)
-            else:
-                sources = []
-            receiverName = os.path.join(dir, "receivers.txt")
-            if os.path.exists(receiverName):
-                receivers = self.loadXYFile(receiverName)
-            else:
-                receivers = []
-            self.mp.setOriginalData(sources, receivers)
-            self.mp.reset_data()
-        chooser.destroy()
+        chooser = Gtk.FileChooserDialog(title="Select DIRECTORY Containing 'sources.txt' and 'receivers.txt' Files",
+                                        transient_for=self.parent,
+                                        action=Gtk.FileChooserAction.SELECT_FOLDER)
+        chooser.add_button('_Cancel', Gtk.ResponseType.CANCEL)
+        chooser.add_button('_Select', Gtk.ResponseType.OK)
+        chooser.set_modal(True)
+
+        def on_response(dialog, response_id):
+            if response_id == Gtk.ResponseType.OK:
+                file = chooser.get_file()
+                if file:
+                    dir = file.get_path()
+                    sourceName = os.path.join(dir, "sources.txt")
+                    if os.path.exists(sourceName):
+                        sources = self.loadXYFile(sourceName)
+                    else:
+                        sources = []
+                    receiverName = os.path.join(dir, "receivers.txt")
+                    if os.path.exists(receiverName):
+                        receivers = self.loadXYFile(receiverName)
+                    else:
+                        receivers = []
+                    self.mp.setOriginalData(sources, receivers)
+                    self.mp.reset_data()
+            dialog.destroy()
+        chooser.connect("response", on_response)
+        chooser.present()
     
     def loadXYFile(self, file, skipDuplicates=False):
         
@@ -127,17 +133,53 @@ class XYDialog:
                 fp.write(f"{point[0]} {point[1]}\n")
     
     def saveHandler(self, widget):
-        chooser = Gtk.FileChooserDialog(title="Select DIRECTORY to save 'sources.txt' and 'receivers.txt' Files", 
-                                        transient_for=self.parent, 
-                                        action=Gtk.FileChooserAction.SELECT_FOLDER, 
-                                        buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, 
-                                                 Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
-        
-        response = chooser.run()
-        if response == Gtk.ResponseType.OK:
-            dir = chooser.get_filename()
-            self.writeDataFiles(dir)
-        chooser.destroy()
+        # First, save to working directory and mark as used
+        self.sourcesFile, self.receiversFile = self.writeDataFiles(self.syn2d.getWorkingDir())
+        self.use = True
+        print(f"Saved to working directory: {self.sourcesFile}, {self.receiversFile}")
+
+        # Then open file chooser to save a copy elsewhere
+        chooser = Gtk.FileChooserDialog(
+            title="Select DIRECTORY to save 'sources.txt' and 'receivers.txt' Files",
+            transient_for=self.parent,
+            action=Gtk.FileChooserAction.SELECT_FOLDER)
+
+        # Add buttons with specific response IDs
+        chooser.add_button('_Cancel', Gtk.ResponseType.CANCEL)
+        chooser.add_button('_Select', Gtk.ResponseType.ACCEPT)
+        chooser.set_modal(True)
+
+        # Store reference to self for the callback
+        parent_dialog = self
+
+        def on_response(chooser_dialog, response_id):
+            print(f"DEBUG: File chooser response received: {response_id}")
+            try:
+                if response_id == Gtk.ResponseType.ACCEPT:
+                    file = chooser_dialog.get_file()
+                    print(f"DEBUG: Got file object: {file}")
+                    if file:
+                        dir = file.get_path()
+                        print(f"DEBUG: Saving copy to: {dir}")
+                        parent_dialog.writeDataFiles(dir)
+                    else:
+                        print("DEBUG: No file selected")
+                else:
+                    print(f"DEBUG: Cancelled or other response: {response_id}")
+            except Exception as e:
+                print(f"ERROR in file chooser callback: {e}")
+                import traceback
+                traceback.print_exc()
+            finally:
+                print("DEBUG: Destroying chooser dialog")
+                chooser_dialog.destroy()
+
+        chooser.connect("response", on_response)
+        print("DEBUG: Showing file chooser")
+        chooser.present()
+
+        # Close the main dialog immediately after opening file chooser
+        self.exit()
     
     def writeDataFiles(self, dir):
         if not dir.endswith(os.sep):
@@ -164,7 +206,7 @@ class XYDialog:
         return self.receiversFile
     
     def wasUseSelected(self):
-        print("USE? " + str(self.use))
+        print(("USE? " + str(self.use)))
         return self.use
     
     def revertHandler(self, widget):

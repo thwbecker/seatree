@@ -526,7 +526,8 @@ class MainWindow(Gtk.ApplicationWindow):
         return self.main.gmtPath
     
     def getWindow(self):
-        return self.window
+        # GTK4: MainWindow is itself the window, no separate .window attribute
+        return self
     
     def clearScript(self, action, param):
         """Clear the command history for the current module"""

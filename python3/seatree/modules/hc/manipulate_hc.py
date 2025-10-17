@@ -39,11 +39,11 @@ class ManipulateXYData:
     # initialize class
     def __init__(self, filename, mode, figure, xy_diag, tmpn="", \
                  xtol = None, ytol = None, figcount = 1, data_folder = None):
-    	self.use = False;
-    	self.saveToFile=False
-    	self.tmpn = tmpn
-    	self.outfile = ""
-    	self.xy_diag = xy_diag
+        self.use = False;
+        self.saveToFile=False
+        self.tmpn = tmpn
+        self.outfile = ""
+        self.xy_diag = xy_diag
         if xtol == None:
             xtol = 0.1
         if ytol == None:
@@ -110,7 +110,7 @@ class ManipulateXYData:
         x, y = event.xdata, event.ydata
 
         if event.inaxes:
-            print 'generic call?: data coords', x,y
+            print('generic call?: data coords', x,y)
 
     def on_click(self, event):
         # 
@@ -125,7 +125,7 @@ class ManipulateXYData:
                 #
                 cps = []
                 i=0
-                data_cont = zip(self.datax,self.datay) # reformat
+                data_cont = list(zip(self.datax,self.datay)) # reformat
                 for xd,yd in data_cont: # compute distances for
                     # those points that are
                     # within range compute
@@ -150,13 +150,13 @@ class ManipulateXYData:
                 if event.button == 2: # center mouse click: add point to list
                     if not cps or dist > 1:
                         if self.verbose:
-                            print 'adding data point %7.2f, %7.2f ' % (x, y)
+                            print('adding data point %7.2f, %7.2f ' % (x, y))
                         self.datax.append(x)
                         self.datay.append(y)
                         self.redraw_plot()
                     else:
                         if self.verbose:
-                            print 'there is already a point at %7.2f, %7.2f ' % (x, y)
+                            print('there is already a point at %7.2f, %7.2f ' % (x, y))
                 else:
                     # 
                     # left or right
@@ -166,17 +166,17 @@ class ManipulateXYData:
                             # left mouse button, move this data point
                             self.moving = i
                             if self.verbose:
-                                print 'moving data point %5i ' % i, 'from %7.2f, %7.2f ' % (xd, yd)
+                                print('moving data point %5i ' % i, 'from %7.2f, %7.2f ' % (xd, yd))
                         elif event.button == 3: 
                     # right click: removing this data point
                             if self.verbose:
-                                print 'removing data point %7.2f, %7.2f ' % (self.datax[i],self.datay[i])
+                                print('removing data point %7.2f, %7.2f ' % (self.datax[i],self.datay[i]))
                             del self.datax[i]
                             del self.datay[i]
                             self.redraw_plot()
                     else:
                         if self.verbose:
-                            print 'did not find data close to click  %7.2f, %7.2f' % (x,y)
+                            print('did not find data close to click  %7.2f, %7.2f' % (x,y))
 
 
     def on_release(self, event):
@@ -186,9 +186,9 @@ class ManipulateXYData:
             if self.axis == event.inaxes:
                 if self.moving > -1: # are we actually moving a point?
                     if self.verbose:
-                        print 'assigning %7.2f, %7.2f to data point %5i' % (xd, yd, self.moving)
+                        print('assigning %7.2f, %7.2f to data point %5i' % (xd, yd, self.moving))
                     i=0;xn,yn=[],[]
-                    data_cont=zip(self.datax,self.datay)
+                    data_cont=list(zip(self.datax,self.datay))
                     # this could be dealt with smarter
                     self.datax, self.datay = [], []
                     for x,y in data_cont: # replace the self.moving-th point with the current location
@@ -281,7 +281,7 @@ class ManipulateXYData:
                 else:
                     filename = self.data_folder + os.sep + 'dscale'+ os.sep + 'dscale_sh08.dat'
                 if not os.path.exists(filename):
-                    print 'add_pmantle_ornaments: reference ', filename , ' not found'
+                    print('add_pmantle_ornaments: reference ', filename , ' not found')
                 else:
                     # initialize files
                     tmpx, tmpy = self.read_data(filename,self.plot_mode)
@@ -296,7 +296,7 @@ class ManipulateXYData:
 
     def reset_data(self):
         if self.verbose:
-            print 'resetting to original data'
+            print('resetting to original data')
         self.datax = self.datax0
         self.datay = self.datay0
         self.redraw_plot()
@@ -373,14 +373,14 @@ class ManipulateXYData:
         for line in f:
             val = line.split()
             if len(val) != 2:
-                print 'error file ', filename, ' appears to be in wrong format'
-                print 'expecting'
+                print('error file ', filename, ' appears to be in wrong format')
+                print('expecting')
                 if self.mode == 1:
-                    print 'radius[non_dim] viscosity[Pas]'
+                    print('radius[non_dim] viscosity[Pas]')
                 elif self.mode == 2:
-                    print 'radius[non_dim] density_scale'
+                    print('radius[non_dim] density_scale')
                 else:
-                    print 'unknown'
+                    print('unknown')
                 exit()
             datax.append(val[0])
             datay.append(val[1])
@@ -412,13 +412,13 @@ class ManipulateXYData:
 
     def save_to_file(self):
         if self.verbose:
-            print 'saving modified data'
+            print('saving modified data')
         if self.plot_mode == 1:
-        	self.outfile = self.tmpn + 'visc.dat'
-        	print 'saving modified viscosity profile data to ', self.outfile
+            self.outfile = self.tmpn + 'visc.dat'
+            print('saving modified viscosity profile data to ', self.outfile)
         elif self.plot_mode == 2:
-        	self.outfile = self.tmpn + 'dens.dat'
-        	print 'saving modified density profile data to ', self.outfile
+            self.outfile = self.tmpn + 'dens.dat'
+            print('saving modified density profile data to ', self.outfile)
             
         #
         # convert data back
