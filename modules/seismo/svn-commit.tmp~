@@ -1,7 +1,0 @@
-
---This line, and those below, will be ignored--
-
-A    larry/blk2gmtz.f
-M    larry/blk_lsqr.f
-M    larry/blk_matrix_ata.f
-M    larry/Makefile

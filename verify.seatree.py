@@ -327,6 +327,17 @@ def main():
             result.add_warning("Executable larry3d/extract", f"Not found (optional)")
             print_check("WARN", "Executable: larry3d/extract", "Not found (optional)")
 
+        # EQdyna (earthquake dynamics)
+        eqdyna_bin = f"{seatree_home}/modules/seismo/EQdyna/bin/eqdyna"
+        eqdyna_src = f"{seatree_home}/modules/seismo/EQdyna/src/eqdyna"
+        if Path(eqdyna_bin).exists():
+            check_executable(eqdyna_bin, "EQdyna/eqdyna", result)
+        elif Path(eqdyna_src).exists():
+            check_executable(eqdyna_src, "EQdyna/eqdyna (src)", result)
+        else:
+            result.add_warning("Executable EQdyna/eqdyna", f"Not found (optional)")
+            print_check("WARN", "Executable: EQdyna/eqdyna", "Not found (optional)")
+
     # Check Python dependencies
     print_header("Python Dependencies")
     python_modules = ['numpy', 'matplotlib', 'gi']

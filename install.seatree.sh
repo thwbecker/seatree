@@ -131,24 +131,39 @@ if [ -n "$MACH" ]; then
         echo "ERROR: GMTVERSION must be 4 or 6, got: $GMTVERSION"
         exit 1
     fi
-    export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1
+    if [ -z "$NETCDFHOME" ]; then
+        if [ "$GMTVERSION" = "6" ] && [ "$(uname -s)" = "Darwin" ] && command -v brew >/dev/null 2>&1 && brew ls --versions netcdf-fortran >/dev/null 2>&1; then
+            export NETCDFHOME="$(brew --prefix netcdf-fortran)"
+            log_info "Detected Homebrew netcdf-fortran: $NETCDFHOME"
+            if brew ls --versions netcdf >/dev/null 2>&1; then
+                export NETCDF_C_HOME="$(brew --prefix netcdf)"
+                log_info "Detected Homebrew netcdf (C library): $NETCDF_C_HOME"
+            fi
+        else
+            export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1
+            log_info "Using bundled NetCDF at $NETCDFHOME"
+        fi
+    else
+        log_info "NETCDFHOME preset to $NETCDFHOME (honoring user override)"
+    fi
     export ARCH=$(uname -m)
 
-    # log_info "[STEP 1/4] $(date +"%Y-%m-%d %H:%M:%S") - Checking NetCDF installation..."
-    # if [ -e "netcdf-c-4.9.3-rc1" ]; then
-    #     log_info "  -> NetCDF already installed, skipping."
-    # else
-    #     log_info "  -> Installing netcdf-c-4.9.3-rc1..."
-    #     bash install/install.netcdf.ubuntu22.sh >> "$LOGFILE" 2>&1
-    #     if [ $? -eq 0 ]; then
-    #         log_info "  -> NetCDF installation completed successfully."
-    #     else
-    #         log_info "  -> ERROR: NetCDF installation failed. Check $LOGFILE for details."
-    #     fi
-    # fi
-    log_info "[STEP 1/4] $(date +"%Y-%m-%d %H:%M:%S") - Skipping NetCDF installation (commented out)"
+    log_info "[STEP 1/5] $(date +"%Y-%m-%d %H:%M:%S") - Checking NetCDF installation..."
+    if [ -e "netcdf-c-4.9.3-rc1" ]; then
+        log_info "  -> NetCDF already installed, skipping."
+    elif [ -n "$NETCDFHOME" ] && [ "$NETCDFHOME" != "$(pwd)/netcdf-c-4.9.3-rc1" ] && [ -d "$NETCDFHOME" ]; then
+        log_info "  -> Using existing NetCDF at $NETCDFHOME (skipping bundled install)."
+    else
+        log_info "  -> Installing netcdf-c-4.9.3-rc1..."
+        bash install/install.netcdf.ubuntu22.sh >> "$LOGFILE" 2>&1
+        if [ $? -eq 0 ]; then
+            log_info "  -> NetCDF installation completed successfully."
+        else
+            log_info "  -> ERROR: NetCDF installation failed. Check $LOGFILE for details."
+        fi
+    fi
 
-    log_info "[STEP 2/4] $(date +"%Y-%m-%d %H:%M:%S") - Checking GMT installation..."
+    log_info "[STEP 2/5] $(date +"%Y-%m-%d %H:%M:%S") - Checking GMT installation..."
     if [ "$GMTVERSION" == "4" ]; then
         if [ -e "gmt-4.5.18" ]; then
             log_info "  -> GMT 4 already installed, skipping."
@@ -165,7 +180,7 @@ if [ -n "$MACH" ]; then
         log_info "  -> Using system GMT 6 (skipping installation)"
     fi
 
-    log_info "[STEP 3/4] $(date +"%Y-%m-%d %H:%M:%S") - Configuring Python3/GTK4..."
+    log_info "[STEP 3/5] $(date +"%Y-%m-%d %H:%M:%S") - Configuring Python3/GTK4..."
     yes '' | ./install/configure.python3.gtk4 >> "$LOGFILE" 2>&1
     if [ $? -eq 0 ]; then
         log_info "  -> Configuration completed successfully."
@@ -173,12 +188,36 @@ if [ -n "$MACH" ]; then
         log_info "  -> ERROR: Configuration failed. Check $LOGFILE for details."
     fi
 
-    log_info "[STEP 4/4] $(date +"%Y-%m-%d %H:%M:%S") - Installing ConMan v3.0.0..."
+    log_info "[STEP 4/5] $(date +"%Y-%m-%d %H:%M:%S") - Installing ConMan v3.0.0..."
     bash install/install.conman.sh >> "$LOGFILE" 2>&1
     if [ $? -eq 0 ]; then
         log_info "  -> ConMan installation completed successfully."
     else
         log_info "  -> ERROR: ConMan installation failed. Check $LOGFILE for details."
+    fi
+
+    log_info "[STEP 5/5] $(date +"%Y-%m-%d %H:%M:%S") - Installing EQdyna..."
+    if [ -n "$MACHINE" ]; then
+        EQDYNA_MACHINE="$MACHINE"
+    else
+        system_name=$(uname | tr '[:upper:]' '[:lower:]')
+        case "$system_name" in
+            darwin*)
+                EQDYNA_MACHINE="macos"
+                ;;
+            linux*)
+                EQDYNA_MACHINE="ubuntu"
+                ;;
+            *)
+                EQDYNA_MACHINE="$system_name"
+                ;;
+        esac
+    fi
+    bash modules/seismo/EQdyna/install-eqdyna.sh -m "$EQDYNA_MACHINE" >> "$LOGFILE" 2>&1
+    if [ $? -eq 0 ]; then
+        log_info "  -> EQdyna installation completed successfully."
+    else
+        log_info "  -> ERROR: EQdyna installation failed. Check $LOGFILE for details."
     fi
 
     log_info ""
@@ -214,7 +253,26 @@ elif [ "$GMTVERSION" == "6" ]; then
         export GMT4HOME="$GMTHOME"
     fi
 fi
-export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1
+if [ -z "$NETCDFHOME" ]; then
+    if [ "$(uname -s)" = "Darwin" ]; then
+        if command -v brew >/dev/null 2>&1 && brew ls --versions netcdf-fortran >/dev/null 2>&1; then
+            export NETCDFHOME="$(brew --prefix netcdf-fortran)"
+            log_info "Detected Homebrew netcdf-fortran: $NETCDFHOME"
+            if brew ls --versions netcdf >/dev/null 2>&1; then
+                export NETCDF_C_HOME="$(brew --prefix netcdf)"
+                log_info "Detected Homebrew netcdf (C library): $NETCDF_C_HOME"
+            fi
+        else
+            export NETCDFHOME="$(pwd)/netcdf-c-4.9.3-rc1"
+            log_info "Homebrew netcdf-fortran not found; falling back to bundled NetCDF at $NETCDFHOME"
+        fi
+    else
+        export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1
+        log_info "Using bundled NetCDF at $NETCDFHOME"
+    fi
+else
+    log_info "NETCDFHOME preset to $NETCDFHOME (honoring user override)"
+fi
 export ARCH=$(uname -m)
 
 # Create symlink only if it doesn't exist

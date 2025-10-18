@@ -255,6 +255,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.convertPath = convertPath
         self.psConvert = PSConverter(verb=self.verb, convertPath=convertPath)
         self.psConvert.width = 650
+        self._pane_fraction = 0.33
+        self._pane_position_lock = False
         
         # There is no need to create a new Gtk.Application. It is already inherited from the class MainWindow.
         # This fixed the greyed out button issue in Menu
@@ -269,6 +271,7 @@ class MainWindow(Gtk.ApplicationWindow):
         
         self.hPane = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
         self.vPane = Gtk.Paned.new(Gtk.Orientation.VERTICAL)
+        self.configure_hpane(self.hPane)
         
         self.moduleBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.hPane.set_start_child(self.moduleBox)
@@ -359,6 +362,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.mainBox.remove(self.hPane)
         del self.hPane
         self.hPane = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
+        self.configure_hpane(self.hPane)
         print('MainWindow.loadModule:Gtk.Paned.new')
         panel = self.module.getPanel(self)
         print('MainWindow.loadModule: panel value is ', panel)
@@ -394,6 +398,42 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def packPlotterWidget(self, plotter):
         self.hPane.set_end_child(plotter)
+
+    def configure_hpane(self, pane):
+        """
+        Configure horizontal pane to keep module panel near desired fraction of total width.
+        """
+        if hasattr(pane, "set_shrink_start_child"):
+            pane.set_shrink_start_child(False)
+        if hasattr(pane, "set_shrink_end_child"):
+            pane.set_shrink_end_child(False)
+        if hasattr(pane, "set_resize_start_child"):
+            pane.set_resize_start_child(False)
+        if hasattr(pane, "set_resize_end_child"):
+            pane.set_resize_end_child(True)
+        pane.connect("notify::max-position", self.on_hpane_max_position)
+        pane.connect("notify::position", self.on_hpane_position_changed)
+
+    def on_hpane_max_position(self, pane, _param):
+        width = pane.get_allocated_width()
+        if width <= 0:
+            return
+        if self._pane_position_lock:
+            return
+        self._pane_position_lock = True
+        target = int(width * self._pane_fraction)
+        pane.set_position(target)
+        self._pane_position_lock = False
+
+    def on_hpane_position_changed(self, pane, _param):
+        if self._pane_position_lock:
+            return
+        width = pane.get_allocated_width()
+        if width <= 0:
+            return
+        position = pane.get_position()
+        if position >= 0:
+            self._pane_fraction = max(0.1, min(0.9, position / width))
 
     def preLoadModule(self, module):
         # All modules expect only mainWindow argument for setDefaults
