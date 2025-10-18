@@ -181,7 +181,23 @@ if [ -n "$MACH" ]; then
     fi
 
     log_info "[STEP 5/5] $(date +"%Y-%m-%d %H:%M:%S") - Installing EQdyna..."
-    bash modules/seismo/EQdyna/install-eqdyna.sh >> "$LOGFILE" 2>&1
+    if [ -n "$MACHINE" ]; then
+        EQDYNA_MACHINE="$MACHINE"
+    else
+        system_name=$(uname | tr '[:upper:]' '[:lower:]')
+        case "$system_name" in
+            darwin*)
+                EQDYNA_MACHINE="macos"
+                ;;
+            linux*)
+                EQDYNA_MACHINE="ubuntu"
+                ;;
+            *)
+                EQDYNA_MACHINE="$system_name"
+                ;;
+        esac
+    fi
+    bash modules/seismo/EQdyna/install-eqdyna.sh -m "$EQDYNA_MACHINE" >> "$LOGFILE" 2>&1
     if [ $? -eq 0 ]; then
         log_info "  -> EQdyna installation completed successfully."
     else
