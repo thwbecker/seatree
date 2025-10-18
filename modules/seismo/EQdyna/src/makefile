@@ -37,18 +37,22 @@ else ifeq ($(SYSTEM), grace)
 else ifeq ($(SYSTEM), macos)
     FFLAGS     = -O3 -ffast-math -ftree-vectorize
     FC         = mpif90
-    # Use NETCDFHOME if set, otherwise use Homebrew NetCDF
+    # Use NETCDFHOME (Fortran) if set, otherwise default to Homebrew prefixes
     ifeq ($(NETCDFHOME),)
-        LIB        = /opt/homebrew/lib
-        INC        = /opt/homebrew/include
-        NETCDF_INC = -I/opt/homebrew/include
-        NETCDF_LIB = -L/opt/homebrew/lib -lnetcdf -lnetcdff
+        NETCDF_FORTRAN_DIR = /opt/homebrew/opt/netcdf-fortran
+        NETCDF_C_DIR       = /opt/homebrew/opt/netcdf
     else
-        LIB        = ${NETCDFHOME}/lib
-        INC        = ${NETCDFHOME}/include
-        NETCDF_INC = -I${NETCDFHOME}/include
-        NETCDF_LIB = -L${NETCDFHOME}/lib -lnetcdf -lnetcdff
+        NETCDF_FORTRAN_DIR = ${NETCDFHOME}
+        ifeq ($(NETCDF_C_HOME),)
+            NETCDF_C_DIR = /opt/homebrew/opt/netcdf
+        else
+            NETCDF_C_DIR = ${NETCDF_C_HOME}
+        endif
     endif
+    LIB        = ${NETCDF_FORTRAN_DIR}/lib
+    INC        = ${NETCDF_FORTRAN_DIR}/include
+    NETCDF_INC = -I${NETCDF_FORTRAN_DIR}/include
+    NETCDF_LIB = -L${NETCDF_FORTRAN_DIR}/lib -lnetcdff -L${NETCDF_C_DIR}/lib -lnetcdf
 endif
 
 OPT  = -c ${FFLAGS} 

@@ -250,16 +250,17 @@ subroutine find_surfaceNodeIdArr
     integer (kind = 4) :: i, j     
     real (kind = dp) :: sc(3)
     if (outputGroundMotion==1 .or. outputFinalSurfDisp==1) then    
+        open(unit=10008+me,file='surface_coor.txt'//mm,status='unknown',position='append')
         do i=1,totalNumOfNodes
             if ((meshCoor(1,i)<fltxyz(2,1,1)+20.0d3) .and. (meshCoor(1,i)>fltxyz(1,1,1)-20.0d3) &
                     .and. (meshCoor(2,i)<fltxyz(2,2,1)+20.0d3) .and. (meshCoor(2,i)>fltxyz(1,2,1)-20.0d3) &
                     .and. (abs(meshCoor(3,i))<dx/1000)) then 
                 surface_nnode = surface_nnode + 1
                 surfaceNodeIdArr(surface_nnode) = i
-                open(unit=10008+me,file='surface_coor.txt'//mm,status='unknown',position='append')        
-                    write(10008+me,'(1x,3e18.7e4)') meshCoor(1,i), meshCoor(2,i), meshCoor(3,i)    
+                write(10008+me,'(1x,3e18.7e4)') meshCoor(1,i), meshCoor(2,i), meshCoor(3,i)
             endif
         enddo
+        close(10008+me)
     endif
 end subroutine find_surfaceNodeIdArr
 
