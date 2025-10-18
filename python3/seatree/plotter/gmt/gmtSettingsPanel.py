@@ -268,14 +268,23 @@ class GMTSettingsPanel:
                 except Exception:
                     break
 
-        default_options = ["haxby", "gray", "wysiwyg", "polar", "seis", "spectral"]
-        gmt6_options = ["roma", "greyC", "vik", "turbo", "batlow", "davos", "cork", "viridis"]
+        # Modern GMT6 colormaps (preferred)
+        modern_options = ["roma", "grayC", "vik", "turbo", "batlow", "davos", "cork", "viridis"]
+        # Legacy GMT4/5 colormaps (fallback for GMT4)
+        legacy_options = ["haxby", "gray", "wysiwyg", "polar", "seis", "spectral"]
 
-        options = list(default_options)
+        # Use modern colormaps for GMT6, legacy for GMT4
         if hasattr(self.gmtPlotter, "gmt4") and not self.gmtPlotter.gmt4:
-            for name in gmt6_options:
+            # GMT6: modern colormaps first, then select legacy ones
+            options = list(modern_options)
+            # Add useful legacy colormaps that don't have modern equivalents
+            for name in ["haxby", "seis", "spectral"]:
                 if name not in options:
                     options.append(name)
+        else:
+            # GMT4: use legacy colormaps
+            options = list(legacy_options)
+
         options.append("other...")
 
         for name in options:
