@@ -1,10 +1,10 @@
 #
 # quad precision
 #
-#ADD_FLAGS = -DHC_PRECISION=32
+ADD_FLAGS = -DHC_PRECISION=32 -DNO_GMT
 #
 # double precision
-ADD_FLAGS =  -DNO_GMT
+#ADD_FLAGS =  -DNO_GMT
 
 
 # GMT4 - all commented out for NO_GMT build

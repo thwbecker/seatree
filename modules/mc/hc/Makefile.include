@@ -1,10 +1,10 @@
 #
 # quad precision
 #
-#ADD_FLAGS = -DHC_PRECISION=32 
+ADD_FLAGS = -DHC_PRECISION=32 
 #
 # double precision
-ADD_FLAGS = 
+#ADD_FLAGS = 
 
 
 # GMT4 
