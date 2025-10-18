@@ -10,6 +10,9 @@
 
 # Usage: install-eqdyna.sh [-h] [-m Machine_name] [-c Machine_name]
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
 while getopts "m:e:c:h" OPTION; do
     case $OPTION in 
         m)
@@ -101,23 +104,23 @@ if [ -n "$MACH" ]; then
     if [ -n "$CONFIG" ]; then 
         echo "Simply configure EQdyna without installation ... ..."
     else
-        cd src
+        cd "$SCRIPT_DIR/src"
         make
-        cd ..
-        mkdir bin
+        cd "$SCRIPT_DIR"
+        mkdir -p bin
         mv src/eqdyna bin
     fi
 
-    export EQDYNAROOT=$(pwd)
-    export PATH=$(pwd)/bin:$PATH
-    export PATH=$(pwd)/scripts:$PATH
+    export EQDYNAROOT=$SCRIPT_DIR
+    export PATH=$SCRIPT_DIR/bin:$PATH
+    export PATH=$SCRIPT_DIR/scripts:$PATH
     
-    chmod -R 755 scripts
+    chmod -R 755 "$SCRIPT_DIR/scripts"
 fi
 
-export EQDYNAROOT=$(pwd)
-export PATH=$(pwd)/bin:$PATH
-export PATH=$(pwd)/scripts:$PATH
+export EQDYNAROOT=$SCRIPT_DIR
+export PATH=$SCRIPT_DIR/bin:$PATH
+export PATH=$SCRIPT_DIR/scripts:$PATH
 
 echo EQDYNAROOT
 echo PATH 
