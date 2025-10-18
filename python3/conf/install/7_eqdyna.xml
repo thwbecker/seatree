@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SEATREEModules>
+ <modules>
+  <module>
+   <importName>seatree.modules.eqdyna.eqdyna</importName>
+   <className>EQDYNA</className>
+   <directory>eqdyna</directory>
+  </module>
+ </modules>
+</SEATREEModules>
