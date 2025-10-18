@@ -134,6 +134,14 @@ class EQDYNAGUI(Gtk.Box):
         self.statusLabel.set_margin_top(10)
         self.append(self.statusLabel)
 
+        # Progress bar for long-running tasks
+        self.progressBar = Gtk.ProgressBar()
+        self.progressBar.set_hexpand(True)
+        self.progressBar.set_margin_bottom(6)
+        self.progressBar.set_visible(False)
+        self.append(self.progressBar)
+        self._progressPulseId = None
+
         # Info text view
         scrolled = Gtk.ScrolledWindow()
         scrolled.set_vexpand(True)
@@ -339,12 +347,14 @@ class EQDYNAGUI(Gtk.Box):
         if self.module.runCase():
             logFile = self.module.getLogFile()
             self.updateStatus(f"Simulation running... (log: {logFile})")
+            self.startProgressPulse()
             self.runButton.set_sensitive(False)
             self.viewLogButton.set_sensitive(True)
             # Start a timer to check simulation status
             GLib.timeout_add(1000, self.checkSimulationStatus)
         else:
             self.updateStatus("ERROR: Failed to start simulation")
+            self.stopProgressPulse()
 
     def checkSimulationStatus(self):
         '''
@@ -361,6 +371,7 @@ class EQDYNAGUI(Gtk.Box):
                 self.postProcessButton.set_sensitive(True)
             else:
                 self.updateStatus("Simulation completed (no output files found - check for errors)")
+            self.stopProgressPulse()
             self.runButton.set_sensitive(True)
             return False  # Stop checking
 
@@ -446,3 +457,31 @@ class EQDYNAGUI(Gtk.Box):
         else:
             self.updateStatus(f"ERROR: Failed to load {label}")
         self.updatePanelButtons()
+
+    def startProgressPulse(self):
+        '''
+        Begin pulsing the progress bar for long-running tasks.
+        '''
+        if self._progressPulseId is None:
+            self.progressBar.set_fraction(0.0)
+            self.progressBar.set_visible(True)
+            self._progressPulseId = GLib.timeout_add(100, self._pulseProgress)
+
+    def stopProgressPulse(self):
+        '''
+        Stop the progress bar pulse and hide it.
+        '''
+        if self._progressPulseId is not None:
+            GLib.source_remove(self._progressPulseId)
+            self._progressPulseId = None
+        self.progressBar.set_fraction(0.0)
+        self.progressBar.set_visible(False)
+
+    def _pulseProgress(self):
+        '''
+        Internal helper to pulse the progress bar.
+        '''
+        if self._progressPulseId is None:
+            return False
+        self.progressBar.pulse()
+        return True
