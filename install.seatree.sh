@@ -131,12 +131,28 @@ if [ -n "$MACH" ]; then
         echo "ERROR: GMTVERSION must be 4 or 6, got: $GMTVERSION"
         exit 1
     fi
-    export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1
+    if [ -z "$NETCDFHOME" ]; then
+        if [ "$GMTVERSION" = "6" ] && [ "$(uname -s)" = "Darwin" ] && command -v brew >/dev/null 2>&1 && brew ls --versions netcdf-fortran >/dev/null 2>&1; then
+            export NETCDFHOME="$(brew --prefix netcdf-fortran)"
+            log_info "Detected Homebrew netcdf-fortran: $NETCDFHOME"
+            if brew ls --versions netcdf >/dev/null 2>&1; then
+                export NETCDF_C_HOME="$(brew --prefix netcdf)"
+                log_info "Detected Homebrew netcdf (C library): $NETCDF_C_HOME"
+            fi
+        else
+            export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1
+            log_info "Using bundled NetCDF at $NETCDFHOME"
+        fi
+    else
+        log_info "NETCDFHOME preset to $NETCDFHOME (honoring user override)"
+    fi
     export ARCH=$(uname -m)
 
     log_info "[STEP 1/5] $(date +"%Y-%m-%d %H:%M:%S") - Checking NetCDF installation..."
     if [ -e "netcdf-c-4.9.3-rc1" ]; then
         log_info "  -> NetCDF already installed, skipping."
+    elif [ -n "$NETCDFHOME" ] && [ "$NETCDFHOME" != "$(pwd)/netcdf-c-4.9.3-rc1" ] && [ -d "$NETCDFHOME" ]; then
+        log_info "  -> Using existing NetCDF at $NETCDFHOME (skipping bundled install)."
     else
         log_info "  -> Installing netcdf-c-4.9.3-rc1..."
         bash install/install.netcdf.ubuntu22.sh >> "$LOGFILE" 2>&1
@@ -237,7 +253,26 @@ elif [ "$GMTVERSION" == "6" ]; then
         export GMT4HOME="$GMTHOME"
     fi
 fi
-export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1
+if [ -z "$NETCDFHOME" ]; then
+    if [ "$(uname -s)" = "Darwin" ]; then
+        if command -v brew >/dev/null 2>&1 && brew ls --versions netcdf-fortran >/dev/null 2>&1; then
+            export NETCDFHOME="$(brew --prefix netcdf-fortran)"
+            log_info "Detected Homebrew netcdf-fortran: $NETCDFHOME"
+            if brew ls --versions netcdf >/dev/null 2>&1; then
+                export NETCDF_C_HOME="$(brew --prefix netcdf)"
+                log_info "Detected Homebrew netcdf (C library): $NETCDF_C_HOME"
+            fi
+        else
+            export NETCDFHOME="$(pwd)/netcdf-c-4.9.3-rc1"
+            log_info "Homebrew netcdf-fortran not found; falling back to bundled NetCDF at $NETCDFHOME"
+        fi
+    else
+        export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1
+        log_info "Using bundled NetCDF at $NETCDFHOME"
+    fi
+else
+    log_info "NETCDFHOME preset to $NETCDFHOME (honoring user override)"
+fi
 export ARCH=$(uname -m)
 
 # Create symlink only if it doesn't exist
