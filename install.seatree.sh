@@ -134,18 +134,19 @@ if [ -n "$MACH" ]; then
     export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1
     export ARCH=$(uname -m)
 
-    log_info "[STEP 1/4] $(date +"%Y-%m-%d %H:%M:%S") - Checking NetCDF installation..."
-    if [ -e "netcdf-c-4.9.3-rc1" ]; then
-        log_info "  -> NetCDF already installed, skipping."
-    else
-        log_info "  -> Installing netcdf-c-4.9.3-rc1..."
-        bash install/install.netcdf.ubuntu22.sh >> "$LOGFILE" 2>&1
-        if [ $? -eq 0 ]; then
-            log_info "  -> NetCDF installation completed successfully."
-        else
-            log_info "  -> ERROR: NetCDF installation failed. Check $LOGFILE for details."
-        fi
-    fi
+    # log_info "[STEP 1/4] $(date +"%Y-%m-%d %H:%M:%S") - Checking NetCDF installation..."
+    # if [ -e "netcdf-c-4.9.3-rc1" ]; then
+    #     log_info "  -> NetCDF already installed, skipping."
+    # else
+    #     log_info "  -> Installing netcdf-c-4.9.3-rc1..."
+    #     bash install/install.netcdf.ubuntu22.sh >> "$LOGFILE" 2>&1
+    #     if [ $? -eq 0 ]; then
+    #         log_info "  -> NetCDF installation completed successfully."
+    #     else
+    #         log_info "  -> ERROR: NetCDF installation failed. Check $LOGFILE for details."
+    #     fi
+    # fi
+    log_info "[STEP 1/4] $(date +"%Y-%m-%d %H:%M:%S") - Skipping NetCDF installation (commented out)"
 
     log_info "[STEP 2/4] $(date +"%Y-%m-%d %H:%M:%S") - Checking GMT installation..."
     if [ "$GMTVERSION" == "4" ]; then

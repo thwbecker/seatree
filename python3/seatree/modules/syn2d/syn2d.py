@@ -276,7 +276,7 @@ class Syn2D(Gtk.ApplicationWindow, Module):
     
     def setGMTDefaults(self):
         self.gmtPlotter = GMTWrapper(verb=3, path=self.gmtPath, runDir=self.computeDir)
-        self.gmtPlotter.setColormapType("polar")
+        # Use global default colormap (roma)
         self.gmtPlotter.setColormapInvert(True)
         self.gmtPlotter.setMapProjection(GMTProjection("X", "", "", 7, ""))
         self.gmtPlotter.setPlotOffset(0, 1.5)

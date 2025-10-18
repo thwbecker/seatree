@@ -76,8 +76,8 @@ class GMTWrapper:
         # custom Colormap file
         self.cptFile = ""
     
-        # Colormap type
-        self.cptType = "haxby"
+        # Colormap type (roma is the modern default for GMT6)
+        self.cptType = "roma"
         self._cpt_cache = []
         self._cpt_cache_file = None
 
