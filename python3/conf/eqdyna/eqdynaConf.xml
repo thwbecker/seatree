@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
     <EQDYNAConfiguration>
-     <eqdynaPath>/Users/dliu/scratch/seatree.dev/seatree.dev/modules/seismo/EQdyna</eqdynaPath>
+     <eqdynaPath>../modules/seismo/EQdyna</eqdynaPath>
     </EQDYNAConfiguration>
