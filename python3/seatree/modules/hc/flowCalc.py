@@ -183,6 +183,7 @@ class FlowCalc(Module):
         self.myPlotter.setColorbarSize("3", ".25")
         self.myPlotter.setColorbarHorizontal(True)
         self.myPlotter.setColorbarTriangles(True)
+        self.myPlotter.setColormapInvert(True)
         
         # text labels
         self.myPlotter.setTextClipping(0)
