@@ -109,6 +109,7 @@ class RangeSelectionBox(Gtk.Box):
         self.entry.set_max_length(charWidth)
         
         self.entry.set_text(self.internalValueToText(initial))
+        self.entry.set_size_request(80, -1)  # Set fixed pixel width for entry box
         
         if buttons:
             self.lessButton = Gtk.Button.new_with_label("-")
