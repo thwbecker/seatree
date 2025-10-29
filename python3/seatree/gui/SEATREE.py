@@ -102,7 +102,7 @@ class SEATREE(Gtk.Application):
         self.start.dialog.destroy()
         # print(choice)
         if choice == Gtk.ResponseType.CLOSE:
-            cleanup()
+            self.cleanupModules()
             exit()
         elif choice == Gtk.ResponseType.OK:
             index = self.start.getSelectedModuleIndex()
