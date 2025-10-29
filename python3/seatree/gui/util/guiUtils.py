@@ -107,21 +107,30 @@ class RangeSelectionBox(Gtk.Box):
         charWidth = self.getCharWidth(min1, max1, digits)
         self.entry.set_width_chars(charWidth)
         self.entry.set_max_length(charWidth)
-        
+        self.entry.set_max_width_chars(8)
+
         self.entry.set_text(self.internalValueToText(initial))
-        
+        self.entry.set_size_request(80, -1)  # Set fixed pixel width for entry box
+
         if buttons:
             self.lessButton = Gtk.Button.new_with_label("-")
             self.lessButton.connect("clicked", self.decrease)
-            
+
+            # Add CSS styling to make buttons narrower
+            css_provider = Gtk.CssProvider()
+            css_provider.load_from_string("button { min-width: 30px; padding: 2px 4px; }")
+            self.lessButton.get_style_context().add_provider(css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+
             self.moreButton = Gtk.Button.new_with_label("+")
             self.moreButton.connect("clicked", self.increase)
+            self.moreButton.get_style_context().add_provider(css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
             
             #self.pack_start(self.lessButton, False, False, 0)
             self.append(self.lessButton)
             
         if not self.allowDrag:
             self.scale.set_sensitive(False)
+        self.scale.set_hexpand(True)
         #self.pack_start(self.scale, True, True, 0)
         self.append(self.scale)
         

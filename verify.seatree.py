@@ -230,12 +230,31 @@ def main():
     # Check NetCDF installation
     if netcdf_home:
         print_header("NetCDF Installation")
-        check_library(f"{netcdf_home}/lib/libnetcdf.so", "libnetcdf.so", result)
-        check_library(f"{netcdf_home}/lib/libnetcdf.so.22", "libnetcdf.so.22", result)
-        check_library(f"{netcdf_home}/lib/libnetcdf.so.7", "libnetcdf.so.7 (symlink)", result)
-        check_executable(f"{netcdf_home}/bin/nc-config", "nc-config", result)
-        check_executable(f"{netcdf_home}/bin/ncdump", "ncdump", result)
-        check_command_version(f"{netcdf_home}/bin/nc-config", "nc-config --version", result)
+
+        # Detect platform - macOS uses .dylib, Linux uses .so
+        is_macos = sys.platform == 'darwin'
+
+        if is_macos:
+            # On macOS, netcdf C library is in /opt/homebrew/opt/netcdf/lib
+            # netcdf-fortran points to it, but we check the actual location
+            netcdf_c_lib = "/opt/homebrew/opt/netcdf/lib"
+            check_library(f"{netcdf_c_lib}/libnetcdf.dylib", "libnetcdf.dylib", result)
+            check_library(f"{netcdf_c_lib}/libnetcdf.22.dylib", "libnetcdf.22.dylib", result)
+            check_library(f"{netcdf_home}/lib/libnetcdff.dylib", "libnetcdff.dylib (fortran)", result)
+
+            # Binaries are in netcdf C package
+            netcdf_c_bin = "/opt/homebrew/opt/netcdf/bin"
+            check_executable(f"{netcdf_c_bin}/nc-config", "nc-config", result)
+            check_executable(f"{netcdf_c_bin}/ncdump", "ncdump", result)
+            check_command_version(f"{netcdf_c_bin}/nc-config", "nc-config --version", result)
+        else:
+            # Linux paths
+            check_library(f"{netcdf_home}/lib/libnetcdf.so", "libnetcdf.so", result)
+            check_library(f"{netcdf_home}/lib/libnetcdf.so.22", "libnetcdf.so.22", result)
+            check_library(f"{netcdf_home}/lib/libnetcdf.so.7", "libnetcdf.so.7 (symlink)", result)
+            check_executable(f"{netcdf_home}/bin/nc-config", "nc-config", result)
+            check_executable(f"{netcdf_home}/bin/ncdump", "ncdump", result)
+            check_command_version(f"{netcdf_home}/bin/nc-config", "nc-config --version", result)
 
     # Check GMT installation
     gmtversion = os.environ.get("GMTVERSION", "6")

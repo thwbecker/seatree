@@ -31,6 +31,11 @@
        <className>larry3d</className>
        <directory>seatree/modules/larry3d</directory>
       </module>
+      <module>
+       <importName>seatree.modules.eqdyna.eqdyna</importName>
+       <className>EQDYNA</className>
+       <directory>seatree/modules/eqdyna</directory>
+      </module>
      </modules>
      <gmtPath>../gmt-4.5.18/bin</gmtPath>
      <convertPath/>

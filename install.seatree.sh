@@ -277,7 +277,7 @@ export ARCH=$(uname -m)
 
 # Create symlink only if it doesn't exist
 if [ ! -e "$NETCDFHOME/lib/libnetcdf.so.7" ]; then
-    ln -s $NETCDFHOME/lib/libnetcdf.so.22 $NETCDFHOME/lib/libnetcdf.so.7
+    ln -s $NETCDFHOME/lib/libnetcdf.so.22 $NETCDFHOME/lib/libnetcdf.so.7 2>/dev/null || true
 fi
 
 export PATH=$PATH:$NETCDFHOME/lib:$GMT_GSHHG_DATA

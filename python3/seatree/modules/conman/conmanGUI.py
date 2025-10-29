@@ -45,7 +45,7 @@ class ConManGUI(Gtk.Box):
         self.append(self.label )
         
         ### Steps ###
-        self.stepsBox = Gtk.Box(homogeneous=True, spacing=5)
+        self.stepsBox = Gtk.Box(homogeneous=False, spacing=5)
         self.stepsLabel = Gtk.Label(label="Time Steps:")
         self.stepsEntry = guiUtils.RangeSelectionBox(initial=1000, min1=1000, max1=50000, incr=1000, digits=0, buttons=True)
         #self.tooltips.set_tip(self.stepsEntry, 'Select the total number of non-dimensionalized time steps.' )
@@ -57,7 +57,7 @@ class ConManGUI(Gtk.Box):
         self.append(self.stepsBox )
         
         ### Saved Steps ###
-        self.stepsSavedBox = Gtk.Box(homogeneous=True, spacing=5)
+        self.stepsSavedBox = Gtk.Box(homogeneous=False, spacing=5)
         self.stepsSavedLabel = Gtk.Label(label="Output Steps")
         self.stepsSavedEntry = guiUtils.RangeSelectionBox(initial=30, min1=1, max1=100, incr=10, digits=0, buttons=True)
         #self.tooltips.set_tip(self.stepsSavedEntry, 'Select the number of output steps, i.e. how many plots should be generated.' )
@@ -69,7 +69,7 @@ class ConManGUI(Gtk.Box):
         self.append(self.stepsSavedBox )
         
         ### Rayleigh number ###
-        self.rayleighBox = Gtk.Box(homogeneous=True, spacing=5)
+        self.rayleighBox = Gtk.Box(homogeneous=False, spacing=5)
         self.rayleighLabel = Gtk.Label(label="Rayleigh #:")
 
         self.rayleighEntry = guiUtils.LogRangeSelectionBox(initial=1e5, min1=1e2, max1=1e8, incr=1, digits=1, buttons=True, logBase=10, exp=True)
@@ -110,7 +110,7 @@ class ConManGUI(Gtk.Box):
         self.append(self.aspectBox )
         
         ### Heating ###
-        self.heatingBox = Gtk.Box(homogeneous=True, spacing=5)
+        self.heatingBox = Gtk.Box(homogeneous=False, spacing=5)
         self.heatingLabel = Gtk.Label(label="Internal Heating:")
         self.heatingEntry = guiUtils.RangeSelectionBox(initial=0, min1=0, max1=50, incr=1, digits=0, buttons=True)
         #self.tooltips.set_tip(self.heatingEntry, 'Select the amount of internal heating (non-dimensionalized units)' )
@@ -121,7 +121,7 @@ class ConManGUI(Gtk.Box):
         self.append(self.heatingBox )
         
         ### Activation Energy ###
-        self.activationBox = Gtk.Box(homogeneous=True, spacing=5)
+        self.activationBox = Gtk.Box(homogeneous=False, spacing=5)
         self.activationLabel = Gtk.Label(label="Activation Energy:")
         self.activationEntry = guiUtils.RangeSelectionBox(initial=0, min1=0, max1=20, incr=1, digits=0, buttons=True)
         #self.tooltips.set_tip(self.activationEntry, 'Select the amount of temperature dependence of viscosity as expressed by the non-dimensionalized activation energy (E) in the Frank-Kamenetskii approximation \eta = \eta_0 exp(E(T-T_0))' )

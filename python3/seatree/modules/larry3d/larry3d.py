@@ -511,7 +511,7 @@ class larry3d(Module):
         self.myPlotter.setColorbarHorizontal(True)
         self.myPlotter.setColorbarTriangles(False)
         self.myPlotter.setColorbarInterval(5)
-        self.myPlotter.setColormapInvert(True)
+        self.myPlotter.setColormapInvert(False)
         self.myPlotter.setColorbarUnits('@~D@~v [%]')
 
     def plotSources(self, fname):

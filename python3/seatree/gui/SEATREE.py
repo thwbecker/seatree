@@ -102,7 +102,7 @@ class SEATREE(Gtk.Application):
         self.start.dialog.destroy()
         # print(choice)
         if choice == Gtk.ResponseType.CLOSE:
-            cleanup()
+            self.cleanupModules()
             exit()
         elif choice == Gtk.ResponseType.OK:
             index = self.start.getSelectedModuleIndex()
@@ -260,7 +260,7 @@ class MainWindow(Gtk.ApplicationWindow):
         
         # There is no need to create a new Gtk.Application. It is already inherited from the class MainWindow.
         # This fixed the greyed out button issue in Menu
-        self.set_default_size(1200, 800)
+        self.set_default_size(1400, 800)
         self.connect("close-request", self.on_close_request)
         self.titleString = "SEATREE v" + str(self.version)
         self.set_title("SEATREE v" + str(self.version))
