@@ -5,19 +5,25 @@
 	dimension inew(500000),iold(500000),inewh(500000),ioldh(500000)
 	character filename*200,dummy*200,outpo*200,colorname*200
 	integer irgb(100,3),rgb(3)
+        integer use_cpt
 	dimension v(100)
 
 c--open input and output files
 	print*,'solution file to be read?'
 	read*,filename
 	open(unit=1,file=filename,status='old')
-	print*,'ouptput file?'
+	print*,'output file?'
 	read*,outpo
 	open(unit=3,file=outpo)
 c	read(1,*)dummy
 	print*,'what .cpt file?'
 	read*,colorname
-	open(unit=54,file=colorname,status='old')
+        IF (colorname .EQ. 'zout') THEN
+           use_cpt = 0
+        else
+           open(unit=54,file=colorname,status='old')
+           use_cpt = 1
+        endif
 	print*,"size of coarse pixels?"
 	read*,eq_incr
 	refgrid=eq_incr*1.
@@ -35,13 +41,17 @@ c	read(1,*)dummy
 	eq_hi=eq_incr/ifa
 	nlatzohi=180./eq_hi
 	if(nlatzohi.gt.nlatzhmax)stop "fine pixels too fine"
-
-c--read in the color palette table
-	i=1
-1	read(54,*,end=2)v(i),(irgb(i,k),k=1,3),v(i+1),(irgb(i+1,k),k=1,3)
-	i=i+1
-	goto1
-2	nint=i-1
+        if(use_cpt.eq.1)then
+c--   read in the color palette table
+           i=1
+ 1         read(54,*,end=2)v(i),(irgb(i,k),k=1,3),v(i+1),(irgb(i+1,k),k=1,3)
+           i=i+1
+           goto 1
+ 2         nint=i-1
+        else
+           nint=0
+        endif
+        
 
 c--determine nsqrs,nsqrsh
 	numto=0
@@ -158,27 +168,31 @@ c	print*,k
 	   ksav=k
 	   call rang(indblo,xlamin,xlamax,
      &	xlomin,xlomax,nsqrs,nsqtot,nlatzones,numto,eq_incr)
-	   do j=1,nint
-	      if((ccc.ge.v(j)).and.(ccc.lt.v(j+1)))then
-	         do k=1,3
-	            a=(irgb(j,k)-irgb(j+1,k))/(v(j)-v(j+1))
-	            b=irgb(j,k)-(a*v(j))
-	            rgb(k)=a*ccc+b
-	         enddo
-	         goto40	
-              elseif(ccc.ge.v(nint+1))then
-	         do k=1,3
-	            rgb(k)=irgb(nint+1,k)
-	         enddo
-	         goto40	
-	      elseif(ccc.lt.v(1))then
-	         do k=1,3
-	            rgb(k)=irgb(nint+1,k)
-	         enddo
-	         goto40	
-	      endif
-	   enddo
-40	   write(3,421)'> -G',rgb(1),'/',rgb(2),'/',rgb(3)
+           if(use_cpt.eq.1)then 
+              do j=1,nint
+                 if((ccc.ge.v(j)).and.(ccc.lt.v(j+1)))then
+                    do k=1,3
+                       a=(irgb(j,k)-irgb(j+1,k))/(v(j)-v(j+1))
+                       b=irgb(j,k)-(a*v(j))
+                       rgb(k)=a*ccc+b
+                    enddo
+                    goto 40	
+                 elseif(ccc.ge.v(nint+1))then
+                    do k=1,3
+                       rgb(k)=irgb(nint+1,k)
+                    enddo
+                    goto 40	
+                 else if(ccc.lt.v(1))then
+                    do k=1,3
+                       rgb(k)=irgb(nint+1,k)
+                    enddo
+                    goto 40	
+                 endif
+              enddo
+ 40           write(3,421)'> -G',rgb(1),'/',rgb(2),'/',rgb(3)
+           else
+              write(3,*)'> -Z',ccc
+           endif
 ctest
 c	if(xlomin.eq.0.)xlomin=0.001
 	if(xlomax.eq.360.)xlomax=359.99
@@ -236,7 +250,9 @@ c	   write(4,*)ksav,xlomin,xlamin,xlomax,xlamax
 
 	close(1)
 	close(3)
-	close(54)
+        if(use_cpt.eq.1)then
+           close(54)
+        endif
 	end
 
 c************************************************************
