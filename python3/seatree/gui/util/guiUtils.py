@@ -118,7 +118,13 @@ class RangeSelectionBox(Gtk.Box):
 
             # Add CSS styling to make buttons narrower
             css_provider = Gtk.CssProvider()
-            css_provider.load_from_string("button { min-width: 30px; padding: 2px 4px; }")
+            try:
+                # GTK4 newer versions (Linux)
+                css_provider.load_from_data("button { min-width: 30px; padding: 2px 4px; }".encode())
+            except (AttributeError, TypeError):
+                # GTK4 older versions / Mac compatibility
+                css_provider.load_from_string("button { min-width: 30px; padding: 2px 4px; }")
+                
             self.lessButton.get_style_context().add_provider(css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
             self.moreButton = Gtk.Button.new_with_label("+")
