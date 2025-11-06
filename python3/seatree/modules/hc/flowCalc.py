@@ -315,7 +315,6 @@ class FlowCalc(Module):
         self.myPlotter.drawCoastline()
         # Colorbar
         self.myPlotter.setColorbarInterval(scsp)
-        self.myPlotter.setColormapInvert(False)
         self.myPlotter.setColorbarUnits("[m]")
         if self.myPlotter.addLabel:
             self.myPlotter.drawColorbar()
