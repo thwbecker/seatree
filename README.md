@@ -1,10 +1,20 @@
 # SEATREE - Solid Earth Teaching and Research Environment
 
-**Thorsten Becker** - thwbecker@post.harvard.edu - 10/2024
+**Thorsten Becker** - thwbecker@post.harvard.edu - 11/2025
 
-SEATREE is a modular and user-friendly software to facilitate using solid Earth research tools in the classroom and for interdisciplinary scientific collaboration.
+SEATREE is a modular and user-friendly software to facilitate using
+solid Earth research tools in the classroom and for interdisciplinary
+scientific collaboration and used as one of the exercises in Tectonic
+Geodynamics (Becker and Faccenna, Princeton University Press, 2025).
 
-We use python wrappers and make use of modern software design concepts, while remaining compatible with traditional scientific coding. Our goals are to provide a fully contained, yet transparent package that lets users operate in an easy, graphically supported "black box" mode, while also allowing to look under the hood. In the long run, we envision SEATREE to contribute to new ways of sharing scientific research, and making (numerical) experiments truly reproducible again.
+We use python wrappers and make use of modern software design
+concepts, while remaining compatible with traditional scientific
+coding. Our goals are to provide a fully contained, yet transparent
+package that lets users operate in an easy, graphically supported
+"black box" mode, while also allowing to look under the hood. In the
+long run, we envision SEATREE to contribute to new ways of sharing
+scientific research, and making (numerical) experiments truly
+reproducible again.
 
 ## Modules
 
@@ -16,12 +26,17 @@ SEATREE is module based, and the current version includes tools for:
 - **Surface Wave Phase Velocity Tomography** - Inverting for Earth structure
 - **2-D Synthetic Tomography** - Teaching module
 - **Earthquake Location Inversions** - Rudimentary module for earthquake location
+- **Rupture Dynamics** - initial version 
 
-The main software design consists of transparent python wrappers that drive the modules, including a GMT plotting tool, a VTK/Paraview 3-D visualization interface, and a graphical user interface.
+The main software design consists of transparent python wrappers that
+drive the modules, including a GMT plotting tool, a VTK/Paraview 3-D
+visualization interface, and a graphical user interface.
 
 ## Installation
 
 ### Quick Start (Ubuntu 22)
+
+This assumes you have a working Linux system, for example under Windows WSL.
 
 ```bash
 # Clone SEATREE from GitHub repository
@@ -64,7 +79,12 @@ SEATREE is freely available under the GNU General Public License v2. See [LICENS
 
 ## Support and Contributing
 
-If you want to use SEATREE in a classroom setting, we might be able to offer you some installation support and always welcome your feedback. Also, if you like to add your own module to SEATREE, please let us know; we might be able to provide some assistance.
+If you want to use SEATREE in a classroom setting, we might be able to
+offer you some installation support and always welcome your
+feedback. Also, if you like to add your own module to SEATREE, please
+let us know; we might be able to provide some assistance. The original
+code framework is mainly due to Kevin Milner, with a major 2025 update
+by Dunyu Liu.
 
 ## Acknowledgments
 
@@ -86,4 +106,4 @@ SEATREE includes and may be distributed with the following third-party component
 
 Copyright for these components remains with the original authors.
 
-For the rest: Copyright (c) Thorsten Becker 2004-2005
+For the rest: Copyright (c) Thorsten Becker 2004-2025
