@@ -1226,6 +1226,9 @@ class GMTWrapper:
             print(f"grdNiceCmpRange: received invalid min/max values: min={min}, max={max}")
             return [-1, 1, 0.1, 0.5]
 
+        if getattr(self, "adjust", False):
+            ncol *= 2
+
         if max - min < 1e-5:
             min, max = -1, 1
 

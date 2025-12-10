@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-    <Larry3dConfiguration>
-     <larry3dPath>../modules/seismo/larry3d/x86_64</larry3dPath>
-    </Larry3dConfiguration>
+<?xml version="1.0" ?>
+<Larry3dConfiguration>
+	<larry3dPath>/home/utig5/dliu/scratch/seatree.dev/seatree.dev/modules/seismo/larry3d/x86_64</larry3dPath>
+	<normDamping>0.001</normDamping>
+</Larry3dConfiguration>

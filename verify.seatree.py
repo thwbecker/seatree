@@ -13,6 +13,7 @@ This script verifies that all components of SEATREE are installed correctly:
 
 import os
 import sys
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -103,12 +104,17 @@ def print_check(status, message, details=""):
         print(f"         {details}")
 
 
-def check_env_var(var_name, result):
+def check_env_var(var_name, result, required=True):
     """Check if an environment variable is set and valid"""
     value = os.environ.get(var_name)
     if not value:
-        result.add_fail(f"Environment variable {var_name}", "Not set")
-        print_check("FAIL", f"Environment variable: {var_name}", "Not set")
+        status = "FAIL" if required else "WARN"
+        message = "Not set"
+        if required:
+            result.add_fail(f"Environment variable {var_name}", message)
+        else:
+            result.add_warning(f"Environment variable {var_name}", message)
+        print_check(status, f"Environment variable: {var_name}", message)
         return None
 
     path = Path(value)
@@ -183,6 +189,170 @@ def check_command_version(command, name, result):
         return False
 
 
+def detect_netcdf_paths():
+    """Discover NetCDF installation paths using env vars and nc-config"""
+    info = {
+        'home': None,
+        'c_home': None,
+        'libdir': None,
+        'bindir': None,
+        'nc_config': None,
+        'ncdump': None,
+        'lib_candidates': [],
+    }
+
+    env_home = os.environ.get("NETCDFHOME")
+    env_c_home = os.environ.get("NETCDF_C_HOME")
+
+    if env_home:
+        home_path = Path(env_home)
+        if home_path.exists():
+            info['home'] = home_path
+    if env_c_home:
+        c_home_path = Path(env_c_home)
+        if c_home_path.exists():
+            info['c_home'] = c_home_path
+
+    def add_lib_candidate(path, prefer=False):
+        if not path or not path.exists():
+            return
+        if info['libdir'] is None or prefer:
+            info['libdir'] = path
+        if path not in info['lib_candidates']:
+            info['lib_candidates'].append(path)
+
+    def consider_prefix(prefix_path, prefer=False):
+        if not prefix_path or not prefix_path.exists():
+            return
+        lib_candidate = prefix_path / "lib"
+        add_lib_candidate(lib_candidate, prefer=prefer)
+        bin_candidate = prefix_path / "bin"
+        if bin_candidate.exists():
+            if prefer or info['bindir'] is None:
+                info['bindir'] = bin_candidate
+            nc_candidate = bin_candidate / "nc-config"
+            if nc_candidate.exists():
+                if prefer or info['nc_config'] is None:
+                    info['nc_config'] = nc_candidate
+            ncd_candidate = bin_candidate / "ncdump"
+            if ncd_candidate.exists():
+                if prefer or info['ncdump'] is None:
+                    info['ncdump'] = ncd_candidate
+
+    consider_prefix(info.get('c_home'), prefer=True)
+    consider_prefix(info.get('home'))
+
+    if info['nc_config'] is None:
+        which_nc = shutil.which("nc-config")
+        if which_nc:
+            info['nc_config'] = Path(which_nc)
+            if info['bindir'] is None:
+                info['bindir'] = Path(which_nc).parent
+
+    if info['nc_config']:
+        try:
+            prefix_out = subprocess.check_output(
+                [str(info['nc_config']), '--prefix'],
+                stderr=subprocess.STDOUT,
+                timeout=5,
+                universal_newlines=True,
+            ).strip().split('\n')[0]
+            prefix_path = Path(prefix_out)
+            if prefix_path.exists():
+                if info['c_home'] is None:
+                    info['c_home'] = prefix_path
+                consider_prefix(prefix_path, prefer=True)
+        except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+            pass
+
+        try:
+            libdir_out = subprocess.check_output(
+                [str(info['nc_config']), '--libdir'],
+                stderr=subprocess.STDOUT,
+                timeout=5,
+                universal_newlines=True,
+            ).strip().split('\n')[0]
+            libdir_path = Path(libdir_out)
+            add_lib_candidate(libdir_path, prefer=True)
+        except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+            pass
+
+        try:
+            bindir_out = subprocess.check_output(
+                [str(info['nc_config']), '--bindir'],
+                stderr=subprocess.STDOUT,
+                timeout=5,
+                universal_newlines=True,
+            ).strip().split('\n')[0]
+            bindir_path = Path(bindir_out)
+            if bindir_path.exists():
+                info['bindir'] = bindir_path
+                ncd_candidate = bindir_path / "ncdump"
+                if ncd_candidate.exists():
+                    info['ncdump'] = ncd_candidate
+        except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+            pass
+
+        try:
+            libs_out = subprocess.check_output(
+                [str(info['nc_config']), '--libs'],
+                stderr=subprocess.STDOUT,
+                timeout=5,
+                universal_newlines=True,
+            )
+            for token in libs_out.split():
+                if token.startswith('-L'):
+                    lib_path = Path(token[2:])
+                    add_lib_candidate(lib_path)
+        except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+            pass
+
+    ld_library_path = os.environ.get("LD_LIBRARY_PATH", "")
+    for entry in ld_library_path.split(os.pathsep):
+        entry = entry.strip()
+        if entry:
+            add_lib_candidate(Path(entry))
+
+    # Add a few common system locations as fallbacks
+    for default_dir in [
+        Path("/usr/lib/x86_64-linux-gnu"),
+        Path("/usr/lib64"),
+        Path("/usr/local/lib"),
+        Path("/usr/lib"),
+    ]:
+        add_lib_candidate(default_dir)
+
+    if info['ncdump'] is None:
+        which_ncdump = shutil.which("ncdump")
+        if which_ncdump:
+            info['ncdump'] = Path(which_ncdump)
+
+    return info
+
+
+def locate_library(preferred_names, candidates):
+    """Find the first existing library file in candidate directories."""
+    seen = set()
+    stem = preferred_names[0]
+    for candidate in candidates:
+        if not candidate:
+            continue
+        candidate = Path(candidate)
+        if candidate in seen or not candidate.exists():
+            continue
+        seen.add(candidate)
+
+        for name in preferred_names:
+            lib_path = candidate / name
+            if lib_path.exists():
+                return lib_path
+
+        for match in sorted(candidate.glob(f"{stem}*")):
+            if match.is_file():
+                return match
+    return None
+
+
 def main():
     """Main verification routine"""
     # Load environment variables first
@@ -197,7 +367,7 @@ def main():
     seatree_home = check_env_var("SEATREE", result)
     gmt4_home = check_env_var("GMT4HOME", result)
     gmthome = check_env_var("GMTHOME", result)
-    netcdf_home = check_env_var("NETCDFHOME", result)
+    netcdf_home = check_env_var("NETCDFHOME", result, required=False)
 
     # Check GMT_GSHHG_DATA (only needed for GMT4)
     gmtversion = os.environ.get("GMTVERSION", "6")
@@ -227,34 +397,57 @@ def main():
         result.add_warning("Environment variable ARCH", "Not set")
         print_check("WARN", "Environment variable: ARCH", "Not set")
 
+    # Discover NetCDF paths
+    netcdf_info = detect_netcdf_paths()
+
     # Check NetCDF installation
-    if netcdf_home:
-        print_header("NetCDF Installation")
+    print_header("NetCDF Installation")
+    is_macos = sys.platform == 'darwin'
 
-        # Detect platform - macOS uses .dylib, Linux uses .so
-        is_macos = sys.platform == 'darwin'
+    lib_candidates = netcdf_info.get('lib_candidates', [])
+    netcdf_lib_path = None
+    netcdf_libdir = netcdf_info.get('libdir')
+    nc_config_path = netcdf_info.get('nc_config')
+    ncdump_path = netcdf_info.get('ncdump')
 
-        if is_macos:
-            # On macOS, netcdf C library is in /opt/homebrew/opt/netcdf/lib
-            # netcdf-fortran points to it, but we check the actual location
-            netcdf_c_lib = "/opt/homebrew/opt/netcdf/lib"
-            check_library(f"{netcdf_c_lib}/libnetcdf.dylib", "libnetcdf.dylib", result)
-            check_library(f"{netcdf_c_lib}/libnetcdf.22.dylib", "libnetcdf.22.dylib", result)
-            check_library(f"{netcdf_home}/lib/libnetcdff.dylib", "libnetcdff.dylib (fortran)", result)
+    lib_filename = "libnetcdf.dylib" if is_macos else "libnetcdf.so"
+    netcdf_lib_path = locate_library([lib_filename], lib_candidates or ([netcdf_libdir] if netcdf_libdir else []))
+    if netcdf_lib_path:
+        netcdf_libdir = netcdf_lib_path.parent
+        check_library(str(netcdf_lib_path), lib_filename, result)
+    else:
+        message = "Unable to locate NetCDF library directory (set NETCDFHOME or ensure nc-config is in PATH)"
+        result.add_fail("NetCDF libraries", message)
+        print_check("FAIL", "NetCDF libraries", message)
 
-            # Binaries are in netcdf C package
-            netcdf_c_bin = "/opt/homebrew/opt/netcdf/bin"
-            check_executable(f"{netcdf_c_bin}/nc-config", "nc-config", result)
-            check_executable(f"{netcdf_c_bin}/ncdump", "ncdump", result)
-            check_command_version(f"{netcdf_c_bin}/nc-config", "nc-config --version", result)
+    if is_macos:
+        fortran_lib_path = None
+        if netcdf_info.get('home'):
+            candidate = netcdf_info['home'] / "lib" / "libnetcdff.dylib"
+            if candidate.exists():
+                fortran_lib_path = candidate
+        if not fortran_lib_path:
+            fortran_lib_path = locate_library(["libnetcdff.dylib"], lib_candidates)
+        if fortran_lib_path:
+            check_library(str(fortran_lib_path), "libnetcdff.dylib (fortran)", result)
         else:
-            # Linux paths
-            check_library(f"{netcdf_home}/lib/libnetcdf.so", "libnetcdf.so", result)
-            check_library(f"{netcdf_home}/lib/libnetcdf.so.22", "libnetcdf.so.22", result)
-            check_library(f"{netcdf_home}/lib/libnetcdf.so.7", "libnetcdf.so.7 (symlink)", result)
-            check_executable(f"{netcdf_home}/bin/nc-config", "nc-config", result)
-            check_executable(f"{netcdf_home}/bin/ncdump", "ncdump", result)
-            check_command_version(f"{netcdf_home}/bin/nc-config", "nc-config --version", result)
+            result.add_fail("Library libnetcdff.dylib", "Not found; install netcdf-fortran or set NETCDFHOME")
+            print_check("FAIL", "Library: libnetcdff.dylib", "Not found; install netcdf-fortran or set NETCDFHOME")
+
+    if nc_config_path:
+        check_executable(str(nc_config_path), "nc-config", result)
+        check_command_version(str(nc_config_path), "nc-config --version", result)
+    else:
+        message = "nc-config not found; ensure NetCDF binaries are installed and in PATH"
+        result.add_fail("Executable nc-config", message)
+        print_check("FAIL", "Executable: nc-config", message)
+
+    if ncdump_path:
+        check_executable(str(ncdump_path), "ncdump", result)
+    else:
+        message = "ncdump not found; ensure NetCDF utilities are installed and in PATH"
+        result.add_fail("Executable ncdump", message)
+        print_check("FAIL", "Executable: ncdump", message)
 
     # Check GMT installation
     gmtversion = os.environ.get("GMTVERSION", "6")
@@ -377,12 +570,22 @@ def main():
     # Check LD_LIBRARY_PATH (critical for runtime linking)
     print_header("Environment Paths")
     ld_library_path = os.environ.get("LD_LIBRARY_PATH", "")
-    if netcdf_home and f"{netcdf_home}/lib" in ld_library_path:
-        result.add_pass("NetCDF in LD_LIBRARY_PATH", f"{netcdf_home}/lib")
-        print_check("PASS", "NetCDF in LD_LIBRARY_PATH", f"{netcdf_home}/lib")
+    netcdf_libdir_str = str(netcdf_libdir) if netcdf_libdir else None
+    ld_entries = [p for p in ld_library_path.split(os.pathsep) if p]
+    if netcdf_libdir_str:
+        if netcdf_libdir_str in ld_entries:
+            result.add_pass("NetCDF in LD_LIBRARY_PATH", netcdf_libdir_str)
+            print_check("PASS", "NetCDF in LD_LIBRARY_PATH", netcdf_libdir_str)
+        elif netcdf_libdir_str.startswith(("/usr/lib", "/usr/local/lib", "/lib")):
+            msg = f"{netcdf_libdir_str} (system default search path)"
+            result.add_pass("NetCDF in LD_LIBRARY_PATH", msg)
+            print_check("PASS", "NetCDF in LD_LIBRARY_PATH", msg)
+        else:
+            result.add_warning("NetCDF in LD_LIBRARY_PATH", f"{netcdf_libdir_str} not found in LD_LIBRARY_PATH")
+            print_check("WARN", "NetCDF in LD_LIBRARY_PATH", f"{netcdf_libdir_str} not found in LD_LIBRARY_PATH")
     else:
-        result.add_warning("NetCDF in LD_LIBRARY_PATH", "NetCDF lib directory not in LD_LIBRARY_PATH")
-        print_check("WARN", "NetCDF in LD_LIBRARY_PATH", "NetCDF lib directory not in LD_LIBRARY_PATH")
+        result.add_warning("NetCDF in LD_LIBRARY_PATH", "NetCDF lib directory unknown; skipping LD_LIBRARY_PATH check")
+        print_check("WARN", "NetCDF in LD_LIBRARY_PATH", "NetCDF lib directory unknown; skipping check")
 
     # Print summary
     print_header("Verification Summary")

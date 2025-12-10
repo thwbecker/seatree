@@ -166,48 +166,58 @@ class GMTSettingsPanel:
         self.gmtPlotter = plotter
 
     def setPbcol(self, widget):
-        rgb = self.get_color(self.gmtPlotter.pbColor, tlabel='plate boundaries')
-        if rgb is not None:
-            self.gmtPlotter.pbColor = rgb
+        self._choose_color(self.gmtPlotter.pbColor,
+                           lambda color: setattr(self.gmtPlotter, 'pbColor', color),
+                           'plate boundaries')
 
     def setCoastColor(self, widget):
-        rgb = self.get_color(self.gmtPlotter.pbColor, tlabel='coastlines')
-        if rgb is not None:
-            self.gmtPlotter.coastLineColor = rgb
+        self._choose_color(self.gmtPlotter.coastLineColor,
+                           lambda color: setattr(self.gmtPlotter, 'coastLineColor', color),
+                           'coastlines')
 
     def setCoastMaskColor(self, widget):
-        rgb = self.get_color(self.gmtPlotter.pbColor, tlabel='coastlines')
-        if rgb is not None:
-            self.gmtPlotter.coastLandColor = rgb
-            self.gmtPlotter.coastSeaColor = rgb
+        def apply(color):
+            self.gmtPlotter.coastLandColor = color
+            self.gmtPlotter.coastSeaColor = color
+        self._choose_color(self.gmtPlotter.coastLandColor, apply, 'coastline mask')
 
     def setVectColor(self, widget):
-        rgb = self.get_color(self.gmtPlotter.vectColor, tlabel='vectors')
-        if rgb is not None:
-            self.gmtPlotter.vectColor = rgb
+        self._choose_color(self.gmtPlotter.vectColor,
+                           lambda color: setattr(self.gmtPlotter, 'vectColor', color),
+                           'vectors')
 
-    def get_color(self, rgb, tlabel=None):
-        """ color selection dialog """
-        def rgb_to_gdk_color(rgb):
+    def _choose_color(self, initial_rgb, apply_fn, tlabel=None):
+        """GTK4-friendly color chooser dialog."""
+
+        def rgb_to_rgba(rgb):
             r, g, b = rgb
-            return Gdk.RGBA(r, g, b, 1.0)
+            return Gdk.RGBA(r / 255.0, g / 255.0, b / 255.0, 1.0)
 
-        def gdk_color_to_rgb(color):
+        def rgba_to_rgb(color):
             return int(color.red * 255), int(color.green * 255), int(color.blue * 255)
 
         title = 'Choose color'
         if tlabel:
             title += f' for {tlabel}'
-        
+
         dialog = Gtk.ColorChooserDialog(title=title)
-        dialog.set_rgba(rgb_to_gdk_color(rgb))
-        response = dialog.run()
-        if response == Gtk.ResponseType.OK:
-            rgb = gdk_color_to_rgb(dialog.get_rgba())
-        else:
-            rgb = None
-        dialog.destroy()
-        return rgb
+        dialog.set_modal(True)
+
+        parent = None
+        if hasattr(self.gmtPlotterWidget, 'get_root'):
+            parent = self.gmtPlotterWidget.get_root()
+        if isinstance(parent, Gtk.Window):
+            dialog.set_transient_for(parent)
+
+        dialog.set_rgba(rgb_to_rgba(initial_rgb))
+
+        def on_response(dlg, response):
+            if response == Gtk.ResponseType.OK:
+                apply_fn(rgba_to_rgb(dlg.get_rgba()))
+            dlg.destroy()
+
+        dialog.connect("response", on_response)
+        dialog.present()
 
     def getPanel(self):
         return self.eb
