@@ -127,7 +127,7 @@ if [ -n "$MACH" ]; then
           sudo apt-get install x11-apps libx11-dev libxt-dev libxaw7-dev ghostscript libhdf5-dev gawk
           # Install GMT6 (default) - required for SEATREE plotting modules
           sudo apt-get install gmt gmt-dcw gmt-gshhg libgmt-dev
-          pip3 install --user matplotlib==3.9.2 #--break-system-packages # needs newer version of matplotlib to work.
+          pip3 install --user matplotlib==3.9.2 scipy #--break-system-packages # needs newer version of matplotlib to work.
         fi
     elif [ $MACHINE == "macos" ]; then
         echo "Installing SEATREE on MacOS 14 ... ..."
@@ -135,7 +135,7 @@ if [ -n "$MACH" ]; then
             brew install gtk4 ghostscript gawk
             # Install GMT6 (default) - required for SEATREE plotting modules
             brew install gmt
-            pip3 install --break-system-packages matplotlib==3.9.2 pygobject
+            pip3 install --break-system-packages matplotlib==3.9.2 pygobject scipy
         fi
     fi 
 
