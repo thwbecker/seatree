@@ -85,6 +85,10 @@ class larry3d(Module):
         self.prevPlot = None
         self.prevFName = None
 
+    def _fmt_damp(self, value):
+        """Format damping values with 4 digits after the decimal to keep paths short."""
+        return f"{value:.4f}"
+
     def getPanel(self, mainWindow):
         self.gui = larry3dGUI(mainWindow, self)
         return self.gui.getPanel()
@@ -149,8 +153,9 @@ class larry3d(Module):
         
         self.matrix_file = self.storeDir + "matrices" + os.sep + "a." + \
                            self.data_type + "." + self.ray_type + "." + str(self.res) + "." + str(self.nlay)
+        ndamp_str = self._fmt_damp(self.ndamp)
         self.sol_name = "sol." + self.data_type + "." + \
-                        self.ray_type + "." + str(self.res) + "." + str(self.nlay) + "." + str(self.ndamp) + \
+                        self.ray_type + "." + str(self.res) + "." + str(self.nlay) + "." + ndamp_str + \
                         "." + str(self.rdamp)
         self.sol_file = self.storeDir + "solutions" + os.sep + self.sol_name
         
@@ -308,8 +313,9 @@ class larry3d(Module):
         """ for a given matrix file, compute a solution """
 
         # Path to solution
+        ndamp_str = self._fmt_damp(self.ndamp)
         self.sol_file = self.storeDir + "solutions" + os.sep + "sol." + self.data_type + "." + \
-                        self.ray_type + "." + str(self.res) + "." + str(self.nlay) + "." + str(self.ndamp) + \
+                        self.ray_type + "." + str(self.res) + "." + str(self.nlay) + "." + ndamp_str + \
                         "." + str(self.rdamp)
         solfile = self.sol_file + ".dat"
         
@@ -325,7 +331,7 @@ class larry3d(Module):
             if self.verbose > 0:
                 print(solfile)
                 print("Using old solution: data type " + self.data_type + " ray type: " + self.ray_type + \
-                      " ndamp " + str(self.ndamp) + " rdamp: " + \
+                      " ndamp " + ndamp_str + " rdamp: " + \
                       str(self.rdamp) + ' roughness: ' + str(self.rdampf) + \
                       ' VR: ', str(self.vr), ' norm: ', str(self.norm) + '\n')
             oldsol = True
@@ -397,6 +403,13 @@ class larry3d(Module):
             print("colormap was not found")
         # check if layer files were previously extracted
         if not os.path.exists(self.layer_files + "01.dat"):
+            # mapview_3d Fortran binary accepts only short file names (colorname is char*30, model is char*80)
+            # Copy the files into the working directory with short names before invoking it
+            short_sol = os.path.join(self.tempDir, "sol.dat")
+            short_cpt = os.path.join(self.tempDir, "sol.cpt")
+            shutil.copy2(self.sol_file + ".dat", short_sol)
+            shutil.copy2(self.colormap, short_cpt)
+
             # extract layers with color information based on colormap
             print('Extracting layer information from solution...')
             command = "cd " + self.tempDir + "\n"
@@ -406,8 +419,8 @@ class larry3d(Module):
                        str(self.res) + "\n" + \
                        str(self.iswit) + "\n" + \
                        str(self.nlay) + "\n" + \
-                       "\"" + self.sol_file + ".dat" + "\"\n" + \
-                       "\"" + self.colormap + "\"\n" + \
+                       "\"" + os.path.basename(short_sol) + "\"\n" + \
+                       "\"" + os.path.basename(short_cpt) + "\"\n" + \
                        "y\n" + \
                        "6371 3471\n" + \
                        "5\n" + \
@@ -687,9 +700,9 @@ class larry3d(Module):
                    str(self.iswit) + "\n" + \
                    str(self.rhdamp) + "\n" + \
                    str(self.rvdamp) + "\n" + \
-                   str(self.ndamp) + "\n" + \
-                   str(self.ndamp_mm) + "\n" + \
-                   str(self.ani_damp) + "\n" + \
+                   self._fmt_damp(self.ndamp) + "\n" + \
+                   self._fmt_damp(self.ndamp_mm) + "\n" + \
+                   self._fmt_damp(self.ani_damp) + "\n" + \
                    str(self.nlay) + "\n" + \
                    "\"" + self.tempDir + "\"\n" + \
                    "\"" + self.matrix_file + ".mat" + "\"\n" + \
@@ -762,7 +775,7 @@ class larry3d(Module):
         filename = self.sol_file + '.res.dat'
         with open(filename, 'w') as f:
             f.write(self.data_type + " " + self.ray_type + " " + str(self.res) + " " +
-                    str(self.nlay) + " " + str(self.ndamp) + " " +
+                    str(self.nlay) + " " + self._fmt_damp(self.ndamp) + " " +
                     str(self.rdamp) + " " + str(self.rdampf) + " " +
                     str(self.vr) + " " + str(self.norm))
 
