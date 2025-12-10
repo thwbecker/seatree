@@ -482,6 +482,7 @@ class FlowGUI:
         chooser.present()
 
     def setBoundaryCondition(self, widget):
+        tbc_s = self.boundCondSelect.get_active_text()
         if tbc_s == "Free slip":
             self.boundCondFile.set_sensitive(False)
         elif tbc_s == "No slip":

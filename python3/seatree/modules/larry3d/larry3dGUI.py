@@ -50,7 +50,7 @@ class larry3dGUI:
         
         # Norm-Damping
         self.ndampLabel = Gtk.Label(label="Norm Damping")
-        self.ndampScale = guiUtils.LogRangeSelectionBox(initial=0.0, min1=0.0, max1=10000.0, incr=0.5, pageIncr=1, digits=3, buttons=False)
+        self.ndampScale = guiUtils.LogRangeSelectionBox(initial=0.001, min1=0.0, max1=10000.0, incr=0.5, pageIncr=1, digits=3, buttons=False)
         self.ndampScale.set_tooltip_text('controls how large the solution amplitudes are by damping against the norm of the solution vector')
         self.ndampBox = Gtk.Box(homogeneous=False, spacing=5)
         self.ndampBox.append(self.ndampLabel)
@@ -236,7 +236,7 @@ class larry3dGUI:
 
     def setComputeOptions(self):
         self.larry3d.res = float(self.resolutionCombo.get_active_text())
-        self.larry3d.ndamp = int(self.ndampScale.getValue())
+        self.larry3d.ndamp = float(self.ndampScale.getValue())
         self.larry3d.rdamp = int(self.rdampScale.getValue())
         self.larry3d.rhdamp = self.larry3d.rdamp
         self.larry3d.nlay = int(self.nlayScale.getValue())

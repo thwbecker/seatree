@@ -61,7 +61,7 @@ class larry3d(Module):
         self.iswit = 0 # compatible with crustal model of same gridsize (0=no,1=yes)
         self.rhdamp = self.rdamp # horizontal damping
         self.rvdamp = 1 # vertical damping, in fractions of horizontal damping
-        self.ndamp = 0 # norm damping
+        self.ndamp = 0.001 # norm damping
         self.ndamp_mm = 0 # mid mantle norm damping
         self.ani_damp = 0 # anisotropic damping
         self.nlay = 15 # number of layers
@@ -652,7 +652,8 @@ class larry3d(Module):
 
         if self.myPlotter.addLabel:
             layerIndex = self.nlay - self.nlayplot
-            self.myPlotter.plotText("0.05 -0.05 14 0 0 ML \"VR = " + str(float(self.vr) * 100.) + " %\"")
+            vr_percent = f"{float(self.vr) * 100.0:.2f}"
+            self.myPlotter.plotText(f"0.05 -0.05 14 0 0 ML \"VR = {vr_percent} %\"")
             self.myPlotter.plotText("0.8 -0.05 14 0 0 ML \"|x| = " + str(self.norm) + " \"")
             self.myPlotter.plotText("0.05 0.95 14 0 0 ML \"z = " + self.layerDepth[layerIndex] + " km\"")
             self.myPlotter.drawColorbar()

@@ -29,6 +29,45 @@ log_verbose() {
     echo "$@" >> "$LOGFILE"
 }
 
+# Detect whether NetCDF is already available either from the bundled
+# tree or from a system installation exposed via nc-config.
+netcdf_is_installed() {
+    if [ -n "$NETCDFHOME" ] && [ -d "$NETCDFHOME" ]; then
+        if [ "$(uname -s)" = "Darwin" ]; then
+            local c_home="${NETCDF_C_HOME:-$NETCDFHOME}"
+            if [ -f "$c_home/lib/libnetcdf.dylib" ] && \
+               [ -x "$c_home/bin/nc-config" ]; then
+                return 0
+            fi
+        else
+            if [ -f "$NETCDFHOME/lib/libnetcdf.so" ] && \
+               [ -x "$NETCDFHOME/bin/nc-config" ]; then
+                return 0
+            fi
+        fi
+    fi
+
+    if command -v nc-config >/dev/null 2>&1; then
+        if nc-config --version >/dev/null 2>&1; then
+            return 0
+        fi
+    fi
+
+    return 1
+}
+
+detect_system_netcdf() {
+    if command -v nc-config >/dev/null 2>&1; then
+        local prefix
+        prefix=$(nc-config --prefix 2>/dev/null | head -n 1)
+        if [ -n "$prefix" ] && [ -d "$prefix" ]; then
+            echo "$prefix"
+            return 0
+        fi
+    fi
+    return 1
+}
+
 log_info "=========================================="
 log_info "SEATREE Installation Log"
 log_info "Started: $(date)"
@@ -140,8 +179,14 @@ if [ -n "$MACH" ]; then
                 log_info "Detected Homebrew netcdf (C library): $NETCDF_C_HOME"
             fi
         else
-            export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1
-            log_info "Using bundled NetCDF at $NETCDFHOME"
+            prefix=$(detect_system_netcdf) || true
+            if [ -n "$prefix" ] && [ -d "$prefix" ]; then
+                export NETCDFHOME="$prefix"
+                log_info "Detected system NetCDF via nc-config: $NETCDFHOME"
+            else
+                export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1
+                log_info "Using bundled NetCDF at $NETCDFHOME"
+            fi
         fi
     else
         log_info "NETCDFHOME preset to $NETCDFHOME (honoring user override)"
@@ -149,10 +194,8 @@ if [ -n "$MACH" ]; then
     export ARCH=$(uname -m)
 
     log_info "[STEP 1/5] $(date +"%Y-%m-%d %H:%M:%S") - Checking NetCDF installation..."
-    if [ -e "netcdf-c-4.9.3-rc1" ]; then
-        log_info "  -> NetCDF already installed, skipping."
-    elif [ -n "$NETCDFHOME" ] && [ "$NETCDFHOME" != "$(pwd)/netcdf-c-4.9.3-rc1" ] && [ -d "$NETCDFHOME" ]; then
-        log_info "  -> Using existing NetCDF at $NETCDFHOME (skipping bundled install)."
+    if netcdf_is_installed; then
+        log_info "  -> NetCDF already installed (nc-config detected)."
     else
         log_info "  -> Installing netcdf-c-4.9.3-rc1..."
         bash install/install.netcdf.ubuntu22.sh >> "$LOGFILE" 2>&1
@@ -263,12 +306,24 @@ if [ -z "$NETCDFHOME" ]; then
                 log_info "Detected Homebrew netcdf (C library): $NETCDF_C_HOME"
             fi
         else
-            export NETCDFHOME="$(pwd)/netcdf-c-4.9.3-rc1"
-            log_info "Homebrew netcdf-fortran not found; falling back to bundled NetCDF at $NETCDFHOME"
+            prefix=$(detect_system_netcdf) || true
+            if [ -n "$prefix" ] && [ -d "$prefix" ]; then
+                export NETCDFHOME="$prefix"
+                log_info "Detected system NetCDF via nc-config: $NETCDFHOME"
+            else
+                export NETCDFHOME="$(pwd)/netcdf-c-4.9.3-rc1"
+                log_info "Homebrew netcdf-fortran not found; falling back to bundled NetCDF at $NETCDFHOME"
+            fi
         fi
     else
-        export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1
-        log_info "Using bundled NetCDF at $NETCDFHOME"
+        prefix=$(detect_system_netcdf) || true
+        if [ -n "$prefix" ] && [ -d "$prefix" ]; then
+            export NETCDFHOME="$prefix"
+            log_info "Detected system NetCDF via nc-config: $NETCDFHOME"
+        else
+            export NETCDFHOME=$(pwd)/netcdf-c-4.9.3-rc1
+            log_info "Using bundled NetCDF at $NETCDFHOME"
+        fi
     fi
 else
     log_info "NETCDFHOME preset to $NETCDFHOME (honoring user override)"
