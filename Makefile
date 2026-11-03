@@ -24,14 +24,10 @@ CONMAN_DIR = modules/mc/ConMan
 
 # HC places binaries in bin/$(ARCH) if ARCH is set. We build into
 # plain bin/ so that the python side finds the binaries regardless of
-# the run-time environment.
+# the run-time environment. With NO_GMT, the HC Makefile (7bb6d03 or
+# later) includes sh_syn in the all_no_gmt target.
 HC_MAKE = $(MAKE) -C $(HC_DIR) ARCH=
 HC_FLAGS = ADD_FLAGS=-DNO_GMT
-
-# sh_syn is listed under the GMT tools in the HC Makefile because it
-# can optionally write grd files. With NO_GMT it only needs the HC
-# libraries and prem_util.o, which is what the overrides below provide.
-HC_SH_SYN_FLAGS = $(HC_FLAGS) GGRD_LIBS= GGRD_INCS= GGRD_LIBS_LINKLINE=objects/prem_util.o
 
 all: hc conman
 
@@ -46,7 +42,6 @@ submodules:
 
 hc: submodules
 	$(HC_MAKE) $(HC_FLAGS) all_no_gmt
-	$(HC_MAKE) $(HC_SH_SYN_FLAGS) bin/sh_syn
 	@echo "HC binaries are in $(HC_DIR)/bin"
 
 conman: submodules
