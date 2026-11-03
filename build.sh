@@ -47,19 +47,19 @@ elif [[ "$PLATFORM" == "Linux" ]]; then
             cd distribute && ./build-appimage-gtk.sh
             ;;
         "portable")
-            echo "Building portable AppImage (seatree-portable.exe)..."
-            cd distribute && ./build-appimage-gtk-portable.sh
+            echo "Error: the portable AppImage build script (build-appimage-gtk-portable.sh)"
+            echo "is not part of this repository at the moment."
+            exit 1
             ;;
         "clean")
             echo "Cleaning build artifacts..."
             cd distribute && ./clean.sh
             ;;
         "help"|"-h"|"--help")
-            echo "Usage: $0 [main|portable|clean|help]"
+            echo "Usage: $0 [main|clean|help]"
             echo ""
             echo "Options:"
             echo "  main      - Build main AppImage (seatree.exe) [default]"
-            echo "  portable  - Build portable AppImage (seatree-portable.exe)"
             echo "  clean     - Clean all build artifacts and temporary files"
             echo "  help      - Show this help message"
             echo ""

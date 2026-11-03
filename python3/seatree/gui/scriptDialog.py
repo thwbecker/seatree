@@ -2,7 +2,7 @@
 import gi
 gi.require_version('Gtk', '4.0')
 from gi.repository import Gtk
-from util.saveDialog import SaveDialog
+from seatree.gui.util.saveDialog import SaveDialog
 
 class ScriptDialog:
     def __init__(self, mainWindow, title="Save", text=""):

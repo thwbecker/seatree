@@ -1,15 +1,17 @@
 #! /usr/bin/env python3
 
+"""
+Start the SEATREE GUI.
+
+Sets the environment variables the modules expect (SEATREE, ARCH, and
+the locations of a bundled GMT 4 or NetCDF if present) and runs
+python3/seatree/gui/SEATREE.py. Can be run from any directory.
+"""
 import os, sys
 import platform
 
-def add_subdirectories_to_path(root_dir):
-    for dirpath, dirnames, filenames in os.walk(root_dir):
-        sys.path.append(dirpath)
-
-# Replace '/path/to/python' with the path to your 'python' folder
-root_directory = os.getcwd()
-add_subdirectories_to_path(root_directory)
+# the directory this script lives in is the SEATREE root
+root_directory = os.path.dirname(os.path.abspath(__file__))
 
 # Set up SEATREE environment variable
 os.environ["SEATREE"] = root_directory
@@ -44,7 +46,7 @@ if os.path.exists(netcdf_home):
     else:
         os.environ["LD_LIBRARY_PATH"] = netcdf_lib
 
-#for path in sys.path:
-#    print(path)
+gui = os.path.join(root_directory, "python3", "seatree", "gui", "SEATREE.py")
+status = os.system(sys.executable + " " + gui)
+sys.exit(status >> 8)
 
-os.system('python3 '+root_directory+'/python3/seatree/gui/SEATREE.py')

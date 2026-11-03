@@ -1,3 +1,6 @@
 [submodule "modules/mc/hc"]
 	path = modules/mc/hc
 	url = https://github.com/geodynamics/hc.git
+[submodule "modules/mc/ConMan"]
+	path = modules/mc/ConMan
+	url = https://github.com/geodynamics/conman.git

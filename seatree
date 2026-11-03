@@ -1,2 +1,6 @@
 #!/bin/sh
-python3 run.seatree.py  # to start the SEATREE APP
+#
+# start the SEATREE GUI; works from any directory and through a symlink
+#
+dir=$(cd "$(dirname "$(readlink -f "$0")")" && pwd)
+exec python3 "$dir/run.seatree.py" "$@"

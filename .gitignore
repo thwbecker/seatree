@@ -1,3 +1,10 @@
 
 .DS_Store
 python3/conf/conf.xml
+__pycache__/
+*.pyc
+tmp/
+hc_build_error.log
+conman_build_error.log
+# build products inside the submodules are ignored by their own
+# repositories (or show up as submodule changes), not here

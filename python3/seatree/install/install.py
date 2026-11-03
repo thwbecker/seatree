@@ -89,6 +89,11 @@ class SEATREEInstaller:
     def installModule(self, mod):
         print("Installing Module: " + mod.className)
         
+        if not mod.installImportName or not mod.installClassName:
+            print(mod.className + " has no installer, nothing to build")
+            print("")
+            return
+        
         try:
             sys.path.append(mod.directory)
             nameSplit = mod.importName.split(".")
@@ -195,23 +200,13 @@ class SEATREEInstaller:
         return ret
     
     def createExecutable(self):
-        filename = self.path + os.sep + ".." + os.sep + "seatree"
+        # the 'seatree' wrapper in the root directory is part of the
+        # repository and runs run.seatree.py, which sets up the
+        # environment. It is no longer overwritten here.
+        filename = os.path.abspath(self.path + os.sep + ".." + os.sep + "seatree")
         
-        exPath = os.path.abspath(self.path + os.sep + "seatree" + os.sep + "gui" + os.sep + "SEATREE.py")
-        
-        executable = []
-        executable.append("#!/bin/sh\n")
-        executable.append("\n")
-        executable.append(exPath + "\n")
-        
-        f = open(filename, 'w')
-        f.writelines(executable)
-        f.close()
-        
-        os.chmod(filename, 0o755);
-        
-        response = input("Link to 'seatree' executable from /usr/bin/seatree? (y/n default: y)? ")
-        if (not (response.find("n") >= 0) and not (response.find("n") >= 0)):
+        response = input("Link to 'seatree' executable from /usr/bin/seatree? (y/n default: n)? ")
+        if (response.find("y") >= 0 or response.find("Y") >= 0):
             
             if (os.path.exists(os.sep + "usr" + os.sep + "bin" + os.sep + "seatree")):
                 print("Warning: Link not created because /usr/bin/seatree exists")
@@ -240,6 +235,8 @@ class LoadedModule:
         self.className = ""
         self.directory = ""
         self.storeDir = ""
+        self.installImportName = ""
+        self.installClassName = ""
 
 if (__name__ == '__main__'): # is being run from commmand line
     install = SEATREEInstaller(path)

@@ -85,8 +85,17 @@ class MatPlotLibPlotter(Plotter):
     def tellModuleToReplot(self):
         self.module.updatePlot()
     
+    def getColorMapByName(self, name):
+        """
+        matplotlib.cm.get_cmap was removed in matplotlib 3.9, use the
+        colormap registry when available
+        """
+        if hasattr(matplotlib, "colormaps"):
+            return matplotlib.colormaps[name]
+        return matplotlib.cm.get_cmap(name=name)
+
     def setColorMapByName(self, name, reversed=False, updateGUI=True):
-        self.colorMap = matplotlib.cm.get_cmap(name=name)
+        self.colorMap = self.getColorMapByName(name)
         try:
             dummy = self.colorMap.seatree_reversed
         except AttributeError:
@@ -98,31 +107,9 @@ class MatPlotLibPlotter(Plotter):
             self.gui.loadOptionsFromPlotter()
     
     def reverseColormap(self, cm):
-        segData = dict()
-        numSegs = len(cm._segmentdata['red'])
-        reds = []
-        for i in range(numSegs):
-            index = numSegs - i - 1
-            val = self.colorMap._segmentdata['red'][index]
-            reds.append((1 - val[0], val[1], val[2]))
-        numSegs = len(cm._segmentdata['blue'])
-        blues = []
-        for i in range(numSegs):
-            index = numSegs - i - 1
-            val = self.colorMap._segmentdata['blue'][index]
-            blues.append((1 - val[0], val[1], val[2]))
-        numSegs = len(cm._segmentdata['green'])
-        greens = []
-        for i in range(numSegs):
-            index = numSegs - i - 1
-            val = self.colorMap._segmentdata['green'][index]
-            greens.append((1 - val[0], val[1], val[2]))
-        
-        segData = {'red': reds, 'blue': blues, 'green': greens}
-        newCM = matplotlib.colors.LinearSegmentedColormap(cm.name, segData, 1024)
-        newCM.seatree_reversed = True
-        return newCM
-    
+        # Colormap.reversed() works for both segmented and listed colormaps
+        return cm.reversed()
+
     def isColorMapReversed(self, colorMap=None):
         if colorMap is None:
             colorMap = self.colorMap

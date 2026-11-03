@@ -10,17 +10,9 @@ class FlowInstaller:
         self.path = main.getPythonRootDir()
         
         self.arch = self.main.arch
-        # setup/build HC
+        # setup/build HC through the top-level SEATREE Makefile
+        # (NO_GMT build, no GMT 4 or NetCDF development files needed)
         if (self.checkBuildHC()):
-            self.getGMT4HOME()
-            print("GMT Home: " + self.GMT4HOME)
-            
-            self.getNetCDFDir()
-            print("NetCDF Home: " + self.netCDFHome)
-            
-            #if (not self.setupMakefile()):
-            #   return
-            
             if (not self.buildHC()):
                 return
         
@@ -197,28 +189,27 @@ class FlowInstaller:
         return True
     
     def buildHC(self):
+        """
+        Build HC with 'make hc' in the SEATREE root directory, which
+        also fetches the git submodule if needed.
+        """
         print("Building HC...")
-        command = "cd " + self.hcDir + "; "
-        command += "make clean"
-        
-        proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        output = proc.communicate()
-        
-        command = "cd " + self.hcDir + "; "
-        command += "make"
+        seatreeRoot = os.path.abspath(self.path + os.sep + "..")
+        command = "make -C " + seatreeRoot + " hc"
+        print("COMMAND: " + command)
         proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         
         output = proc.communicate()
         ret = proc.returncode
-        if (ret > 0):
-            errorFile = self.hcDir + os.sep + "error.log"
+        if (ret != 0):
+            errorFile = seatreeRoot + os.sep + "hc_build_error.log"
             print("Error building HC...output written to " + errorFile)
             print("Possible causes:")
-            print("  * You selected the wrong GMT version")
-            print("  * The NetCDF or GMT directories are wrong")
+            print("  * The hc submodule is not checked out (git submodule update --init)")
             print("  * You don't have build programs installed such as make and gcc")
             f = open(errorFile, 'w')
-            f.write(str(output[1]))
+            f.write(output[0].decode("utf-8", "replace"))
+            f.write(output[1].decode("utf-8", "replace"))
             f.close()
             return False
         else:
@@ -237,11 +228,16 @@ class FlowInstaller:
         
         hc = myXml.addNode("hcPath")
         hcPath = self.getHCBinPath()
+        if not os.path.isdir(hcPath):
+            print("WARNING: " + hcPath + " does not exist yet. Run 'make hc' in the SEATREE root directory.")
+        # store the path relative to the python3 directory when HC
+        # lives inside the SEATREE tree, so that the configuration
+        # file stays valid if the tree is moved
+        relPath = os.path.relpath(hcPath, self.path)
+        if not relPath.startswith(".." + os.sep + ".."):
+            hcPath = relPath
         print('HC Path is '+hcPath+' ; written into hcConf.xml')
-        if (hcPath and os.path.isdir(hcPath)):
-            myXml.addText(hc, hcPath)
-        else:
-            print("WARNING: The path to HC could not be determined...if you haven't built HC using this installer then HC must already be in your system path!")
+        myXml.addText(hc, hcPath)
         
         myXml.writeToXml()
     

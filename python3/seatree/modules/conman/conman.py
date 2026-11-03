@@ -3,7 +3,7 @@ import gi
 gi.require_version('Gtk', '4.0')
 from gi.repository import Gtk, GLib
 
-import os, sys, time, xml.dom.minidom, math
+import os, sys, time, shutil, xml.dom.minidom, math
 
 import numpy as np
 
@@ -124,10 +124,14 @@ class ConMan(Module):
         print("ConMan path: " + self.conmanPath)
     
     def gawk(self, steps, saveSteps, rayleigh, nelz, aspect, heating, activation):
+        """
+        Prepare the ConMan input deck with the input_gen/make_conman_thermal_in.awk
+        script of the CIG ConMan distribution. Returns True on success.
+        """
         def run_cmd(cmd):
             print(cmd)
             self.commandString += cmd + "\n"  # Track command
-            os.system(cmd)
+            return os.system(cmd)
 
         self.model = "bm1a50"
         rayleigh = rayleigh
@@ -161,7 +165,14 @@ class ConMan(Module):
                 fw.write(full_path + '\n')
 
         input_gen_dir = os.path.join(conmanRootPath, "input_gen")
-        conman_exe_path = os.path.join(conmanRootPath, "conman")
+        awkScript = os.path.join(input_gen_dir, "make_conman_thermal_in.awk")
+        if not os.path.isfile(awkScript):
+            print("ConMan input generator " + awkScript + " not found.")
+            print("The ConMan submodule may not be checked out, see the README.")
+            return False
+        if shutil.which("gawk") is None:
+            print("gawk is required to generate ConMan input but was not found in the path.")
+            return False
         input0 = " "
         input0 = input0 + " -v nel="+str(nelz)
         input0 = input0 + " -v aspect="+str(aspect)
@@ -172,21 +183,19 @@ class ConMan(Module):
         input0 = input0 + " -v nprintstep="+str(saveSteps)
 
         input = input0 + " -v print_geom=1 -f"
-        input += " "+input_gen_dir+"/make_conman_thermal_in.awk > "+self.tempDir+"/geom.50"
-        run_cmd("gawk "+input)
+        input += " "+awkScript+" > "+self.tempDir+"/geom.50"
+        retval = run_cmd("gawk "+input)
         
-        input = input0 + " -v print_geom=0 -f"
-        input += " "+input_gen_dir+"/make_conman_thermal_in.awk > "+self.tempDir+"/in."+self.model
-        run_cmd("gawk "+input)
-
-        retval = 0
+        if retval == 0:
+            input = input0 + " -v print_geom=0 -f"
+            input += " "+awkScript+" > "+self.tempDir+"/in."+self.model
+            retval = run_cmd("gawk "+input)
 
         if retval != 0:
             print("********* INPUT *********")
             print(input)
             print("*************************")
-            print(result.getStandardOutput())
-            print(result.getStandardError())
+            print("generating the ConMan input deck failed")
         print("retval: " + str(retval))
         return retval == 0
     
@@ -319,8 +328,27 @@ class ConMan(Module):
         
         return input
 
+    def getConManExecutable(self):
+        """
+        Return the ConMan executable. The CIG Makefile writes the binary
+        as 'conman' into the ConMan root directory (one level above the
+        src/ directory that conmanPath points to). A 'conman.exp' in
+        conmanPath, as produced by older install scripts, is used as a
+        fallback.
+        """
+        conmanRootPath = os.path.abspath(os.path.join(self.conmanPath, ".."))
+        executable = os.path.join(conmanRootPath, "conman")
+        if os.path.isfile(executable) and os.access(executable, os.X_OK):
+            return executable
+        executable = os.path.join(self.conmanPath, "conman.exp")
+        if os.path.isfile(executable) and os.access(executable, os.X_OK):
+            return executable
+        print("ConMan executable not found in " + conmanRootPath + " or " + self.conmanPath)
+        print("Run 'make conman' in the SEATREE root directory.")
+        return os.path.join(conmanRootPath, "conman")
+
     def makeCalcThread(self, stdin=""):
-        executable = self.conmanPath + "conman.exp"
+        executable = self.getConManExecutable()
         oufFile = self.tempDir + "temp."+self.model
         self.currentResultFile = oufFile  # Track current result file
         self.calcThread = CalcThread(self.gui, executable, self.mainWindow.getTempFileDir(), oufFile,
@@ -337,7 +365,7 @@ class ConMan(Module):
         print("stdin is", stdin)
 
         # Track the command
-        executable = self.conmanPath + "conman.exp"
+        executable = self.getConManExecutable()
         command = executable + stdin
         self.commandString += "# Starting ConMan calculation\n"
         self.commandString += command + "\n"

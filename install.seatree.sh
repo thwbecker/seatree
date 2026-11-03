@@ -2,9 +2,13 @@
 
 # The shell script is to set up environment for SEATREE.
 # Currently supported systems include:
-# 1. ubuntu: Ubuntu 22.04
+# 1. ubuntu: Ubuntu 22.04 and 24.04
 # 2. docker: please see Dockerfile.
 # 3. macos: MacOS 14
+#
+# The compiled mantle convection codes (HC, ConMan) are git submodules
+# and are built by the top-level Makefile (make all), which the python
+# installer and step 4 below call.
 
 # GMT Version Selection (4 or 6)
 # Default: GMT6 (system-installed via package manager)
@@ -127,7 +131,13 @@ if [ -n "$MACH" ]; then
           sudo apt-get install x11-apps libx11-dev libxt-dev libxaw7-dev ghostscript libhdf5-dev gawk
           # Install GMT6 (default) - required for SEATREE plotting modules
           sudo apt-get install gmt gmt-dcw gmt-gshhg libgmt-dev
-          pip3 install --user matplotlib==3.9.2 scipy #--break-system-packages # needs newer version of matplotlib to work.
+          # NetCDF (used by the GMT grd files)
+          sudo apt-get install libnetcdf-dev netcdf-bin
+          # matplotlib 3.9 or newer; the distribution package is used
+          # if available, pip otherwise (--break-system-packages is
+          # needed on Ubuntu 24.04 to install outside a virtualenv)
+          sudo apt-get install python3-matplotlib python3-scipy || \
+              pip3 install --user --break-system-packages matplotlib scipy
         fi
     elif [ $MACHINE == "macos" ]; then
         echo "Installing SEATREE on MacOS 14 ... ..."
@@ -140,6 +150,12 @@ if [ -n "$MACH" ]; then
     fi 
 
     export SEATREE=$(pwd)
+    # fetch the HC and ConMan submodules if this is a git checkout
+    # that was cloned without --recurse-submodules
+    if [ -d .git ] && [ ! -f modules/mc/hc/Makefile ]; then
+        log_info "Fetching git submodules (modules/mc/hc, modules/mc/ConMan)..."
+        git submodule update --init >> "$LOGFILE" 2>&1
+    fi
     if [ "$GMTVERSION" == "4" ]; then
         export GMT4HOME=$(pwd)/gmt-4.5.18
         export GMTHOME=$GMT4HOME
@@ -231,12 +247,15 @@ if [ -n "$MACH" ]; then
         log_info "  -> ERROR: Configuration failed. Check $LOGFILE for details."
     fi
 
-    log_info "[STEP 4/5] $(date +"%Y-%m-%d %H:%M:%S") - Installing ConMan v3.0.0..."
-    bash install/install.conman.sh >> "$LOGFILE" 2>&1
+    log_info "[STEP 4/5] $(date +"%Y-%m-%d %H:%M:%S") - Building HC and ConMan (make all)..."
+    # the python installer in step 3 already runs make hc and make
+    # conman when asked to; this repeats the build so that a failure
+    # there is reported here, and is a no-op otherwise
+    make all >> "$LOGFILE" 2>&1
     if [ $? -eq 0 ]; then
-        log_info "  -> ConMan installation completed successfully."
+        log_info "  -> HC and ConMan built (modules/mc/hc/bin, modules/mc/ConMan/conman)."
     else
-        log_info "  -> ERROR: ConMan installation failed. Check $LOGFILE for details."
+        log_info "  -> ERROR: building HC or ConMan failed. Check $LOGFILE for details."
     fi
 
     log_info "[STEP 5/5] $(date +"%Y-%m-%d %H:%M:%S") - Installing EQdyna..."

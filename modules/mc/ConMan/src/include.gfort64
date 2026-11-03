@@ -1,9 +1,0 @@
-# switch for flags around for picard and implicit versions
-# use -m64 -r8 -i8 for 64-bit architecture (also see changed in mm.src)
-#
-FC=/usr/bin/gfortran
-#FFLAGS = -O2 -DIMPLICIT -I. -fcray-pointer
-#FFLAGS = -O2 -DIMPLICIT -DPICARD -I. -fcray-pointer 
-FFLAGS = -O2 -I. -fcray-pointer -fdefault-integer-8 -fdefault-real-8
-CC = gcc
-CFLAGS = -O2 

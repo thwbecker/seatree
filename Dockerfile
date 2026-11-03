@@ -1,58 +1,38 @@
-# Use the official Ubuntu image as a base
-FROM ubuntu:latest
+# SEATREE container image
+#
+# Ubuntu 24.04 with the system GMT 6, GTK 4 python bindings, and the
+# HC and ConMan codes built from the git submodules. The GUI needs an
+# X display; run the container with X forwarding (for example
+# docker run -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix ...)
+# or use it for the command line tools only.
+#
+# This file mirrors the steps in README.md. It has not been tested on
+# every Docker setup; please report problems.
+FROM ubuntu:24.04
 
-# Prevent prompts during package installations
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Update the package list and install required packages
-RUN apt-get update && apt-get install -y \
-    git \
-    wget \
-    cmake \
-    python3 \
-    python3-pip \
-    python3-numpy \
-    python3-gi \
-    python3-gi-cairo \
-    gir1.2-gtk-4.0 \
-    libgtk-4-dev \
-    build-essential \
-    gfortran \
-    x11-apps libx11-dev libxt-dev libxaw7-dev ghostscript\
-    libhdf5-dev \ 
-    gawk
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git make gcc gfortran gawk \
+    python3 python3-numpy python3-scipy python3-matplotlib \
+    python3-gi python3-gi-cairo gir1.2-gtk-4.0 \
+    gmt gmt-dcw gmt-gshhg libgmt-dev \
+    libnetcdf-dev netcdf-bin \
+    ghostscript imagemagick \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install the specific version of matplotlib using pip
-RUN pip3 install --user matplotlib==3.9.2 --break-system-packages
+# the submodules (HC, ConMan) are needed for the mantle convection modules
+RUN git clone --recurse-submodules https://github.com/thwbecker/seatree.git /opt/seatree
 
-# Clone the repository into /home
-RUN git clone https://github.com/dunyuliu/seatree.dev.git /home/seatree
+WORKDIR /opt/seatree
 
-# Set working directory
-WORKDIR /home/seatree
+ENV SEATREE=/opt/seatree
 
-RUN bash install.netcdf.ubuntu22.sh
+# build HC and ConMan, then run the python installer non-interactively
+# (it builds the seismology modules and writes the configuration files)
+RUN make all \
+    && make test \
+    && yes '' | ./install/configure.python3.gtk4
 
-RUN bash install.gmt4.ubuntu22.sh
-
-# Set environment variables
-ENV SEATREE=/home/seatree \
-    GMT4HOME=/home/seatree/gmt-4.5.18 \
-    GMTHOME=/home/seatree/gmt-4.5.18 \
-    GMT_GSHHG_DATA=/home/seatree/gmt-4.5.18/gshhg-gmt-2.3.7 \
-    NETCDFHOME=/home/seatree/netcdf-c-4.9.3-rc1 \
-    PATH=$PATH:/home/seatree/netcdf-c-4.9.3-rc1/lib:/home/seatree/gmt-4.5.18/gshhg-gmt-2.3.7 \
-    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/seatree/netcdf-c-4.9.3-rc1/lib
-
-# Create symbolic link
-RUN ln -s $NETCDFHOME/lib/libnetcdf.so.22 $NETCDFHOME/lib/libnetcdf.so.7
-
-# Run the configuration script
-RUN yes '' | ./configure.python3.gtk4
-
-RUN bash install.conman.sh 
-
-RUN apt-get autoremove
-RUN apt-get remove -y git wget cmake
-# Set the default command to run when starting the container
-CMD ["bash", "-c", "cd /home/seatree && exec bash"]
+CMD ["./seatree"]

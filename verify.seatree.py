@@ -477,28 +477,49 @@ def main():
     # Check ConMan installation
     if seatree_home:
         print_header("ConMan Installation")
-        # Check both possible ConMan locations
-        conman_new = f"{seatree_home}/modules/mc/ConMan/conman"
-        conman_legacy = f"{seatree_home}/modules/mc/ConMan.legacy/conman"
+        # ConMan is the git submodule modules/mc/ConMan, built with 'make conman'
+        conman_dir = f"{seatree_home}/modules/mc/ConMan"
+        conman_exe = f"{conman_dir}/conman"
+        conman_awk = f"{conman_dir}/input_gen/make_conman_thermal_in.awk"
 
-        if Path(conman_new).exists():
-            check_executable(conman_new, "conman (new)", result)
-        elif Path(conman_legacy).exists():
-            check_executable(conman_legacy, "conman (legacy)", result)
+        if not Path(f"{conman_dir}/src/Makefile").exists():
+            result.add_fail("ConMan source", "submodule not checked out (git submodule update --init)")
+            print_check("FAIL", "ConMan source", "submodule not checked out (git submodule update --init)")
+        elif Path(conman_exe).exists():
+            check_executable(conman_exe, "conman", result)
         else:
-            result.add_fail("Executable conman", "Not found in ConMan/ or ConMan.legacy/")
-            print_check("FAIL", "Executable: conman", "Not found in ConMan/ or ConMan.legacy/")
+            result.add_fail("Executable conman", f"Not found: {conman_exe} (run 'make conman')")
+            print_check("FAIL", "Executable: conman", f"Not found: {conman_exe} (run 'make conman')")
+
+        if Path(conman_awk).exists():
+            result.add_pass("ConMan input generator", conman_awk)
+            print_check("PASS", "ConMan input generator", "input_gen/make_conman_thermal_in.awk")
+        else:
+            result.add_fail("ConMan input generator", f"Not found: {conman_awk}")
+            print_check("FAIL", "ConMan input generator", f"Not found: {conman_awk}")
+
+        gawk_path = shutil.which("gawk")
+        if gawk_path:
+            check_executable(gawk_path, "gawk", result)
+        else:
+            result.add_fail("Executable gawk", "gawk is needed to generate ConMan input")
+            print_check("FAIL", "Executable: gawk", "gawk is needed to generate ConMan input")
 
     # Check HC (mantle convection) installation
     if seatree_home:
-        print_header("HC (Mantle Convection) Installation")
+        print_header("HC (Mantle Flow) Installation")
         arch = os.environ.get("ARCH", "")
+        if not Path(f"{seatree_home}/modules/mc/hc/Makefile").exists():
+            result.add_fail("HC source", "submodule not checked out (git submodule update --init)")
+            print_check("FAIL", "HC source", "submodule not checked out (git submodule update --init)")
 
         # HC uses bin/ARCH directory when ARCH is set
         hc_bin_arch = f"{seatree_home}/modules/mc/hc/bin/{arch}" if arch else None
         hc_bin = f"{seatree_home}/modules/mc/hc/bin"
 
-        hc_executables = ['hc', 'sh_ana', 'sh_syn', 'hc_extract_sh_layer']
+        # these are the binaries the HC module calls; sh_ana is only
+        # built with the GMT 4 bindings and is not needed by SEATREE
+        hc_executables = ['hc', 'sh_syn', 'hc_extract_sh_layer']
         for exe in hc_executables:
             # Try ARCH-specific path first, then fall back to bin/
             exe_path_arch = f"{hc_bin_arch}/{exe}" if hc_bin_arch else None
@@ -509,8 +530,8 @@ def main():
             elif Path(exe_path).exists():
                 check_executable(exe_path, f"hc/{exe}", result)
             else:
-                result.add_warning(f"Executable hc/{exe}", f"Not found in bin/ or bin/{arch}/")
-                print_check("WARN", f"Executable: hc/{exe}", f"Not found (optional)")
+                result.add_fail(f"Executable hc/{exe}", f"Not found in bin/ or bin/{arch}/ (run 'make hc')")
+                print_check("FAIL", f"Executable: hc/{exe}", f"Not found (run 'make hc')")
 
     # Check Seismo modules installation
     if seatree_home:

@@ -7,20 +7,23 @@ Build self-contained AppImage executables for SEATREE GUI application.
 From root directory:
 ```bash
 ./build.sh              # Build seatree.exe (main)
-./build.sh portable     # Build seatree-portable.exe (older systems)
 ./build.sh clean        # Clean all build artifacts
 ```
 
 ## Build Scripts
 
 - `build-appimage-gtk.sh` - Main AppImage with GTK4 dependencies
-- `build-appimage-gtk-portable.sh` - Portable version for older Linux systems
+- `build.seatree.on.macos.sh` - macOS application bundle and DMG
 - `clean.sh` - Remove all generated files
+
+The portable AppImage script mentioned in earlier versions is not in
+the repository at the moment. The AppImage scripts expect HC and
+ConMan to have been built with `make all` in the root directory; they
+have not been re-tested after the switch to git submodules.
 
 ## Output
 
 - `seatree.exe` - Main AppImage (works on modern Linux)
-- `seatree-portable.exe` - Portable AppImage (works on older GLIBC)
 
 ## Requirements
 
@@ -34,5 +37,4 @@ Build tools are downloaded automatically:
 Built AppImages are self-contained and require no installation:
 ```bash
 ./seatree.exe
-./seatree-portable.exe
 ```

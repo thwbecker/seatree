@@ -1,8 +1,0 @@
-#!/bin/bash
-
-models=`ls out.* | gawk '{print(substr($1,5))}'`
-
-for model in $models;do
-    plot_simple $model &
-
-done
