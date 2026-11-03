@@ -112,6 +112,11 @@ The top-level `Makefile` has these targets:
   run (`install/test.conman.sh`).
 - `make clean`: removes the objects and binaries of both codes.
 
+The compilers default to `gcc` (HC) and `gfortran` (ConMan) and can be
+set on the command line, for example `make FC=/usr/bin/gfortran all`
+if another `gfortran` in the path is not usable (`type -a gfortran`
+shows which one make would pick up).
+
 The python installer (`install/configure.python3.gtk4`, which runs
 `python3/seatree/install/install.py`) calls `make hc` and
 `make conman` when asked to build these modules, builds the

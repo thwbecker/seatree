@@ -22,11 +22,29 @@
 HC_DIR = modules/mc/hc
 CONMAN_DIR = modules/mc/ConMan
 
+#
+# compilers. The HC Makefile uses $(CC), the ConMan Makefile uses
+# $(FC); both are passed down explicitly so that they can be set on
+# the command line, e.g. if a non-working "gfortran" shadows the real
+# one in the path:
+#
+#   make FC=/usr/bin/gfortran all
+#
+# make's built-in defaults (cc, f77) are replaced by gcc and gfortran
+# unless CC or FC were given on the command line or in the environment.
+#
+ifeq ($(origin CC),default)
+CC = gcc
+endif
+ifeq ($(origin FC),default)
+FC = gfortran
+endif
+
 # HC places binaries in bin/$(ARCH) if ARCH is set. We build into
 # plain bin/ so that the python side finds the binaries regardless of
 # the run-time environment. With NO_GMT, the HC Makefile (7bb6d03 or
 # later) includes sh_syn in the all_no_gmt target.
-HC_MAKE = $(MAKE) -C $(HC_DIR) ARCH=
+HC_MAKE = $(MAKE) -C $(HC_DIR) ARCH= CC=$(CC)
 HC_FLAGS = ADD_FLAGS=-DNO_GMT
 
 all: hc conman
@@ -45,7 +63,7 @@ hc: submodules
 	@echo "HC binaries are in $(HC_DIR)/bin"
 
 conman: submodules
-	$(MAKE) -C $(CONMAN_DIR)/src
+	$(MAKE) -C $(CONMAN_DIR)/src FC=$(FC)
 	@echo "ConMan binary is $(CONMAN_DIR)/conman"
 
 test: hc-test conman-test
@@ -59,6 +77,6 @@ conman-test: conman
 
 clean:
 	-$(HC_MAKE) clean
-	-$(MAKE) -C $(CONMAN_DIR)/src clean
+	-$(MAKE) -C $(CONMAN_DIR)/src FC=$(FC) clean
 
 .PHONY: all submodules hc conman test hc-test conman-test clean
