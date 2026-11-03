@@ -112,10 +112,12 @@ The top-level `Makefile` has these targets:
   run (`install/test.conman.sh`).
 - `make clean`: removes the objects and binaries of both codes.
 
-The compilers default to `gcc` (HC) and `gfortran` (ConMan) and can be
-set on the command line, for example `make FC=/usr/bin/gfortran all`
-if another `gfortran` in the path is not usable (`type -a gfortran`
-shows which one make would pick up).
+The compilers default to the `gcc` (HC) and `gfortran` (ConMan) found
+in the path, passed as full paths, and can be set on the command line,
+for example `make FC=/usr/bin/gfortran all`. (GNU make 4.3 reports
+"Permission denied" when running a compiler by its bare name if a
+directory with that name exists in an earlier path entry; the full
+path avoids this.)
 
 The python installer (`install/configure.python3.gtk4`, which runs
 `python3/seatree/install/install.py`) calls `make hc` and

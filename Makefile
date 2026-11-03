@@ -30,14 +30,19 @@ CONMAN_DIR = modules/mc/ConMan
 #
 #   make FC=/usr/bin/gfortran all
 #
-# make's built-in defaults (cc, f77) are replaced by gcc and gfortran
-# unless CC or FC were given on the command line or in the environment.
+# make's built-in defaults (cc, f77) are replaced by the full paths of
+# gcc and gfortran unless CC or FC were given on the command line or
+# in the environment. The full path is used because GNU make 4.3
+# fails with "Permission denied" when it runs a compiler directly and
+# a directory of the same name sits in an earlier PATH entry (for
+# instance with "." in the path), whereas the shell's command -v skips
+# such entries.
 #
 ifeq ($(origin CC),default)
-CC = gcc
+CC = $(shell command -v gcc 2>/dev/null || echo gcc)
 endif
 ifeq ($(origin FC),default)
-FC = gfortran
+FC = $(shell command -v gfortran 2>/dev/null || echo gfortran)
 endif
 
 # HC places binaries in bin/$(ARCH) if ARCH is set. We build into
