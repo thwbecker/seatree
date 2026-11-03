@@ -1,5 +1,6 @@
 import os, subprocess, sys
 import seatree.xml.writeXml as writeXml
+import seatree.install.installUtils as installUtils
 
 from seatree.util.scriptRunner import *
 
@@ -44,7 +45,7 @@ class NonLinLocInstaller:
 		print('binPath for nonLinLoc is', binPath)
 		
 		if (binPath and os.path.isdir(binPath)):
-			myXml.addText(binPathNode, binPath)
+			myXml.addText(binPathNode, installUtils.relativeConfPath(self.path, binPath))
 		else:
 			print("WARNING: The path to NonLinLoc could not be determined...if you haven't built NonLinLoc using this installer then NonLinLoc binaries must already be in your system path!")
 		
@@ -86,46 +87,16 @@ class NonLinLocInstaller:
 		return self.nllBase
 	
 	def buildNLL(self):
+		"""
+		build through the top-level Makefile (make nll)
+		"""
 		self.nllBase = os.path.abspath(self.nllBase) + os.sep
-		
-		runner = ScriptRunner()
-		
 		print("Building NonLinLoc...")
-		command = "cd " + self.nllBase + "src" + "; "
-		command += "make clean"
-		
-		print("COMMAND: " + command)
-		
-		runner.runScript(command)
-		
-		command = "cd " + self.nllBase + "src" + "; "
-		command += "make"
-		
-		print("COMMAND: " + command)
-		
-		result = runner.runScript(command)
-		
-		ret = result.getReturnValue()
-		if (ret > 0):
-			outFile = self.nllBase + "make.out"
-			errFile = self.nllBase + "make.err"
-			print("Error building NonLinLoc...STDOUT/STDERR written to " + outFile + "/.err")
-			print("Possible causes:")
-			print("  * You don't have build programs installed such as make and gcc")
-			print("  * The CC evnironmental variable is not setup to point to a C++ compiler (such as gcc)")
-			f = open(outFile, 'w')
-			f.write(result.getStandardOutput())
-			f.close()
-			f = open(errFile, 'w')
-			f.write(result.getStandardError())
-			f.close()
+		if not installUtils.buildWithMake(self.path, "nll"):
 			return False
-		else:
-			self.binPath = self.nllBase + "bin"
-			print("Success!")
-			return True
+		self.binPath = self.nllBase + "bin"
+		return True
 
 if (__name__ == '__main__'): # is being run from commmand line
-	installer = Syn2DInstaller()
-	installer.directory = "/home/kevin/workspace_seatree/SEATREE/py-drivers/py-syn2d"
+	installer = NonLinLocInstaller()
 	installer.install(None)

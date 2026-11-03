@@ -18,11 +18,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-gi python3-gi-cairo gir1.2-gtk-4.0 \
     gmt gmt-dcw gmt-gshhg libgmt-dev \
     libnetcdf-dev netcdf-bin \
+    mpich libnetcdff-dev \
     ghostscript imagemagick \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# the submodules (HC, ConMan) are needed for the mantle convection modules
+# the submodules (HC, ConMan, EQdyna) are needed for those modules
 RUN git clone --recurse-submodules https://github.com/thwbecker/seatree.git /opt/seatree
 
 WORKDIR /opt/seatree
@@ -32,6 +33,7 @@ ENV SEATREE=/opt/seatree
 # build HC and ConMan, then run the python installer non-interactively
 # (it builds the seismology modules and writes the configuration files)
 RUN make all \
+    && make optional \
     && make test \
     && yes '' | ./install/configure.python3.gtk4
 

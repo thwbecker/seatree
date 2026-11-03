@@ -25,6 +25,10 @@ class ConfLoader:
                         module.className = value.firstChild.nodeValue.strip()
                     elif value.nodeName == "directory":
                         module.directory = value.firstChild.nodeValue.strip()
+                        # directories in conf.xml are relative to the
+                        # python3 directory unless absolute
+                        if module.directory and not os.path.isabs(module.directory):
+                            module.directory = os.path.abspath(os.path.join(self.base_path, module.directory))
                 modules.append(module)
         return modules
     
@@ -45,6 +49,12 @@ class ConfLoader:
             if not path:
                 path = ""
         else:
+            path = ""
+
+        if path and not os.path.isdir(path):
+            # a stale entry (for instance a bundled GMT 4 that was never
+            # built); fall back to the GMT found in the system path
+            print("GMT path " + path + " does not exist, using GMT from the system path")
             path = ""
 
         if path:

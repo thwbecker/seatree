@@ -37,6 +37,6 @@
        <directory>seatree/modules/eqdyna</directory>
       </module>
      </modules>
-     <gmtPath>../gmt-4.5.18/bin</gmtPath>
+     <gmtPath/>
      <convertPath/>
     </SEATREEConfiguration>

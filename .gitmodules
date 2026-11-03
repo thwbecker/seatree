@@ -4,3 +4,6 @@
 [submodule "modules/mc/ConMan"]
 	path = modules/mc/ConMan
 	url = https://github.com/geodynamics/conman.git
+[submodule "modules/seismo/EQdyna"]
+	path = modules/seismo/EQdyna
+	url = https://github.com/EQDYNA/EQdyna.git

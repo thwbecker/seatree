@@ -1,0 +1,303 @@
+From 46f5b2b2121170abfd2b1864387d19943484d54d Mon Sep 17 00:00:00 2001
+From: seatree <none@none>
+Date: Tue, 3 Nov 2026 23:33:35 +0000
+Subject: [PATCH] SEATREE local changes
+
+NETCDFHOME handling for macOS in src/makefile and install-eqdyna.sh,
+surface_coor.txt open/close fix in src/library_output.f90, directory
+copying in scripts/create.newcase, per-panel png output in
+scripts/plotRuptureDynamics (used by the SEATREE GUI), a single-rank
+setup for case_input/test.tpv8, and build products added to .gitignore.
+These were carried in the SEATREE tree (modules/seismo/EQdyna) and are
+relative to 844cefe.
+---
+ .gitignore                                  |  4 ++
+ case_input/test.tpv8/user_defined_params.py |  5 +-
+ install-eqdyna.sh                           | 41 +++++++-----
+ scripts/create.newcase                      |  8 ++-
+ scripts/plotRuptureDynamics                 | 72 ++++++++++++++++++++-
+ src/library_output.f90                      |  7 +-
+ src/makefile                                | 22 +++++--
+ 7 files changed, 130 insertions(+), 29 deletions(-)
+
+diff --git a/.gitignore b/.gitignore
+index 9bea433..ac91df4 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,2 +1,6 @@
+ 
+ .DS_Store
++# build products
++bin/
++*.mod
++*.o
+diff --git a/case_input/test.tpv8/user_defined_params.py b/case_input/test.tpv8/user_defined_params.py
+index cdb85d0..cc1e338 100644
+--- a/case_input/test.tpv8/user_defined_params.py
++++ b/case_input/test.tpv8/user_defined_params.py
+@@ -28,11 +28,12 @@ par.term = 5.
+ par.dt = 0.5*par.dx/par.vp
+ par.friclaw = 1
+ par.tpv = 8
++par.outputGroundMotion = 1
+ 
+ par.nucR = 1.5e3
+ 
+-par.nx = 2
+-par.ny = 2
++par.nx = 1
++par.ny = 1
+ par.nz = 1
+             
+ # Creating the fault interface
+diff --git a/install-eqdyna.sh b/install-eqdyna.sh
+index bb49a9d..2da2cd5 100644
+--- a/install-eqdyna.sh
++++ b/install-eqdyna.sh
+@@ -10,6 +10,9 @@
+ 
+ # Usage: install-eqdyna.sh [-h] [-m Machine_name] [-c Machine_name]
+ 
++SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
++cd "$SCRIPT_DIR"
++
+ while getopts "m:e:c:h" OPTION; do
+     case $OPTION in 
+         m)
+@@ -81,37 +84,43 @@ if [ -n "$MACH" ]; then
+         echo ${EBROOTNETCDF}/include
+         echo ${EBROOTNETCDF}/lib64
+     
+-    elif [ $MACHINE == "macos" ]; then 
++    elif [ $MACHINE == "macos" ]; then
+         echo "Installing EQdyna on MacOS ... ..."
+-        export MACOS_NETCDF_INC=$(brew --prefix netcdf-fortran)/include
+-        export MACOS_NETCDF_LIB=$(brew --prefix netcdf)/lib
+-        export MACOS_NETCDFF_LIB=$(brew --prefix netcdf-fortran)/lib       
++        # Use NETCDFHOME if set, otherwise use Homebrew NetCDF
++        if [ -z "$NETCDFHOME" ]; then
++            echo "NETCDFHOME not set, using Homebrew NetCDF"
++        else
++            echo "Using NETCDFHOME: $NETCDFHOME"
++        fi
+         if [ -n "$ENV" ]; then
+             brew install mpich python
+-            pip3 install --break-system-packages numpy netCDF4 matplotlib xarray
+-        fi    
++            pip3 install --break-system-packages numpy matplotlib xarray
++            # Install netCDF4 Python package with SEATREE NetCDF
++            echo "Installing Python netCDF4 with SEATREE NetCDF: $NETCDFHOME"
++            NETCDF_DIR=$NETCDFHOME USE_NCCONFIG=1 pip3 install --no-binary netCDF4 --break-system-packages netCDF4
++        fi
+     fi 
+     
+     if [ -n "$CONFIG" ]; then 
+         echo "Simply configure EQdyna without installation ... ..."
+     else
+-        cd src
++        cd "$SCRIPT_DIR/src"
+         make
+-        cd ..
+-        mkdir bin
++        cd "$SCRIPT_DIR"
++        mkdir -p bin
+         mv src/eqdyna bin
+     fi
+ 
+-    export EQDYNAROOT=$(pwd)
+-    export PATH=$(pwd)/bin:$PATH
+-    export PATH=$(pwd)/scripts:$PATH
++    export EQDYNAROOT=$SCRIPT_DIR
++    export PATH=$SCRIPT_DIR/bin:$PATH
++    export PATH=$SCRIPT_DIR/scripts:$PATH
+     
+-    chmod -R 755 scripts
++    chmod -R 755 "$SCRIPT_DIR/scripts"
+ fi
+ 
+-export EQDYNAROOT=$(pwd)
+-export PATH=$(pwd)/bin:$PATH
+-export PATH=$(pwd)/scripts:$PATH
++export EQDYNAROOT=$SCRIPT_DIR
++export PATH=$SCRIPT_DIR/bin:$PATH
++export PATH=$SCRIPT_DIR/scripts:$PATH
+ 
+ echo EQDYNAROOT
+ echo PATH 
+diff --git a/scripts/create.newcase b/scripts/create.newcase
+index 73ff507..7b3915f 100644
+--- a/scripts/create.newcase
++++ b/scripts/create.newcase
+@@ -7,8 +7,12 @@ def case_copy(src, dst):
+     # copy files from src to dst
+     filenames = os.listdir(src)
+     for f in filenames:
+-        srcf = src + '/' + f
+-        shutil.copy(srcf, dst)
++        srcf = os.path.join(src, f)
++        if os.path.isfile(srcf):
++            shutil.copy(srcf, dst)
++        elif os.path.isdir(srcf):
++            dstf = os.path.join(dst, f)
++            shutil.copytree(srcf, dstf, dirs_exist_ok=True)
+ 
+ def _main_func(description):
+ 
+diff --git a/scripts/plotRuptureDynamics b/scripts/plotRuptureDynamics
+index ca21520..6bdf60a 100755
+--- a/scripts/plotRuptureDynamics
++++ b/scripts/plotRuptureDynamics
+@@ -83,7 +83,68 @@ def ruptureDynamics():
+ 
+     magnitude = 2/3*log10(moment*1.e7)-10.7
+     
+-    levels = np.linspace(0,30,60) 
++    levels = np.linspace(0,30,60)
++
++    def save_panel(filename, data, title, overlay=None):
++        """
++        Save an individual rupture dynamics panel with optional contour overlay.
++        """
++        fig, ax = plt.subplots(figsize=(6, 5), dpi=300)
++        cf = ax.contourf(xx, zz, data)
++        fig.colorbar(cf, ax=ax)
++        if overlay is not None:
++            ax.contour(xx, zz, overlay["data"], overlay["levels"], colors='k', linewidths=0.5)
++        ax.set_title(title)
++        ax.set_xlabel('Along strike distance, km')
++        ax.set_ylabel('Depth, km')
++        fig.tight_layout()
++        fig.savefig(filename, dpi=300)
++        plt.close(fig)
++
++    panel_configs = [
++        {
++            "filename": "rupture_dynamics_slip.png",
++            "data": rupt2d[:, :, 1],
++            "title": "Slip (m) & Rupture time (per 0.05 s)",
++            "overlay": {"data": rupt2d[:, :, 0], "levels": levels}
++        },
++        {
++            "filename": "rupture_dynamics_slip_s.png",
++            "data": rupt2d[:, :, 7],
++            "title": "Slip s (m)"
++        },
++        {
++            "filename": "rupture_dynamics_slip_d.png",
++            "data": rupt2d[:, :, 8],
++            "title": "Slip d (m)"
++        },
++        {
++            "filename": "rupture_dynamics_peak_slip_rate.png",
++            "data": rupt2d[:, :, 2],
++            "title": "Peak slip rate (m/s); Mag = {magnitude:.2f}"
++        },
++        {
++            "filename": "rupture_dynamics_final_slip_rate.png",
++            "data": rupt2d[:, :, 3],
++            "title": "Final slip rate (m/s)"
++        },
++        {
++            "filename": "rupture_dynamics_shear_stress.png",
++            "data": rupt2d[:, :, 4],
++            "title": "Shear stress (MPa)"
++        },
++        {
++            "filename": "rupture_dynamics_dip_shear_stress.png",
++            "data": rupt2d[:, :, 6],
++            "title": "Dip shear stress (MPa)"
++        },
++        {
++            "filename": "rupture_dynamics_normal_stress.png",
++            "data": rupt2d[:, :, 5],
++            "title": "Normal stress (MPa)"
++        },
++    ]
++
+     #dt     = 30/60
+     fig = plt.figure(figsize=(24,12), dpi= 300, facecolor='w', edgecolor='k')
+ 
+@@ -145,6 +206,15 @@ def ruptureDynamics():
+     plt.savefig("cRuptureDynamics.png", dpi = 300)
+     plt.close()
+ 
++    for config in panel_configs:
++        title = config["title"].format(magnitude=magnitude) if "{magnitude" in config["title"] else config["title"]
++        save_panel(
++            filename=config["filename"],
++            data=config["data"],
++            title=title,
++            overlay=config.get("overlay")
++        )
++
+     return fVarArr
+ 
+ def finalSurfDisp():
+diff --git a/src/library_output.f90 b/src/library_output.f90
+index 2f0656a..90308df 100644
+--- a/src/library_output.f90
++++ b/src/library_output.f90
+@@ -250,16 +250,17 @@ subroutine find_surfaceNodeIdArr
+     integer (kind = 4) :: i, j     
+     real (kind = dp) :: sc(3)
+     if (outputGroundMotion==1 .or. outputFinalSurfDisp==1) then    
++        open(unit=10008+me,file='surface_coor.txt'//mm,status='unknown',position='append')
+         do i=1,totalNumOfNodes
+             if ((meshCoor(1,i)<fltxyz(2,1,1)+20.0d3) .and. (meshCoor(1,i)>fltxyz(1,1,1)-20.0d3) &
+                     .and. (meshCoor(2,i)<fltxyz(2,2,1)+20.0d3) .and. (meshCoor(2,i)>fltxyz(1,2,1)-20.0d3) &
+                     .and. (abs(meshCoor(3,i))<dx/1000)) then 
+                 surface_nnode = surface_nnode + 1
+                 surfaceNodeIdArr(surface_nnode) = i
+-                open(unit=10008+me,file='surface_coor.txt'//mm,status='unknown',position='append')        
+-                    write(10008+me,'(1x,3e18.7e4)') meshCoor(1,i), meshCoor(2,i), meshCoor(3,i)    
++                write(10008+me,'(1x,3e18.7e4)') meshCoor(1,i), meshCoor(2,i), meshCoor(3,i)
+             endif
+         enddo
++        close(10008+me)
+     endif
+ end subroutine find_surfaceNodeIdArr
+ 
+@@ -309,4 +310,4 @@ subroutine output_src_evol
+             enddo    
+         close(30009+me)
+     endif
+-end subroutine output_src_evol
+\ No newline at end of file
++end subroutine output_src_evol
+diff --git a/src/makefile b/src/makefile
+index b48c8f6..e67d708 100644
+--- a/src/makefile
++++ b/src/makefile
+@@ -35,12 +35,24 @@ else ifeq ($(SYSTEM), grace)
+     NETCDF_LIB = -L${LIB} -lnetcdf -L${LIB} -lnetcdff 
+ 
+ else ifeq ($(SYSTEM), macos)
+-    FFLAGS     = -O3 -ffast-math -ftree-vectorize 
++    FFLAGS     = -O3 -ffast-math -ftree-vectorize
+     FC         = mpif90
+-    LIB        = ${MACOS_NETCDF_LIB}
+-    INC        = ${MACOS_NETCDF_INC}
+-    NETCDF_INC = -I${MACOS_NETCDF_INC}
+-    NETCDF_LIB = -L${MACOS_NETCDF_LIB} -lnetcdf -L${MACOS_NETCDFF_LIB} -lnetcdff 
++    # Use NETCDFHOME (Fortran) if set, otherwise default to Homebrew prefixes
++    ifeq ($(NETCDFHOME),)
++        NETCDF_FORTRAN_DIR = /opt/homebrew/opt/netcdf-fortran
++        NETCDF_C_DIR       = /opt/homebrew/opt/netcdf
++    else
++        NETCDF_FORTRAN_DIR = ${NETCDFHOME}
++        ifeq ($(NETCDF_C_HOME),)
++            NETCDF_C_DIR = /opt/homebrew/opt/netcdf
++        else
++            NETCDF_C_DIR = ${NETCDF_C_HOME}
++        endif
++    endif
++    LIB        = ${NETCDF_FORTRAN_DIR}/lib
++    INC        = ${NETCDF_FORTRAN_DIR}/include
++    NETCDF_INC = -I${NETCDF_FORTRAN_DIR}/include
++    NETCDF_LIB = -L${NETCDF_FORTRAN_DIR}/lib -lnetcdff -L${NETCDF_C_DIR}/lib -lnetcdf
+ endif
+ 
+ OPT  = -c ${FFLAGS} 
+-- 
+2.43.0
+

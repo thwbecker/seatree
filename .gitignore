@@ -4,7 +4,23 @@ python3/conf/conf.xml
 __pycache__/
 *.pyc
 tmp/
-hc_build_error.log
-conman_build_error.log
+
+
 # build products inside the submodules are ignored by their own
 # repositories (or show up as submodule changes), not here
+# seismology module build products (make all / make optional)
+modules/seismo/syn2d/makemodel/bin/
+modules/seismo/syn2d/makedata/bin/
+modules/seismo/syn2d/inversion/bin/
+modules/seismo/larry/x86_64/
+modules/seismo/larry/arm64/
+modules/seismo/larry/aarch64/
+modules/seismo/larry3d/x86_64/
+modules/seismo/larry3d/arm64/
+modules/seismo/larry3d/aarch64/
+modules/seismo/nonlinloc/nll/bin/
+modules/seismo/nonlinloc/nll/src/*.o
+modules/seismo/hypoinverse/bin/
+modules/seismo/hypoinverse/src_hyp2000g/*.o
+*_build_error.log
+modules/seismo/hypoinverse/src_hyp2000g/hyp

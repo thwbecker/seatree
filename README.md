@@ -24,11 +24,15 @@ SEATREE is module based. The current version includes:
 |---|---|---|---|
 | 3-D spherical mantle flow | HC | `modules/mc/hc` (git submodule, [geodynamics/hc](https://github.com/geodynamics/hc)) | `make hc` |
 | 2-D mantle (thermal) convection | ConMan | `modules/mc/ConMan` (git submodule, [geodynamics/conman](https://github.com/geodynamics/conman)) | `make conman` |
-| 2-D synthetic tomography (teaching) | syn2d | `modules/seismo/syn2d` | python installer |
-| Surface wave phase velocity tomography | larry | `modules/seismo/larry` | python installer |
-| 3-D body wave mantle tomography | larry3d | `modules/seismo/larry3d` | python installer |
-| Earthquake location (rudimentary) | NonLinLoc | `modules/seismo/nonlinloc` | python installer |
-| Rupture dynamics (initial version) | EQdyna | `modules/seismo/EQdyna` | `install-eqdyna.sh` |
+| 2-D synthetic tomography (teaching) | syn2d | `modules/seismo/syn2d` | `make syn2d` |
+| Surface wave phase velocity tomography | larry | `modules/seismo/larry` | `make larry` |
+| 3-D body wave mantle tomography | larry3d | `modules/seismo/larry3d` | `make larry3d` |
+| Earthquake location (rudimentary) | NonLinLoc | `modules/seismo/nonlinloc` | `make nll` |
+| Rupture dynamics (initial version) | EQdyna | `modules/seismo/EQdyna` (git submodule, [EQDYNA/EQdyna](https://github.com/EQDYNA/EQdyna)) | `make eqdyna` (optional) |
+| Earthquake location (not used by the GUI) | hypoinverse | `modules/seismo/hypoinverse` | `make hypoinverse` (optional) |
+
+`make all` builds the first six; `make optional` builds EQdyna (needs an
+MPI Fortran compiler and the NetCDF Fortran library) and hypoinverse.
 
 The main software design consists of transparent python wrappers that
 drive the modules, including a GMT plotting tool, a VTK/Paraview 3-D
@@ -44,6 +48,8 @@ visualization interface, and a GTK 4 graphical user interface.
 - GMT 6 (system installation) with the GSHHG coastlines, NetCDF,
   Ghostscript, and ImageMagick (`convert`) for plotting
 - gawk, used to generate the ConMan input files
+- optional, for EQdyna: MPICH (`mpif90`) and NetCDF Fortran
+  (`libnetcdff-dev`)
 
 HC is built without its own GMT bindings, so no GMT 4 development
 files are needed. The optional GMT 4 route is described below.
@@ -53,7 +59,7 @@ files are needed. The optional GMT 4 route is described below.
 ### Quick start (Ubuntu)
 
 ```bash
-# clone with the HC and ConMan submodules
+# clone with the HC, ConMan and EQdyna submodules
 git clone --recurse-submodules https://github.com/thwbecker/seatree.git
 cd seatree
 
@@ -64,14 +70,17 @@ sudo apt-get install git make gcc gfortran gawk \
     gmt gmt-dcw gmt-gshhg libgmt-dev libnetcdf-dev netcdf-bin \
     ghostscript imagemagick
 
-# build HC and ConMan
+# build HC, ConMan, syn2d, larry, larry3d and NonLinLoc
 make all
+
+# optional: EQdyna (needs mpich and libnetcdff-dev) and hypoinverse
+make optional
 
 # optional: run the HC regression tests and a short ConMan run
 make test
 
-# build the seismology modules and write the configuration files
-# (answer the prompts, or accept the defaults with: yes '' | ...)
+# write the configuration files (and rebuild anything not built yet;
+# answer the prompts, or accept the defaults with: yes '' | ...)
 ./install/configure.python3.gtk4
 
 # check the installation
@@ -108,9 +117,27 @@ The top-level `Makefile` has these targets:
 - `make conman`: builds the CIG ConMan in `modules/mc/ConMan/src`;
   the binary is `modules/mc/ConMan/conman`. Input decks are generated
   by `modules/mc/ConMan/input_gen/make_conman_thermal_in.awk`.
+- `make syn2d`, `make larry`, `make larry3d`, `make nll`: the
+  seismology modules, built with their own makefiles. The compilers
+  and flags (`F77`, `F90`, `FFLAGS`, `F_EXT_SOURCE_FLAG`, `ARCH`) are
+  passed in from the top-level Makefile, so nothing needs to be edited
+  in the module directories.
+- `make eqdyna`: EQdyna from the submodule, with `MACHINE=ubuntu` or
+  `macos` picked by `uname`; the binary is `modules/seismo/EQdyna/bin/eqdyna`.
+- `make hypoinverse`: builds `modules/seismo/hypoinverse/bin/hyp`.
 - `make test`: HC regression tests (both solvers) and a short ConMan
   run (`install/test.conman.sh`).
-- `make clean`: removes the objects and binaries of both codes.
+- `make clean`: removes the objects and binaries of all of the above.
+
+Build products are not tracked in git. The EQdyna submodule is pinned
+to the upstream commit the previously vendored copy was based on; the
+changes that had been made to that copy inside SEATREE (macOS NetCDF
+handling, a surface output fix, per-panel rupture plots used by the
+GUI, a single-rank test case) are kept in
+`install/eqdyna_seatree_local_changes.patch` until they are in the
+upstream repository, after which the submodule can be moved forward.
+Without them the EQdyna module compiles and runs but does not produce
+the individual plot panels the GUI lists.
 
 The compilers default to the `gcc` (HC) and `gfortran` (ConMan) found
 in the path, passed as full paths, and can be set on the command line,
@@ -120,9 +147,8 @@ directory with that name exists in an earlier path entry; the full
 path avoids this.)
 
 The python installer (`install/configure.python3.gtk4`, which runs
-`python3/seatree/install/install.py`) calls `make hc` and
-`make conman` when asked to build these modules, builds the
-seismology modules with their own makefiles, and writes the
+`python3/seatree/install/install.py`) calls the make targets above
+for each module when asked to build it, and writes the
 configuration files in `python3/conf/`. Paths in these files are
 relative to `python3/`, so the tree can be moved.
 
@@ -160,7 +186,7 @@ http://www-udc.ig.utexas.edu/external/becker/seatree/wiki/download.html
 - `python3/`: the python package (`seatree/`) with the GUI, module
   wrappers, plotters, and the configuration files in `conf/`
 - `modules/mc/`: mantle convection codes (HC, ConMan submodules)
-- `modules/seismo/`: seismology codes
+- `modules/seismo/`: seismology codes (EQdyna is a submodule)
 - `install/`: helper scripts used by `install.seatree.sh`
 - `test/`: GUI smoke test
 - `distribute/`: AppImage and macOS bundle scripts

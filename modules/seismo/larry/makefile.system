@@ -1,5 +1,1 @@
-ARCH=x86_64
-ARCH=x86_64
-ARCH=x86_64
-ARCH=x86_64
-ARCH=x86_64
+ARCH ?= $(shell uname -m)

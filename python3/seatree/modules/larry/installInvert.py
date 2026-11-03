@@ -1,5 +1,6 @@
 import os, subprocess, sys
 import seatree.xml.writeXml as writeXml
+import seatree.install.installUtils as installUtils
 
 class LarryInstaller:
     
@@ -12,9 +13,6 @@ class LarryInstaller:
         self.arch = self.main.arch
         # setup/build Larry
         if (self.checkBuildLarry()):
-            if (not self.setupMakefile()):
-                return
-            
             if (not self.buildLarry()):
                 return
         
@@ -95,37 +93,12 @@ class LarryInstaller:
         return True
     
     def buildLarry(self):
+        """
+        build through the top-level Makefile (make larry)
+        """
         print("Building Larry...")
-        command = "cd " + self.larryDir + "; "
-        command += "make clean"
-        
-        print("COMMAND: " + command)
-        
-        proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        output = proc.communicate()
-        
-        command = "cd " + self.larryDir + "; "
-        command += "make"
-        
-        print("COMMAND: " + command)
-        
-        proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        
-        output = proc.communicate()
-        ret = proc.returncode
-        if (ret > 0):
-            errorFile = self.larryDir + os.sep + "error.log"
-            print("Error building Larry...output written to " + errorFile)
-            print("Possible causes:")
-            print("  * You don't have build programs installed such as make and gcc")
-            f = open(errorFile, 'w')
-            f.write(str(output[1]))
-            f.close()
-            return False
-        else:
-            print("Success!")
-            return True
-    
+        return installUtils.buildWithMake(self.path, "larry")
+
     def createConfFile(self):
         confDir = os.path.abspath(self.path + os.sep + "conf" + os.sep + "larry")
         if not os.path.exists(confDir):
@@ -138,7 +111,7 @@ class LarryInstaller:
         lr = myXml.addNode("larryPath")
         larryPath = self.getLarryBuildPath()
         if (larryPath and os.path.isdir(larryPath)):
-            myXml.addText(lr, larryPath)
+            myXml.addText(lr, installUtils.relativeConfPath(self.path, larryPath))
         else:
             print("WARNING: The path to Larry could not be determined...if you haven't built Larry using this installer then Larry must already be in your system path!")
         

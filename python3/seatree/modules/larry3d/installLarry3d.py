@@ -1,5 +1,6 @@
 import os, subprocess, sys
 import seatree.xml.writeXml as writeXml
+import seatree.install.installUtils as installUtils
 
 class Larry3dInstaller:
 	
@@ -13,9 +14,6 @@ class Larry3dInstaller:
 		print('self.arch for Larry3d is', self.arch) 
 		# setup/build Larry3d
 		if (self.checkBuildLarry3d()):
-			if (not self.setupMakefile()):
-				return
-			
 			if (not self.buildLarry3d()):
 				return
 		# create config file
@@ -98,38 +96,14 @@ class Larry3dInstaller:
 		return True
 	
 	def buildLarry3d(self):
+		"""
+		build through the top-level Makefile (make larry3d), then
+		convert the model data to binary
+		"""
 		print("Building Larry3d...")
-		command = "cd " + self.larry3dDir + "; "
-		command += "make clean"
-		
-		print("COMMAND: " + command)
-		
-		proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-		output = proc.communicate()
-		
-		command = "cd " + self.larry3dDir + "; "
-		command += "make"
-		
-		print("COMMAND: " + command)
-		
-		proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-		
-		output = proc.communicate()
-		ret = proc.returncode
-		if (ret > 0):
-			errorFile = self.larry3dDir + os.sep + "error.log"
-			print("Error building Larry3d...output written to " + errorFile)
-			print("Possible causes:")
-			print("  * You don't have build programs installed such as make and gcc")
-			f = open(errorFile, 'w')
-			f.write(output[1].decode('utf-8'))
-			f.close()
+		if not installUtils.buildWithMake(self.path, "larry3d"):
 			return False
-		else:
-			# create config file
-			self.createConfFile()
-			print("Success!")
-#			return True
+		self.createConfFile()
 		
 		# convert necessary model data to binary
 		print("Converting model data to binary...")
@@ -200,7 +174,7 @@ class Larry3dInstaller:
 		lr = myXml.addNode("larry3dPath")
 		larry3dPath = self.getLarry3dBuildPath()
 		if (larry3dPath and os.path.isdir(larry3dPath)):
-			myXml.addText(lr, larry3dPath)
+			myXml.addText(lr, installUtils.relativeConfPath(self.path, larry3dPath))
 		else:
 			print("WARNING: The path to Larry3d could not be determined...if you haven't built Larry3d using this installer then Larry3d must already be in your system path!")
 		

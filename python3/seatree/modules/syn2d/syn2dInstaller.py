@@ -1,5 +1,6 @@
 import os, subprocess, sys
 import seatree.xml.writeXml as writeXml
+import seatree.install.installUtils as installUtils
 
 class Syn2DInstaller:
 	
@@ -21,9 +22,6 @@ class Syn2DInstaller:
 		
 		# setup makefile
 		if (self.checkBuildSyn2D()):
-			if not self.setupMakefile():
-				print("Syn2D was not installed!")
-				return
 			if not self.buildSyn2D():
 				print("Syn2D was not installed!")
 				return		
@@ -67,7 +65,7 @@ class Syn2DInstaller:
 		chkbdPathNode = myXml.addNode("chkbdPath")
 		chkbdPath = self.getChkbdPath()
 		if (chkbdPath and os.path.isdir(chkbdPath)):
-			myXml.addText(chkbdPathNode, chkbdPath)
+			myXml.addText(chkbdPathNode, installUtils.relativeConfPath(self.path, chkbdPath))
 		else:
 			print("WARNING: The path to chkbd could not be determined...if you haven't built chkbd using this installer then chkbd must already be in your system path!")
 		
@@ -75,7 +73,7 @@ class Syn2DInstaller:
 		makedataBinPathNode = myXml.addNode("makedataBinPath")
 		makedataBinPath = self.getMakedataBinPath()
 		if (makedataBinPath and os.path.isdir(makedataBinPath)):
-			myXml.addText(makedataBinPathNode, makedataBinPath)
+			myXml.addText(makedataBinPathNode, installUtils.relativeConfPath(self.path, makedataBinPath))
 		else:
 			print("WARNING: The path to makedata binaries could not be determined...if you haven't built the makedata binaries using this installer then they must already be in your system path!")
 		
@@ -83,7 +81,7 @@ class Syn2DInstaller:
 		invertBinPathNode = myXml.addNode("invertBinPath")
 		invertBinPath = self.getInvertBinPath()
 		if (invertBinPath and os.path.isdir(invertBinPath)):
-			myXml.addText(invertBinPathNode, invertBinPath)
+			myXml.addText(invertBinPathNode, installUtils.relativeConfPath(self.path, invertBinPath))
 		else:
 			print("WARNING: The path to inversion binaries could not be determined...if you haven't built the inversion binaries using this installer then they must already be in your system path!")
 		
@@ -193,40 +191,17 @@ class Syn2DInstaller:
 		return True
 	
 	def buildSyn2D(self):
+		"""
+		build through the top-level Makefile (make syn2d)
+		"""
 		print("Building Syn2D...")
-		command = "cd " + self.syn2dDir + "; "
-		command += "make clean"
-		
-		print("COMMAND: " + command)
-		
-		proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-		output = proc.communicate()
-		
-		command = "cd " + self.syn2dDir + "; "
-		command += "make build_only"
-		
-		print("COMMAND: " + command)
-		
-		proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-		
-		output = proc.communicate()
-		ret = proc.returncode
-		if (ret > 0):
-			errorFile = self.syn2dDir + os.sep + "error.log"
-			print("Error building Syn2D...output written to " + errorFile)
-			print("Possible causes:")
-			print("  * You don't have build programs installed such as make and gcc")
-			f = open(errorFile, 'w')
-			f.write(output[1])
-			f.close()
+		if not installUtils.buildWithMake(self.path, "syn2d"):
 			return False
-		else:
-			self.chkbdPath = self.syn2dDir + os.sep + "makemodel" + os.sep + "bin"
-			self.makedataPath = self.syn2dDir + os.sep + "makedata" + os.sep + "bin"
-			self.invertPath = self.syn2dDir + os.sep + "inversion" + os.sep + "bin"
-			print("Success!")
-			return True
-	
+		self.chkbdPath = self.syn2dDir + os.sep + "makemodel" + os.sep + "bin"
+		self.makedataPath = self.syn2dDir + os.sep + "makedata" + os.sep + "bin"
+		self.invertPath = self.syn2dDir + os.sep + "inversion" + os.sep + "bin"
+		return True
+
 	def uname(self):
 		return os.popen("uname -m").readline()[:-1]
 	

@@ -536,40 +536,36 @@ def main():
     # Check Seismo modules installation
     if seatree_home:
         print_header("Seismo Modules Installation")
+        arch = os.environ.get("ARCH", "") or os.uname().machine
+        seismo = f"{seatree_home}/modules/seismo"
 
-        # Larry (local tomography)
-        larry_invert = f"{seatree_home}/modules/seismo/larry/invert"
-        if Path(larry_invert).exists():
-            check_executable(larry_invert, "larry/invert", result)
-        else:
-            result.add_warning("Executable larry/invert", f"Not found (optional)")
-            print_check("WARN", "Executable: larry/invert", "Not found (optional)")
+        # binaries produced by 'make all' (syn2d, larry, larry3d, nll)
+        required = [
+            ("syn2d/makemodel/bin/chkbd", f"{seismo}/syn2d/makemodel/bin/chkbd"),
+            ("syn2d/makedata/bin/shootray", f"{seismo}/syn2d/makedata/bin/shootray"),
+            ("syn2d/inversion/bin/invray", f"{seismo}/syn2d/inversion/bin/invray"),
+            ("larry/blk_lsqr", f"{seismo}/larry/{arch}/blk_lsqr"),
+            ("larry3d/joint_lsqr_vx_isodamp", f"{seismo}/larry3d/{arch}/joint_lsqr_vx_isodamp"),
+            ("nll/NLLoc", f"{seismo}/nonlinloc/nll/bin/NLLoc"),
+        ]
+        for name, exe in required:
+            if Path(exe).exists():
+                check_executable(exe, name, result)
+            else:
+                result.add_fail(f"Executable {name}", f"Not found: {exe} (run 'make all')")
+                print_check("FAIL", f"Executable: {name}", f"Not found (run 'make all')")
 
-        # Larry3D (3D tomography)
-        larry3d_invert = f"{seatree_home}/modules/seismo/larry3d/invert"
-        larry3d_extract = f"{seatree_home}/modules/seismo/larry3d/extract"
-        if Path(larry3d_invert).exists():
-            check_executable(larry3d_invert, "larry3d/invert", result)
-        else:
-            result.add_warning("Executable larry3d/invert", f"Not found (optional)")
-            print_check("WARN", "Executable: larry3d/invert", "Not found (optional)")
-
-        if Path(larry3d_extract).exists():
-            check_executable(larry3d_extract, "larry3d/extract", result)
-        else:
-            result.add_warning("Executable larry3d/extract", f"Not found (optional)")
-            print_check("WARN", "Executable: larry3d/extract", "Not found (optional)")
-
-        # EQdyna (earthquake dynamics)
-        eqdyna_bin = f"{seatree_home}/modules/seismo/EQdyna/bin/eqdyna"
-        eqdyna_src = f"{seatree_home}/modules/seismo/EQdyna/src/eqdyna"
-        if Path(eqdyna_bin).exists():
-            check_executable(eqdyna_bin, "EQdyna/eqdyna", result)
-        elif Path(eqdyna_src).exists():
-            check_executable(eqdyna_src, "EQdyna/eqdyna (src)", result)
-        else:
-            result.add_warning("Executable EQdyna/eqdyna", f"Not found (optional)")
-            print_check("WARN", "Executable: EQdyna/eqdyna", "Not found (optional)")
+        # optional binaries ('make optional')
+        optional = [
+            ("EQdyna/eqdyna", f"{seismo}/EQdyna/bin/eqdyna"),
+            ("hypoinverse/hyp", f"{seismo}/hypoinverse/bin/hyp"),
+        ]
+        for name, exe in optional:
+            if Path(exe).exists():
+                check_executable(exe, name, result)
+            else:
+                result.add_warning(f"Executable {name}", "Not found (optional, run 'make optional')")
+                print_check("WARN", f"Executable: {name}", "Not found (optional, run 'make optional')")
 
     # Check Python dependencies
     print_header("Python Dependencies")

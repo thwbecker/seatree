@@ -6,9 +6,10 @@
 # 2. docker: please see Dockerfile.
 # 3. macos: MacOS 14
 #
-# The compiled mantle convection codes (HC, ConMan) are git submodules
-# and are built by the top-level Makefile (make all), which the python
-# installer and step 4 below call.
+# The compiled module codes are built by the top-level Makefile (make
+# all; make optional for EQdyna and hypoinverse), which the python
+# installer and steps 4 and 5 below call. HC, ConMan and EQdyna are
+# git submodules.
 
 # GMT Version Selection (4 or 6)
 # Default: GMT6 (system-installed via package manager)
@@ -152,8 +153,8 @@ if [ -n "$MACH" ]; then
     export SEATREE=$(pwd)
     # fetch the HC and ConMan submodules if this is a git checkout
     # that was cloned without --recurse-submodules
-    if [ -d .git ] && [ ! -f modules/mc/hc/Makefile ]; then
-        log_info "Fetching git submodules (modules/mc/hc, modules/mc/ConMan)..."
+    if [ -d .git ] && { [ ! -f modules/mc/hc/Makefile ] || [ ! -f modules/seismo/EQdyna/src/makefile ]; }; then
+        log_info "Fetching git submodules (modules/mc/hc, modules/mc/ConMan, modules/seismo/EQdyna)..."
         git submodule update --init >> "$LOGFILE" 2>&1
     fi
     if [ "$GMTVERSION" == "4" ]; then
@@ -247,39 +248,23 @@ if [ -n "$MACH" ]; then
         log_info "  -> ERROR: Configuration failed. Check $LOGFILE for details."
     fi
 
-    log_info "[STEP 4/5] $(date +"%Y-%m-%d %H:%M:%S") - Building HC and ConMan (make all)..."
-    # the python installer in step 3 already runs make hc and make
-    # conman when asked to; this repeats the build so that a failure
-    # there is reported here, and is a no-op otherwise
+    log_info "[STEP 4/5] $(date +"%Y-%m-%d %H:%M:%S") - Building all modules (make all)..."
+    # the python installer in step 3 already runs the make targets
+    # when asked to; this repeats the build so that a failure there is
+    # reported here, and is a no-op otherwise
     make all >> "$LOGFILE" 2>&1
     if [ $? -eq 0 ]; then
-        log_info "  -> HC and ConMan built (modules/mc/hc/bin, modules/mc/ConMan/conman)."
+        log_info "  -> HC, ConMan, syn2d, larry, larry3d and NonLinLoc built."
     else
-        log_info "  -> ERROR: building HC or ConMan failed. Check $LOGFILE for details."
+        log_info "  -> ERROR: make all failed. Check $LOGFILE for details."
     fi
 
-    log_info "[STEP 5/5] $(date +"%Y-%m-%d %H:%M:%S") - Installing EQdyna..."
-    if [ -n "$MACHINE" ]; then
-        EQDYNA_MACHINE="$MACHINE"
-    else
-        system_name=$(uname | tr '[:upper:]' '[:lower:]')
-        case "$system_name" in
-            darwin*)
-                EQDYNA_MACHINE="macos"
-                ;;
-            linux*)
-                EQDYNA_MACHINE="ubuntu"
-                ;;
-            *)
-                EQDYNA_MACHINE="$system_name"
-                ;;
-        esac
-    fi
-    bash modules/seismo/EQdyna/install-eqdyna.sh -m "$EQDYNA_MACHINE" >> "$LOGFILE" 2>&1
+    log_info "[STEP 5/5] $(date +"%Y-%m-%d %H:%M:%S") - Building EQdyna (optional, needs mpif90 and NetCDF Fortran)..."
+    make eqdyna >> "$LOGFILE" 2>&1
     if [ $? -eq 0 ]; then
-        log_info "  -> EQdyna installation completed successfully."
+        log_info "  -> EQdyna built (modules/seismo/EQdyna/bin/eqdyna)."
     else
-        log_info "  -> ERROR: EQdyna installation failed. Check $LOGFILE for details."
+        log_info "  -> EQdyna was not built (optional; install mpich and libnetcdff-dev and run 'make eqdyna'). Check $LOGFILE for details."
     fi
 
     log_info ""
