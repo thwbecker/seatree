@@ -1,0 +1,3 @@
+[submodule "modules/mc/hc"]
+	path = modules/mc/hc
+	url = https://github.com/geodynamics/hc.git
