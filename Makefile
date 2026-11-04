@@ -30,32 +30,44 @@ HYPO_DIR = modules/seismo/hypoinverse/src_hyp2000g
 #
 # compilers. The module makefiles use $(CC), $(FC), $(F77) and $(F90);
 # all are passed down explicitly so that they can be set on the
-# command line, e.g.
+# command line or in the environment, e.g.
 #
 #   make FC=/usr/bin/gfortran all
 #
-# make's built-in defaults (cc, f77) are replaced by the full paths of
-# gcc and gfortran unless CC or FC were given on the command line or
-# in the environment. The full path is used because GNU make 4.3
-# fails with "Permission denied" when it runs a compiler directly and
-# a directory of the same name sits in an earlier PATH entry (for
-# instance with "." in the path), whereas the shell's command -v skips
-# such entries.
+# Compiler names without a directory are resolved to full paths with
+# the shell's command -v. GNU make 4.3 fails with "Permission denied"
+# when it runs a compiler by its bare name and a directory of the
+# same name sits in an earlier PATH entry (for instance with "." in
+# the path), whereas command -v skips such entries.
 #
+resolve_exe = $(if $(findstring /,$(1)),$(1),$(shell command -v $(1) 2>/dev/null || echo $(1)))
 ifeq ($(origin CC),default)
-CC = $(shell command -v gcc 2>/dev/null || echo gcc)
+CC = gcc
 endif
 ifeq ($(origin FC),default)
-FC = $(shell command -v gfortran 2>/dev/null || echo gfortran)
+FC = gfortran
 endif
 # the seismology makefiles distinguish F77 and F90; both default to FC
 F77 ?= $(FC)
 F90 ?= $(FC)
+override CC := $(call resolve_exe,$(CC))
+override FC := $(call resolve_exe,$(FC))
+override F77 := $(call resolve_exe,$(F77))
+override F90 := $(call resolve_exe,$(F90))
 
-# flags for the fixed-form Fortran 77 sources of the seismology
-# modules (gfortran). F_EXT_SOURCE_FLAG allows 132 column lines.
-CFLAGS ?= -O2 -fcommon
-FFLAGS ?= -O2 -fallow-argument-mismatch
+#
+# flags. CFLAGS and FFLAGS are taken from the command line or the
+# environment if set there (optimization level and the like); the
+# flags the legacy sources need are added unconditionally:
+# -fcommon for duplicate C common symbols, -fallow-argument-mismatch
+# for Fortran 77 calls with mismatched dummy arguments (gfortran 10
+# and later reject them otherwise), and F_EXT_SOURCE_FLAG for 132
+# column fixed-form lines.
+#
+CFLAGS ?= -O2
+FFLAGS ?= -O2
+SEATREE_CFLAGS = $(CFLAGS) -fcommon
+SEATREE_FFLAGS = $(FFLAGS) -fallow-argument-mismatch
 F_EXT_SOURCE_FLAG ?= -ffixed-line-length-132
 
 # larry and larry3d put their binaries in a subdirectory named after
@@ -64,8 +76,8 @@ F_EXT_SOURCE_FLAG ?= -ffixed-line-length-132
 ARCH ?= $(shell uname -m)
 
 # variables handed to the seismology makefiles
-SEISMO_VARS = CC="$(CC)" F77="$(F77)" F90="$(F90)" CFLAGS="$(CFLAGS)" \
-	FFLAGS="$(FFLAGS)" F_EXT_SOURCE_FLAG="$(F_EXT_SOURCE_FLAG)" ARCH="$(ARCH)"
+SEISMO_VARS = CC="$(CC)" F77="$(F77)" F90="$(F90)" CFLAGS="$(SEATREE_CFLAGS)" \
+	FFLAGS="$(SEATREE_FFLAGS)" F_EXT_SOURCE_FLAG="$(F_EXT_SOURCE_FLAG)" ARCH="$(ARCH)"
 
 # HC places binaries in bin/$(ARCH) if ARCH is set. We build into
 # plain bin/ so that the python side finds the binaries regardless of
@@ -125,7 +137,7 @@ larry3d:
 
 nll:
 	mkdir -p $(NLL_DIR)/bin
-	$(MAKE) -C $(NLL_DIR)/src CC="$(CC)" CFLAGS="$(CFLAGS)"
+	$(MAKE) -C $(NLL_DIR)/src CC="$(CC)" CFLAGS="$(SEATREE_CFLAGS)"
 	@echo "NonLinLoc binaries are in $(NLL_DIR)/bin"
 
 #
@@ -141,7 +153,7 @@ eqdyna: submodules
 
 hypoinverse:
 	mkdir -p $(HYPO_DIR)/../bin
-	$(MAKE) -C $(HYPO_DIR) F77="$(F77)" FFLAGS="$(FFLAGS) $(F_EXT_SOURCE_FLAG)"
+	$(MAKE) -C $(HYPO_DIR) F77="$(F77)" FFLAGS="$(SEATREE_FFLAGS) $(F_EXT_SOURCE_FLAG)"
 	@echo "hypoinverse binary is $(HYPO_DIR)/../bin/hyp"
 
 #

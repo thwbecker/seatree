@@ -139,12 +139,16 @@ upstream repository, after which the submodule can be moved forward.
 Without them the EQdyna module compiles and runs but does not produce
 the individual plot panels the GUI lists.
 
-The compilers default to the `gcc` (HC) and `gfortran` (ConMan) found
-in the path, passed as full paths, and can be set on the command line,
-for example `make FC=/usr/bin/gfortran all`. (GNU make 4.3 reports
-"Permission denied" when running a compiler by its bare name if a
-directory with that name exists in an earlier path entry; the full
-path avoids this.)
+The compilers (`CC`, `FC`, `F77`, `F90`) default to the `gcc` and
+`gfortran` found in the path and can be set on the command line or in
+the environment, for example `make FC=/usr/bin/gfortran all`; bare
+names are resolved to full paths. (GNU make 4.3 reports "Permission
+denied" when running a compiler by its bare name if a directory with
+that name exists in an earlier path entry.) `CFLAGS` and `FFLAGS` from
+the environment are used if set; the flags the legacy sources need
+(`-fcommon`, `-fallow-argument-mismatch`, `-ffixed-line-length-132`)
+are added to them by the Makefile, so an exported `FFLAGS` does not
+break the Fortran 77 modules.
 
 The python installer (`install/configure.python3.gtk4`, which runs
 `python3/seatree/install/install.py`) calls the make targets above
