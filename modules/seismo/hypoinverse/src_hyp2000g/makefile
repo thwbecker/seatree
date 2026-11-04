@@ -9,15 +9,16 @@ hycin.o hycout.o hytrl.o hyloc.o hysol.o hysvd.o hytra.o hytrh.o hytrt.o \
 hymag.o hyrep.o hylst.o hysum.o hyinp.o hypro.o medwt.o utmcal.o \
 init_event.o hydelt.o hyedit.o hytime.o hybeg.o hypref.o hymagp.o \
 hyfile.o allsubs.o
-	$(F77) $(FFLAGS) -g hyp.o hybda.o hycmd.o hysta.o hydel.o hyate.o hyfmc.o hypref.o \
+	$(F77) $(LDFLAGS) hyp.o hybda.o hycmd.o hysta.o hydel.o hyate.o hyfmc.o hypref.o \
 	hyxmc.o hycrh.o hycrt.o hystl.o hyopen.o hyinit.o hyphs.o hycal.o \
 	hycin.o hytrl.o hyloc.o hysol.o hysvd.o hytra.o hytrh.o hytrt.o \
 	hymag.o hyrep.o hylst.o hysum.o hyinp.o hypro.o medwt.o utmcal.o \
 	init_event.o hydelt.o hyedit.o hytime.o hybeg.o hycout.o \
 	hymagp.o hysou.o hyfile.o \
-	-Bstatic allsubs.o -o hyp
+	allsubs.o -o hyp
 
-# The -Bstatic option loads all fortran system subroutines into the executable
+# (the former -Bstatic option was dropped: it is not a gfortran option and
+# linking does not need the compile flags in FFLAGS; set LDFLAGS if needed)
 # so hyp can be copied to a similar system without fortran to run without
 # the fortran system libraries.
 
