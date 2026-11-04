@@ -79,11 +79,13 @@ ARCH ?= $(shell uname -m)
 SEISMO_VARS = CC="$(CC)" F77="$(F77)" F90="$(F90)" CFLAGS="$(SEATREE_CFLAGS)" \
 	FFLAGS="$(SEATREE_FFLAGS)" F_EXT_SOURCE_FLAG="$(F_EXT_SOURCE_FLAG)" ARCH="$(ARCH)"
 
-# HC places binaries in bin/$(ARCH) if ARCH is set. We build into
-# plain bin/ so that the python side finds the binaries regardless of
-# the run-time environment. With NO_GMT, the HC Makefile (7bb6d03 or
-# later) includes sh_syn in the all_no_gmt target.
-HC_MAKE = $(MAKE) -C $(HC_DIR) ARCH= CC=$(CC)
+# HC places binaries in bin/$(ARCH) if ARCH is set, and under
+# $(HC_HOME) if that is set (a separate HC installation of the user).
+# Both are cleared here so that the submodule builds into its own
+# plain bin/, which is where the python side and the tests look.
+# With NO_GMT, the HC Makefile (7bb6d03 or later) includes sh_syn in
+# the all_no_gmt target.
+HC_MAKE = $(MAKE) -C $(HC_DIR) ARCH= HC_HOME= CC=$(CC)
 HC_FLAGS = ADD_FLAGS=-DNO_GMT
 
 # EQdyna's makefile selects compiler and NetCDF locations by MACHINE
