@@ -112,7 +112,7 @@ class FlowGUI:
 		self.densModelBox = gtk.HBox(homogeneous=True, spacing=5)
 		self.densModelBox.pack_start(self.densModelLabel)
 
-		self.tooltips.set_tip(self.densModelFile,'density model in spherical harmonics expansion, in %. if density model type is set to dshs, will expect the Becker & Boschi (2001) short format. Example models in the SEATREE compilation are described at http://geodynamics.usc.edu/~becker/tomography/', tip_private=None)
+		self.tooltips.set_tip(self.densModelFile,'density model in spherical harmonics expansion, in %. if density model type is set to dshs, will expect the Becker & Boschi (2001) short format. Example models in the SEATREE compilation are described at https://twb.ig.utexas.edu/tdata.html', tip_private=None)
 
 		self.densModelBox.pack_end(self.densModelFile)
 

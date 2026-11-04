@@ -16,7 +16,7 @@ executed. The research codes themselves are kept unchanged and
 remain usable on their own; SEATREE adds the glue, the plotting, and
 the GUI.
 
-Project web site: http://www-udc.ig.utexas.edu/external/becker/seatree/
+Project web site: https://twb.ig.utexas.edu/seatree/
 
 ## Contents
 
@@ -179,9 +179,10 @@ testing than the GMT 6 default.
 The `Dockerfile` builds an Ubuntu 24.04 image with the steps above;
 the GUI needs an X display forwarded into the container. For AppImage
 and macOS application bundles see `build.sh` and
-`distribute/README.md`. Older download options (VirtualBox images)
-are listed at
-http://www-udc.ig.utexas.edu/external/becker/seatree/wiki/download.html
+`distribute/README.md`. Older releases were also distributed as
+VirtualBox Linux images, see
+https://twb.ig.utexas.edu/seatree/install.html; those contain the old
+python 2 version and are no longer maintained.
 
 ## Running SEATREE
 
@@ -321,7 +322,7 @@ For SEATREE itself:
 > and Waterhouse, H. (2009), The Solid Earth Research and Teaching
 > Environment: a new software framework to share research tools in
 > the classroom and across disciplines, *Eos Trans. AGU*, 90(12).
-> http://www-udc.ig.utexas.edu/external/becker/preprints/mbbssw08.pdf
+> https://twb.ig.utexas.edu/preprints/mbbssw08.pdf
 
 For the codes behind the modules, please cite as recommended in their
 own repositories; the key references are:

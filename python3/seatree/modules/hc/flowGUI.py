@@ -110,7 +110,7 @@ class FlowGUI:
         self.densModelFile = guiUtils.FileSelectionBox(initial=self.flowCalc.dm, chooseTitle="Select Density Model File", width=10, mainWindow=self.mainWindow)
         self.densModelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         self.densModelBox.append(self.densModelLabel)
-        self.densModelFile.set_tooltip_text('density model in spherical harmonics expansion, in %. if density model type is set to dshs, will expect the Becker & Boschi (2001) short format. Example models in the SEATREE compilation are described at http://geodynamics.usc.edu/~becker/tomography/')
+        self.densModelFile.set_tooltip_text('density model in spherical harmonics expansion, in %. if density model type is set to dshs, will expect the Becker & Boschi (2001) short format. Example models in the SEATREE compilation are described at https://twb.ig.utexas.edu/tdata.html')
         self.densModelBox.append(self.densModelFile)
         self.vBox.append(self.densModelBox )
         
