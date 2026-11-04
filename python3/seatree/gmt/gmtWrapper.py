@@ -121,7 +121,7 @@ class GMTWrapper:
         self.maskSea = False
         self.coastMaskArea = 70000
         self.coastResolution = "c"
-        self.coastWidth = 2
+        self.coastWidth = 0.5  # pen width in points
         self.coastLineColor = [100, 100, 100]
         self.coastLandColor = [128, 128, 128]
         self.coastSeaColor = [200, 200, 200]
