@@ -76,7 +76,7 @@ SEATREE is a python 3 / GTK 4 application. The parts are:
 - **Plotters** (`python3/seatree/plotter/`): a GMT based plotter
   (used by HC, Larry, Larry 3-D, Syn2D, NonLinLoc) that writes
   PostScript with GMT and converts it to PNG for display, and a
-  matplotlib based plotter (ConMan, EQdyna) that draws directly into
+  matplotlib based plotter (ConMan, Syn2D, NonLinLoc, EQdyna) that draws directly into
   the window.
 - **The script log**: every shell command a module runs is recorded.
   "View Script" shows them, so a session can be turned into a shell
@@ -101,7 +101,7 @@ the Makefile gains a target for its compiled code.
 - Linux (tested on Ubuntu 22.04 and 24.04) or macOS; Windows users
   can use WSL
 - gcc, gfortran, make, git
-- Python 3 with NumPy, SciPy, matplotlib (3.9 or newer), and the
+- Python 3 with NumPy, SciPy, matplotlib (3.5 or newer), and the
   PyGObject bindings for GTK 4
 - GMT 6 with the GSHHG coastlines, NetCDF, Ghostscript, and
   ImageMagick (`convert`) for the GMT based plots
@@ -276,6 +276,15 @@ moving the pin forward also means adapting the module.
   GMT by default; if a configured path does not exist the loader falls
   back to the system path and says so on the terminal. GMT needs the
   GSHHG coastline data (`gmt-gshhg` on Ubuntu).
+
+- *Many `Theme parser error: gtk.css` warnings at start-up*: the
+  desktop theme hands a GTK 3 style sheet to GTK 4 programs (Greybird
+  on Xfce is one example). The warnings are harmless; starting with
+  `GTK_THEME=Adwaita ./seatree` avoids them.
+- *"Unable to import Axes3D" from matplotlib*: two matplotlib
+  installations are mixed, typically the distribution package and a
+  pip installation in `~/.local`. SEATREE does not use 3-D axes, but
+  keeping only one of the two installations removes the warning.
 
 ## Directory layout
 

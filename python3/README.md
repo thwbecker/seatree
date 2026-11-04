@@ -86,7 +86,7 @@ directory. The committed defaults match an unmoved checkout after
 
 ## Requirements
 
-Python 3 with PyGObject for GTK 4, NumPy, SciPy and matplotlib 3.9 or
+Python 3 with PyGObject for GTK 4, NumPy, SciPy and matplotlib 3.5 or
 newer; GMT 6, Ghostscript and ImageMagick for the GMT based modules.
 See the top-level README for packages and the build of the compiled
 codes.

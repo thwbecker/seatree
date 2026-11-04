@@ -134,7 +134,8 @@ if [ -n "$MACH" ]; then
           sudo apt-get install gmt gmt-dcw gmt-gshhg libgmt-dev
           # NetCDF (used by the GMT grd files)
           sudo apt-get install libnetcdf-dev netcdf-bin
-          # matplotlib 3.9 or newer; the distribution package is used
+          # matplotlib 3.5 or newer (tested with 3.5.1 of Ubuntu 22.04
+          # and 3.6.3 of Ubuntu 24.04); the distribution package is used
           # if available, pip otherwise (--break-system-packages is
           # needed on Ubuntu 24.04 to install outside a virtualenv)
           sudo apt-get install python3-matplotlib python3-scipy || \
@@ -146,7 +147,7 @@ if [ -n "$MACH" ]; then
             brew install gtk4 ghostscript gawk
             # Install GMT6 (default) - required for SEATREE plotting modules
             brew install gmt
-            pip3 install --break-system-packages matplotlib==3.9.2 pygobject scipy
+            pip3 install --break-system-packages matplotlib pygobject scipy
         fi
     fi 
 
