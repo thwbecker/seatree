@@ -4,9 +4,9 @@
 	dimension iresolu(500000),ire2(500000)
 	dimension inew(500000),iold(500000),inewh(500000),ioldh(500000)
 	character filename*200,dummy*200,outpo*200,colorname*200
-	integer irgb(100,3),rgb(3)
+	integer iclo(100,3),ichi(100,3),rgb(3)
         integer use_cpt
-	dimension v(100)
+	dimension zlo(100),zhi(100)
 
 c--open input and output files
 	print*,'solution file to be read?'
@@ -42,10 +42,13 @@ c	read(1,*)dummy
 	nlatzohi=180./eq_hi
 	if(nlatzohi.gt.nlatzhmax)stop "fine pixels too fine"
         if(use_cpt.eq.1)then
-c--   read in the color palette table
+c--   read in the color palette table: one slice per record,
+c--   lower z, lower r g b, upper z, upper r g b
            i=1
- 1         read(54,*,end=2)v(i),(irgb(i,k),k=1,3),v(i+1),(irgb(i+1,k),k=1,3)
+ 1         read(54,*,end=2)zlo(i),(iclo(i,k),k=1,3),
+     &          zhi(i),(ichi(i,k),k=1,3)
            i=i+1
+           if(i.gt.100)stop 'blk2gmt: more than 99 slices in cpt file'
            goto 1
  2         nint=i-1
         else
@@ -169,26 +172,7 @@ c	print*,k
 	   call rang(indblo,xlamin,xlamax,
      &	xlomin,xlomax,nsqrs,nsqtot,nlatzones,numto,eq_incr)
            if(use_cpt.eq.1)then 
-              do j=1,nint
-                 if((ccc.ge.v(j)).and.(ccc.lt.v(j+1)))then
-                    do k=1,3
-                       a=(irgb(j,k)-irgb(j+1,k))/(v(j)-v(j+1))
-                       b=irgb(j,k)-(a*v(j))
-                       rgb(k)=a*ccc+b
-                    enddo
-                    goto 40	
-                 elseif(ccc.ge.v(nint+1))then
-                    do k=1,3
-                       rgb(k)=irgb(nint+1,k)
-                    enddo
-                    goto 40	
-                 else if(ccc.lt.v(1))then
-                    do k=1,3
-                       rgb(k)=irgb(nint+1,k)
-                    enddo
-                    goto 40	
-                 endif
-              enddo
+              call cptcol(ccc,nint,zlo,zhi,iclo,ichi,rgb)
  40           write(3,421)'> -G',rgb(1),'/',rgb(2),'/',rgb(3)
            else
               write(3,*)'> -Z',ccc
@@ -214,28 +198,12 @@ c--read the fine part of the model and augment the map file
 	   ksav=k
 	   call rang(indblo,xlamin,xlamax,
      &	xlomin,xlomax,nsqrsh,nsqtoth,nlatzohi,numhi,eq_hi)
-	   do j=1,nint
-	      if((ccc.ge.v(j)).and.(ccc.lt.v(j+1)))then
-	         do k=1,3
-	            a=(irgb(j,k)-irgb(j+1,k))/(v(j)-v(j+1))
-	            b=irgb(j,k)-(a*v(j))
-	            rgb(k)=a*ccc+b
-	         enddo
-	         goto41	
-              elseif(ccc.ge.v(nint+1))then
-	         do k=1,3
-	            rgb(k)=irgb(nint+1,k)
-	         enddo
- 	         goto41	
-             elseif(ccc.lt.v(1))then
-	         do k=1,3
-	            rgb(k)=irgb(nint+1,k)
-	         enddo
-	         goto41	
-	      endif
-	   enddo
-41	   continue
-	   write(3,421)'> -G',rgb(1),'/',rgb(2),'/',rgb(3)
+           if(use_cpt.eq.1)then
+              call cptcol(ccc,nint,zlo,zhi,iclo,ichi,rgb)
+              write(3,421)'> -G',rgb(1),'/',rgb(2),'/',rgb(3)
+           else
+              write(3,*)'> -Z',ccc
+           endif
 	if(xlomax.eq.360.)xlomax=359.99
 	   write(3,*)xlomin,xlamin
 	   write(3,*)xlomin,xlamax
@@ -330,3 +298,51 @@ c	dimension nsqrs(nlatzones),nsqtot(nlatzones+1)
 	return
 	end
 c************************************************************
+
+c
+c     color for value ccc from a color palette table with ncpt slices
+c     (lower bound zlo, upper bound zhi, colors iclo and ichi at those
+c     bounds). Within a slice, the color is interpolated linearly
+c     between the lower and upper color, which returns the slice color
+c     for discrete tables and the interpolated color for continuous
+c     ones. Values below or above the table get the lowest or highest
+c     color.
+c
+      subroutine cptcol(ccc,ncpt,zlo,zhi,iclo,ichi,rgb)
+      real ccc,zlo(100),zhi(100)
+      integer ncpt,iclo(100,3),ichi(100,3),rgb(3)
+      integer j,k,jsel
+      real frac
+      if(ccc.lt.zlo(1))then
+         do k=1,3
+            rgb(k)=iclo(1,k)
+         enddo
+         return
+      endif
+      if(ccc.ge.zhi(ncpt))then
+         do k=1,3
+            rgb(k)=ichi(ncpt,k)
+         enddo
+         return
+      endif
+c     find the slice; if the value falls into a gap between slices,
+c     the last slice below it is used
+      jsel=1
+      do j=1,ncpt
+         if(ccc.ge.zlo(j))then
+            jsel=j
+         endif
+      enddo
+      if(zhi(jsel).gt.zlo(jsel))then
+         frac=(ccc-zlo(jsel))/(zhi(jsel)-zlo(jsel))
+      else
+         frac=0.
+      endif
+      if(frac.gt.1.)then
+         frac=1.
+      endif
+      do k=1,3
+         rgb(k)=nint(iclo(jsel,k)+frac*(ichi(jsel,k)-iclo(jsel,k)))
+      enddo
+      return
+      end
