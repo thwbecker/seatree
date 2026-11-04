@@ -145,8 +145,13 @@ nll:
 # NetCDF Fortran library; its makefile picks them by MACHINE
 # (ubuntu or macos). hypoinverse is not used by the GUI.
 #
+# MPICH_FC / OMPI_FC tell the MPI wrapper which Fortran compiler to
+# call, by full path. Without them the wrapper calls the bare name,
+# which reaches gcc's LTO wrapper (Ubuntu's MPICH is built with
+# -flto=auto) and trips the make 4.3 PATH problem described above.
+#
 eqdyna: submodules
-	$(MAKE) -C $(EQDYNA_DIR)/src MACHINE=$(EQDYNA_MACHINE)
+	MPICH_FC="$(FC)" OMPI_FC="$(FC)" $(MAKE) -C $(EQDYNA_DIR)/src MACHINE=$(EQDYNA_MACHINE)
 	mkdir -p $(EQDYNA_DIR)/bin
 	mv $(EQDYNA_DIR)/src/eqdyna $(EQDYNA_DIR)/bin/
 	@echo "EQdyna binary is $(EQDYNA_DIR)/bin/eqdyna"
