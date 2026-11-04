@@ -402,7 +402,10 @@ class MainWindow(Gtk.ApplicationWindow):
     def configure_hpane(self, pane):
         """
         Configure horizontal pane to keep module panel near desired fraction of total width.
+        The pane fills the window vertically, so the plot can use the full height.
         """
+        pane.set_vexpand(True)
+        pane.set_hexpand(True)
         if hasattr(pane, "set_shrink_start_child"):
             pane.set_shrink_start_child(False)
         if hasattr(pane, "set_shrink_end_child"):

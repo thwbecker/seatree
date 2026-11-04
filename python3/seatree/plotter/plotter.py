@@ -42,6 +42,11 @@ class Plotter:
             self.widget = Gtk.Paned.new(Gtk.Orientation.VERTICAL)
             self.widget.set_start_child(topWidget)
             self.widget.set_end_child(bottomPanel)
+            # extra space goes to the plot; the settings panel keeps its
+            # natural height (the divider can still be moved by hand)
+            self.widget.set_resize_start_child(True)
+            self.widget.set_resize_end_child(False)
+            self.widget.set_shrink_end_child(False)
         else:
             self.widget = topWidget
         

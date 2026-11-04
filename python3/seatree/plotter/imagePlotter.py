@@ -37,25 +37,33 @@ class ImagePlotter(Plotter):
             self.imageFile = os.path.join(self.module.seatreePath, "img", "seatree.jpg")
         
     def getMainWidget(self):
-        # return the Image Event Box for this image plotter
+        """
+        Return the widget holding the plot image.
 
-        # Use Gtk.Picture on macOS for better scaling, Gtk.Image elsewhere
-        if platform.system() == 'Darwin':
-            self.image = Gtk.Picture()
-            self.image.set_keep_aspect_ratio(True)
-            self.image.set_can_shrink(True)
-            self.image.set_size_request(self.imageWidth, self.imageHeight)
+        The image is shown in a Gtk.Picture, which scales its content to
+        the space it is given while keeping the aspect ratio, so the
+        plot follows the size of the window and of the pane divider.
+        The PNG files the plotters produce have a higher resolution than
+        a typical window, so scaling them down keeps them sharp.
+        imageWidth and imageHeight are used as the minimum size.
+        """
+        self.image = Gtk.Picture()
+        self.image.set_can_shrink(True)
+        if hasattr(self.image, "set_content_fit"):
+            # GTK 4.8 and later
+            self.image.set_content_fit(Gtk.ContentFit.CONTAIN)
         else:
-            self.image = Gtk.Image()
-        #self.image.show()
+            self.image.set_keep_aspect_ratio(True)
+        self.image.set_hexpand(True)
+        self.image.set_vexpand(True)
+        self.image.set_size_request(self.imageWidth, self.imageHeight)
 
         self.imageBuffer = 7
         self.imageEB = Gtk.Box()
         self.imageEB.append(self.image)
-#        self.imageEB.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(1, 1, 1, 1))
         self.imageEB.set_css_name("custom")
         
-        # Load and apply CSS 
+        # white background behind the plot
         css_provider = Gtk.CssProvider() 
         css_provider.load_from_data(""" 
             .custom { 
@@ -68,22 +76,11 @@ class ImagePlotter(Plotter):
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
         self.imageEB.set_size_request(self.imageWidth*self.scaleFactor + self.imageBuffer, self.imageHeight*self.scaleFactor + self.imageBuffer)
-        
-        self.baseImage = self.imageFile
-        
-        self.displayImage(self.imageFile, default=True)
-        #self.image.set_pixel_size(min(self.imageWidth, self.imageHeight))
-        print('Image pixel sizes are', self.imageWidth, self.imageHeight)
         self.imageEB.set_hexpand(True)
         self.imageEB.set_vexpand(True)
-        if platform.system() == 'Darwin':
-            self.image.set_hexpand(False)
-            self.image.set_vexpand(False)
-        else:
-            self.image.set_hexpand(True)
-            self.image.set_vexpand(True)
-        #self.image.set_size_request(self.imageWidth*self.scaleFactor, self.imageHeight*self.scaleFactor)
-        self.imageEB.show()
+        
+        self.baseImage = self.imageFile
+        self.displayImage(self.imageFile, default=True)
         
         return self.imageEB
     
@@ -129,20 +126,11 @@ class ImagePlotter(Plotter):
 
         try:
             self.imageFile = imageFile
-            if platform.system() == 'Darwin':
-                # Gtk.Picture uses set_filename()
-                self.image.set_filename(self.imageFile)
-            else:
-                # Gtk.Image uses set_from_file()
-                self.image.set_from_file(self.imageFile)
+            self.image.set_filename(self.imageFile)
             print(f"Successfully loaded image: {imageFile}")
         except Exception as e:
             print(f"ERROR loading image {imageFile}: {e}")
             return
 
-#        scaleFactor=1.3
-#        pixbuf = GdkPixbuf.Pixbuf.new_from_file(imageFile)
-#        scaled_pixbuf = pixbuf.scale_simple(self.imageWidth*scaleFactor, self.imageHeight*scaleFactor, GdkPixbuf.InterpType.BILINEAR)
-#        self.image.set_from_pixbuf(scaled_pixbuf)
         if not default:
             self.mainWindow.setSaveActive(True)

@@ -14,7 +14,7 @@ class GMTSettingsPanel:
         self.gmtPlotter = gmtWrapper
 
         self.eb = Gtk.Box()
-        self.eb.set_size_request(self.width, 200)
+        self.eb.set_size_request(self.width, -1)
         #self.eb.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(0.5, 0.5, 0.5, 1))
 
         self.vBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
