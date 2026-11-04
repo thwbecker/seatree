@@ -1,6 +1,9 @@
-# SEATREE AppImage Distribution
+# SEATREE packaged builds
 
-Build self-contained AppImage executables for SEATREE GUI application.
+Scripts to build a self-contained AppImage (Linux) or an application
+bundle and DMG (macOS) of the SEATREE GUI, written by Dunyu Liu.
+Both expect the compiled codes to have been built first with
+`make all` in the repository root.
 
 ## Quick Build
 
