@@ -122,7 +122,6 @@ class FlowCalc(Module):
         # viscosity file
         self.vf = options.viscfile            # file name
         
-        self.lkludge = options.lkludge
 
         self.data_folder = options.data_folder
         
@@ -146,7 +145,7 @@ class FlowCalc(Module):
         
         self.myHCWrapper = HCWrapper(self.verb, self.dm, self.dt, self.dfac, self.dsf, self.use_dsf, self.tbc, \
                              self.platevelf, self.premfile, self.vf,     self.spd ,\
-                             self.hcpath, self.computedir, self.tmpn, self.lkludge)
+                             self.hcpath, self.computedir, self.tmpn)
         
         self.myPlotter = GMTWrapper(verb=self.verb, path=self.gmtpath, tmpn=self.tmpn, runDir=self.plotdir, awk=self.awk)
 
@@ -664,8 +663,5 @@ class FlowOptions:
         self.tmpn = tmpn
 
         self.verbosity = 3
-
-        # self.lkludge = 63 
-        self.lkludge = 31
 
         self.viscfile = os.path.join(self.data_folder, 'viscosity', "visc.sh08")

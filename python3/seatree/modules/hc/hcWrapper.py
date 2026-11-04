@@ -3,7 +3,7 @@ import subprocess
 
 class HCWrapper:
     
-    def __init__(self, verb, dm, dt, dfac, dsf, use_dsf, tbc, platevelf, premfile, vf, spd, hcpath, computedir, tmpn, lkludge, awk="awk"):
+    def __init__(self, verb, dm, dt, dfac, dsf, use_dsf, tbc, platevelf, premfile, vf, spd, hcpath, computedir, tmpn, awk="awk"):
         """
         Initializes HCWrapper and sets HC args
         
@@ -23,7 +23,6 @@ class HCWrapper:
         computedir -- directory to store computations
         tmpn -- path/prefix for temp files
         awk -- 
-        lkludge -- minimum l from which to apply solver kludge 
         
         """
         self.verb = verb
@@ -35,7 +34,6 @@ class HCWrapper:
         self.platevelf = platevelf
         self.premfile = premfile
         self.tbc = tbc
-        self.lkludge = lkludge
         self.vf = os.path.abspath(vf)
         self.hcpath = hcpath
         self.tmpn = tmpn
@@ -134,7 +132,6 @@ class HCWrapper:
 
         # top boundary conditions
         common_string = "hc "
-        common_string += " -cbckl " + str(self.lkludge) + ' ' # l kludge 
         common_string += " -prem " + self.premfile
             
         if self.tbc == 0: # free slip
